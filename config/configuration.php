@@ -3,9 +3,9 @@
 /* Database configuration settings */
 $settings['db']['engine']   = 'mysql';
 $settings['db']['hostname'] = 'localhost';
-$settings['db']['username'] = 'licensing2012';
-$settings['db']['password'] = 'd3v3l0pm3n+';
-$settings['db']['database'] = 'licensing2012';
+$settings['db']['username'] = '';
+$settings['db']['password'] = '';
+$settings['db']['database'] = '';
 
 /* Authenticated sessions timeout */
 $settings['opts']['timeout'] = 3600;
@@ -27,6 +27,6 @@ $settings['opts']['caching']  = 'cache';
  * database contents. If you change this manually you will
  * loose everything in the database.
  */
-$settings['opt']['db-key'] = 'my$1+3-KeY';
+$settings['opt']['db-key'] = '';
 
 ?>
