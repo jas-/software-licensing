@@ -1,13 +1,13 @@
 -- Create the database & drop if it already exists
-DROP DATABASE IF EXISTS `licensing2012`;
-CREATE DATABASE `licensing2012`;
+DROP DATABASE IF EXISTS `licensing`;
+CREATE DATABASE `licensing`;
 
 -- Create a default user and assign limited permissions
-CREATE USER "licensing2012"@"localhost" IDENTIFIED BY "d3v3l0pm3n+";
-GRANT SELECT, INSERT, UPDATE, DELETE, REFERENCES, INDEX, CREATE TEMPORARY TABLES, LOCK TABLES, EXECUTE ON `licensing2012`.* TO "licensing2012"@"localhost";
+CREATE USER "licensing"@"localhost" IDENTIFIED BY "d3v3l0pm3n+";
+GRANT SELECT, INSERT, UPDATE, DELETE, REFERENCES, INDEX, CREATE TEMPORARY TABLES, LOCK TABLES, EXECUTE ON `licensing`.* TO "licensing"@"localhost";
 
 -- Switch to newly created db context
-USE `licensing2012`;
+USE `licensing`;
 
 -- Set FK checks to 0 during table creation
 SET foreign_key_checks = 0;

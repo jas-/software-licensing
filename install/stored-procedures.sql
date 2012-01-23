@@ -2,7 +2,7 @@ DELIMITER //
 
 -- Test authentication
 DROP PROCEDURE IF EXISTS Auth_Authenticate//
-CREATE DEFINER='licensing2012'@'localhost' PROCEDURE Auth_Authenticate(IN `email` VARCHAR(128), IN `password` VARCHAR(128), OUT `x` INT)
+CREATE DEFINER='licensing'@'localhost' PROCEDURE Auth_Authenticate(IN `email` VARCHAR(128), IN `password` VARCHAR(128), OUT `x` INT)
  DETERMINISTIC
  SQL SECURITY INVOKER
  COMMENT 'Authentication check'
@@ -14,7 +14,7 @@ END//
 
 -- Add/Update user
 DROP PROCEDURE IF EXISTS Auth_UserAddUpdate//
-CREATE DEFINER='licensing2012'@'localhost' PROCEDURE Auth_UserAddUpdate(IN `resource` VARCHAR(255), IN `email` VARCHAR(128), IN `password` VARCHAR(255), IN `level` VARCHAR(40), IN `ggroup` VARCHAR(128))
+CREATE DEFINER='licensing'@'localhost' PROCEDURE Auth_UserAddUpdate(IN `resource` VARCHAR(255), IN `email` VARCHAR(128), IN `password` VARCHAR(255), IN `level` VARCHAR(40), IN `ggroup` VARCHAR(128))
  DETERMINISTIC
  SQL SECURITY INVOKER
  COMMENT 'Add/Update user authentication'
@@ -26,7 +26,7 @@ END//
 
 -- Delete user
 DROP PROCEDURE IF EXISTS Auth_UserDelete//
-CREATE DEFINER='licensing2012'@'localhost' PROCEDURE Auth_UserDelete(IN `email` VARCHAR(128), OUT `x` INT)
+CREATE DEFINER='licensing'@'localhost' PROCEDURE Auth_UserDelete(IN `email` VARCHAR(128), OUT `x` INT)
  DETERMINISTIC
  SQL SECURITY INVOKER
  COMMENT 'Delete user authentication'
@@ -38,7 +38,7 @@ END//
 
 -- Add/Update group
 DROP PROCEDURE IF EXISTS Auth_GroupAddUpdate//
-CREATE DEFINER='licensing2012'@'localhost' PROCEDURE Auth_GroupAddUpdate(IN `resource` VARCHAR(255), IN `group` VARCHAR(128), IN `manager` VARCHAR(128), IN `description` VARCHAR(255), IN `owner` VARCHAR(128), OUT `x` INT)
+CREATE DEFINER='licensing'@'localhost' PROCEDURE Auth_GroupAddUpdate(IN `resource` VARCHAR(255), IN `group` VARCHAR(128), IN `manager` VARCHAR(128), IN `description` VARCHAR(255), IN `owner` VARCHAR(128), OUT `x` INT)
  DETERMINISTIC
  SQL SECURITY INVOKER
  COMMENT 'Add/Update group'
@@ -50,7 +50,7 @@ END//
 
 -- Delete group
 DROP PROCEDURE IF EXISTS Auth_GroupDelete//
-CREATE DEFINER='licensing2012'@'localhost' PROCEDURE Auth_GroupDelete(IN `group` VARCHAR(128), OUT `x` INT)
+CREATE DEFINER='licensing'@'localhost' PROCEDURE Auth_GroupDelete(IN `group` VARCHAR(128), OUT `x` INT)
  DETERMINISTIC
  SQL SECURITY INVOKER
  COMMENT 'Delete group'
@@ -62,7 +62,7 @@ END//
 
 -- Search licensing
 DROP PROCEDURE IF EXISTS License_Search//
-CREATE DEFINER='licensing2012'@'localhost' PROCEDURE License_Search(IN `name` VARCHAR(128), IN `expiration` VARCHAR(20), IN `amount` INT(4), IN `price` DECIMAL(20,2), IN `purchased` VARCHAR(20), IN `type` CHAR(5), IN `maintenance` INT(1), IN `notes` LONGTEXT, IN `serial` VARCHAR(255))
+CREATE DEFINER='licensing'@'localhost' PROCEDURE License_Search(IN `name` VARCHAR(128), IN `expiration` VARCHAR(20), IN `amount` INT(4), IN `price` DECIMAL(20,2), IN `purchased` VARCHAR(20), IN `type` CHAR(5), IN `maintenance` INT(1), IN `notes` LONGTEXT, IN `serial` VARCHAR(255))
  DETERMINISTIC
  SQL SECURITY INVOKER
  COMMENT 'Search licenses'
@@ -72,7 +72,7 @@ END//
 
 -- Add/Update licenses
 DROP PROCEDURE IF EXISTS License_AddUpdate//
-CREATE DEFINER='licensing2012'@'localhost' PROCEDURE License_AddUpdate(IN `name` VARCHAR(128), IN `expiration` VARCHAR(20), IN `amount` INT(4), IN `price` DECIMAL(20,2), IN `purchased` VARCHAR(20), IN `type` CHAR(5), IN `maintenance` INT(1), IN `notes` LONGTEXT, IN `serial` VARCHAR(255), OUT `x` INT)
+CREATE DEFINER='licensing'@'localhost' PROCEDURE License_AddUpdate(IN `name` VARCHAR(128), IN `expiration` VARCHAR(20), IN `amount` INT(4), IN `price` DECIMAL(20,2), IN `purchased` VARCHAR(20), IN `type` CHAR(5), IN `maintenance` INT(1), IN `notes` LONGTEXT, IN `serial` VARCHAR(255), OUT `x` INT)
  DETERMINISTIC
  SQL SECURITY INVOKER
  COMMENT 'Add/Update licenses'
@@ -90,7 +90,7 @@ END//
 
 -- Delete license
 DROP PROCEDURE IF EXISTS License_Delete//
-CREATE DEFINER='licensing2012'@'localhost' PROCEDURE License_Delete(IN `name` VARCHAR(128), OUT `x` INT)
+CREATE DEFINER='licensing'@'localhost' PROCEDURE License_Delete(IN `name` VARCHAR(128), OUT `x` INT)
  DETERMINISTIC
  SQL SECURITY INVOKER
  COMMENT 'Delete license'

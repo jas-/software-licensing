@@ -1,19 +1,16 @@
 <?php
 
 /* Database configuration settings */
-$settings['db']['engine']   = 'mysql';
-$settings['db']['hostname'] = 'localhost';
-$settings['db']['username'] = '';
-$settings['db']['password'] = '';
-$settings['db']['database'] = '';
+$settings['db']['engine']     = 'mysql';
+$settings['db']['hostname']   = 'localhost';
+$settings['db']['username']   = 'licensing';
+$settings['db']['password']   = 'd3v3l0pm3n+';
+$settings['db']['database']   = 'licensing';
 
-/* Authenticated sessions timeout */
-$settings['opts']['timeout'] = 3600;
-
-/* Default theme template location */
-$settings['opts']['template'] = 'default';
-
-/* Default caching directory location */
+/* Application specific settings */
+$settings['opts']['title']    = 'Marriott Library - Software Licensing';
+$settings['opts']['timeout']  = 3600;
+$settings['opts']['template'] = 'views/default';
 $settings['opts']['caching']  = 'cache';
 
 /*
@@ -27,6 +24,6 @@ $settings['opts']['caching']  = 'cache';
  * database contents. If you change this manually you will
  * loose everything in the database.
  */
-$settings['opt']['db-key'] = '';
+$settings['opts']['db-key']   = 't3AhaJ34aYAd92UWuWrEVephefR79Ec2c6U2e7aPrAwrepaF4caMEFeCR7B5asP9';
 
 ?>

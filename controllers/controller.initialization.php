@@ -36,4 +36,12 @@ if (!class_exists('registry')){
  exit('Error initializing registry class, unable to proceed. 0x0c4');
 }
 $registry = new registry;
+
+/* Set application defaults within registry */
+/*
+ * the config file will be used if data missing
+ * from database\
+ */
+$registry->opts = $settings['opts']; 
+
 ?>
