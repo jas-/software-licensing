@@ -38,10 +38,6 @@ if (!class_exists('registry')){
 $registry = new registry;
 
 /* Set application defaults within registry */
-/*
- * the config file will be used if data missing
- * from database\
- */
-$registry->opts = $settings['opts']; 
+$registry->opts = $settings['opts'];
 
 ?>

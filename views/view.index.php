@@ -65,6 +65,23 @@ class indexView
   return self::$instance;
  }
 
+ /**
+  *! @function _main
+  *  @abstract Handles all template loading at once
+  */
+ private function _main()
+ {
+  $this->__main();
+  $this->_menu();
+  $this->_login();
+  $this->registry->tpl->display('index.tpl', true, NULL, $this->registry->libs->_getRealIPv4());
+ }
+
+ /**
+  *! @function _header
+  *  @abstract Assigns necessary template variables and loads default header
+  *            template
+  */
  private function _header()
  {
   $this->registry->tpl->assign('title',
@@ -77,30 +94,37 @@ class indexView
                                 $this->registry->libs->_getRealIPv4());
  }
 
- private function _main()
- {
-  $this->__main();
-  $this->_menu();
-  $this->_login();
-  $this->registry->tpl->display('index.tpl', true, NULL, $this->registry->libs->_getRealIPv4());
-
- }
-
+ /**
+  *! @function _footer
+  *  @abstract Loads the default footer template
+  */
  private function _footer()
  {
   $this->registry->tpl->display('footer.tpl', true, NULL, $this->registry->libs->_getRealIPv4());
  }
 
+ /**
+  *! @function __main
+  *  @abstract Creates and loads nested main template (used for primary page content)
+  */
  private function __main()
  {
   $this->registry->tpl->assign('main', $this->registry->tpl->assign(NULL, NULL, 'main.tpl', true), NULL);
  }
 
+ /**
+  *! @function _login
+  *  @abstract Loads the login template
+  */
  private function _login()
  {
   $this->registry->tpl->assign('login', $this->registry->tpl->assign(NULL, NULL, 'login.tpl', true), NULL);
  }
 
+ /**
+  *! @function _menu
+  *  @abstract Here a menu system is loaded
+  */
  private function _menu()
  {
   $this->registry->tpl->assign('menu', $this->registry->tpl->assign(NULL, NULL, 'menu.tpl', true), NULL);
