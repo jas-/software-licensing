@@ -1,0 +1,79 @@
+*{
+
+}
+
+body,html{
+ margin: 0px, 0px, 0px, 0px;
+}
+
+#full{
+ width:100%;
+}
+
+#constrain{
+ width:960px;
+}
+
+#one-col{
+ width:100%;
+}
+
+#two-col{
+
+}
+
+#two-col .one{
+ float:left;
+ width:610px;
+}
+
+#two-col .two{
+ float:right;
+ width:350px;
+}
+
+#navigation{
+
+}
+
+#navigation ul{
+ list-style:none;
+}
+
+#navigation li{
+ display:inline;
+}
+
+#authenticate{
+ position:relative;
+}
+
+#authenticate h2{
+ font-size:1.2em;
+}
+
+#authenticate p{
+ font-size:0.8em;
+}
+
+#authenticate a{
+ color:#000;
+ font-size:0.8em;
+ text-decoration:none;
+}
+
+#authenticate label{
+ float:left;
+ font-size:0.9em;
+ width:30%;
+ margin-right:0.5em;
+ padding-top:0.4em;
+ text-align:right;
+ font-weight:bold;
+}
+
+#authenticate input,
+#authenticate select,
+#authenticate textarea{
+ margin-top:0.3em;
+}
