@@ -4,10 +4,10 @@
    {$menu}
   </div>
   <div id="two-col">
-   <div id="one">
+   <div class="one">
     {$main}
    </div>
-   <div id="two">
+   <div class="two">
     {$login}
    </div>
   </div>

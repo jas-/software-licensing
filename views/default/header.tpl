@@ -4,6 +4,7 @@
 <head>
  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
  <title>{$title}</title>
+ <link rel="stylesheet" type="text/css" href="{$templates}/css/styles.css" media="screen,projection">
  <script src="http://code.jquery.com/jquery.min.js"></script>
 </head>
 <body>
