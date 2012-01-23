@@ -18,8 +18,7 @@ class indexController
   if (file_exists('views/view.index.php')){
    require 'views/view.index.php';
   }
-  $index = new indexView($this->registry);
-  $index->index();
+  indexView::instance($this->registry);
  }
 }
 ?>
