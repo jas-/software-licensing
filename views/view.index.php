@@ -1,5 +1,25 @@
 <?php
+/**
+ * Handle default page views
+ *
+ *
+ * LICENSE: This source file is subject to version 3.01 of the GPL license
+ * that is available through the world-wide-web at the following URI:
+ * http://www.gnu.org/licenses/gpl.html.  If you did not receive a copy of
+ * the GPL License and are unable to obtain it through the web, please
+ *
+ * @category   views
+ * @discussion Handles default page views
+ * @author     jason.gerfen@gmail.com
+ * @copyright  2008-2012 Jason Gerfen
+ * @license    http://www.gnu.org/licenses/gpl.html  GPL License 3
+ * @version    0.3
+ */
 
+/**
+ *! @class indexView
+ *  @abstract Handles default page views
+ */
 class indexView
 {
 
@@ -8,19 +28,41 @@ class indexView
   * @abstract Global class handler
   */
  private $registry;
- public function __construct($registry)
+
+ /**
+  *! @var instance object - class singleton object
+  */
+ protected static $instance;
+
+ /**
+  *! @function __construct
+  *  @abstract Initializes singleton for indexView class
+  *  @param registry array - Global array of class objects
+  */
+ private function __construct($registry)
  {
   $this->registry = $registry;
   $this->registry->tpl = new templates();
   $this->registry->tpl->strTemplateDir = $this->registry->opts['template'];
   $this->registry->tpl->boolCache=true;
- }
-
- public function index()
- {
   $this->_header();
   $this->_main();
   $this->_footer();
+ }
+
+ /**
+  *! @function instance
+  *  @abstract Creates non-deserializing, non-cloneable instance object
+  *  @param configuration array - server, username, password, database
+  *  @return Singleton - Singleton object
+  */
+ public static function instance($configuration)
+ {
+  if (!isset(self::$instance)) {
+   $c = __CLASS__;
+   self::$instance = new self($configuration);
+  }
+  return self::$instance;
  }
 
  private function _header()
@@ -41,7 +83,7 @@ class indexView
   $this->_menu();
   $this->_login();
   $this->registry->tpl->display('index.tpl', true, NULL, $this->registry->libs->_getRealIPv4());
-  
+
  }
 
  private function _footer()
@@ -62,6 +104,22 @@ class indexView
  private function _menu()
  {
   $this->registry->tpl->assign('menu', $this->registry->tpl->assign(NULL, NULL, 'menu.tpl', true), NULL);
+ }
+
+ /**
+  *! @function __clone
+  *  @abstract Prevent cloning of singleton object
+  */
+ public function __clone() {
+  trigger_error('Cloning prohibited', E_USER_ERROR);
+ }
+
+ /**
+  *! @function __wakeup
+  *  @abstract Prevent deserialization of singleton object
+  */
+ public function __wakeup() {
+  trigger_error('Deserialization of singleton prohibited ...', E_USER_ERROR);
  }
 }
 ?>
