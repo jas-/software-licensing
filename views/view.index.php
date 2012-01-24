@@ -44,7 +44,9 @@ class indexView
   $this->registry = $registry;
   $this->registry->tpl = new templates();
   $this->registry->tpl->strTemplateDir = $this->registry->opts['template'];
+  $this->registry->tpl->strCacheDir = $this->registry->opts['caching'];
   $this->registry->tpl->boolCache=true;
+  $this->registry->tpl->intTimeout=2629744;
   $this->_header();
   $this->_main();
   $this->_footer();
@@ -74,7 +76,7 @@ class indexView
   $this->__main();
   $this->_menu();
   $this->_login();
-  $this->registry->tpl->display('index.tpl', true, NULL, $this->registry->libs->_getRealIPv4());
+  $this->registry->tpl->display('index.tpl', true, null, $this->registry->libs->_getRealIPv4());
  }
 
  /**
@@ -85,12 +87,12 @@ class indexView
  private function _header()
  {
   $this->registry->tpl->assign('title',
-                               $this->registry->opts['title'], NULL, NULL);
+                               $this->registry->opts['title'], null, null, null);
   $this->registry->tpl->assign('timeout',
-                               $this->registry->opts['timeout'], NULL, NULL);
+                               $this->registry->opts['timeout'], null, null, null);
   $this->registry->tpl->assign('templates',
-                               $this->registry->tpl->strTemplateDir, NULL, NULL);
-  $this->registry->tpl->display('header.tpl', true, NULL,
+                               $this->registry->tpl->strTemplateDir, null, null, null);
+  $this->registry->tpl->display('header.tpl', true, null,
                                 $this->registry->libs->_getRealIPv4());
  }
 
@@ -100,7 +102,7 @@ class indexView
   */
  private function _footer()
  {
-  $this->registry->tpl->display('footer.tpl', true, NULL, $this->registry->libs->_getRealIPv4());
+  $this->registry->tpl->display('footer.tpl', true, null, $this->registry->libs->_getRealIPv4());
  }
 
  /**
@@ -109,7 +111,7 @@ class indexView
   */
  private function __main()
  {
-  $this->registry->tpl->assign('main', $this->registry->tpl->assign(NULL, NULL, 'main.tpl', true), NULL);
+  $this->registry->tpl->assign('main', $this->registry->tpl->assign(null, null, 'main.tpl', true, $this->registry->libs->_getRealIPv4()), null, null);
  }
 
  /**
@@ -118,7 +120,7 @@ class indexView
   */
  private function _login()
  {
-  $this->registry->tpl->assign('login', $this->registry->tpl->assign(NULL, NULL, 'login.tpl', true), NULL);
+  $this->registry->tpl->assign('login', $this->registry->tpl->assign(null, null, 'login.tpl', true, $this->registry->libs->_getRealIPv4()), null, null);
  }
 
  /**
@@ -127,7 +129,7 @@ class indexView
   */
  private function _menu()
  {
-  $this->registry->tpl->assign('menu', $this->registry->tpl->assign(NULL, NULL, 'menu.tpl', true), NULL);
+  $this->registry->tpl->assign('menu', $this->registry->tpl->assign(null, null, 'menu.tpl', true, $this->registry->libs->_getRealIPv4()), null, null);
  }
 
  /**

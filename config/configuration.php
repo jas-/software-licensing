@@ -11,7 +11,7 @@ $settings['db']['database']   = 'licensing';
 $settings['opts']['title']    = 'Marriott Library - Software Licensing';
 $settings['opts']['timeout']  = 3600;
 $settings['opts']['template'] = 'views/default';
-$settings['opts']['caching']  = 'cache';
+$settings['opts']['caching']  = 'views/cache';
 
 /*
  * Site wide random salt (WARNING)

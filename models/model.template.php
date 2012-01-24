@@ -81,7 +81,7 @@ class templates
  public $strCacheDir    = '';
  public $strBeginTag    = '{';
  public $strEndTag      = '}';
- public $intTimeout     = null;
+ public $intTimeout     = 2629744;
  public $arrVars        = array();
  public $arrValues      = array();
  public $boolCache      = true;
@@ -92,11 +92,11 @@ class templates
   $this->clear();
  }
 
- public function assign($strVar, $strValue, $strFile, $strFlag)
+ public function assign($strVar, $strValue, $strFile, $strFlag, $addr=false)
  {
   $this->arrVars[]   = $this->strBeginTag . '$' . $strVar  . $this->strEndTag;
   $this->arrValues[] = $strValue;
-  if (!empty($strFile)) { return $this->display($strFile, $strFlag, "VAR"); }
+  if (!empty($strFile)) { return $this->display($strFile, $strFlag, "VAR", $addr); }
  }
 
  public function clear()
@@ -107,33 +107,33 @@ class templates
  public function display($strFile, $strFlag, $strCmd, $addr)
  {
   if ($this->boolCache===true) {
-   if ((file_exists($this->strCacheDir.'/'.sha1($strFile.$addr).'.tpl')&&filemtime($this->strCacheDir.'/'.sha1($strFile.$addr).'.tpl')>=time()-$intTimeout)&&($strFlag===false)) {
-    $resFile = fopen($this->strCacheDir.'/'.sha1($strFile.$addr).'.tpl', 'r');
+   if ((file_exists($this->strCacheDir.'/'.sha1($strFile.$addr).'.tpl')&&filemtime($this->strCacheDir.'/'.sha1($strFile.$addr).'.tpl')>=time()-$this->intTimeout)&&($strFlag===false)) {
+    $resFile = @fopen($this->strCacheDir.'/'.sha1($strFile.$addr).'.tpl', 'r');
     $this->strBuff = fread($resFile, filesize($this->strCacheDir.'/'.sha1($strFile.$addr).'.tpl'));
     if ($strCmd==="VAR") {
      return $this->strBuff;
     } else {
      echo $this->strBuff;
     }
-    fclose($resFile);
+    @fclose($resFile);
    } else {
-    $resFile = fopen($this->strTemplateDir.'/'.$strFile, 'r');
-    $strBuff = fread($resFile, filesize($this->strTemplateDir.'/'.$strFile));
+    $resFile = @fopen($this->strTemplateDir.'/'.$strFile, 'r');
+    $strBuff = @fread($resFile, filesize($this->strTemplateDir.'/'.$strFile));
     $this->strBuff = str_replace($this->arrVars, $this->arrValues, $strBuff);
-    fclose($resFile);
+    @fclose($resFile);
     if ($strCmd==="VAR") {
      return $this->strBuff;
     } else {
      echo $this->strBuff;
     }
-    $resFileCache = fopen($this->strCacheDir.'/'.sha1($strFile.$addr).'.tpl', 'w');
-    fwrite($resFileCache, $this->strBuff);
+    $resFileCache = @fopen($this->strCacheDir.'/'.sha1($strFile.$addr).'.tpl', 'w');
+    @fwrite($resFileCache, $this->strBuff);
    }
   } else {
-   $resFile = fopen($this->strTemplateDir.'/'.$strFile, 'r');
-   $strBuff = fread($resFile, filesize($this->strTemplateDir.'/'.$strFile));
+   $resFile = @fopen($this->strTemplateDir.'/'.$strFile, 'r');
+   $strBuff = @fread($resFile, filesize($this->strTemplateDir.'/'.$strFile));
    $this->strBuff = str_replace($this->arrVars, $this->arrValues, $strBuff);
-   fclose($resFile);
+   @fclose($resFile);
    if($strCmd==="VAR") {
     return $this->strBuff;
    } else {
