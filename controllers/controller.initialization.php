@@ -37,6 +37,9 @@ if (!class_exists('registry')){
 }
 $registry = new registry;
 
+/* Set application defaults within registry */
+$registry->opts = $settings['opts'];
+
 /* intialize the libraries */
 if (!class_exists('libraries')){
  exit('Error initializing libraries class, unable to proceed. 0x0c5');
@@ -53,9 +56,6 @@ $registry->db = $eng::instance($settings['db']);
 /* generate or use CSRF token */
 $settings['opts']['token'] = (!empty($_SESSION['csrf'])) ?
                               $_SESSION['csrf'] : $registry->libs->uuid();
-
-/* Set application defaults within registry */
-$registry->opts = $settings['opts'];
 
 /* begin logging */
 
