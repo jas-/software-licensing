@@ -108,5 +108,22 @@ CREATE TABLE IF NOT EXISTS `license` (
   INDEX `name` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci AUTO_INCREMENT=0;
 
+-- Create a table to use for access logging
+--  Primary key: id
+--  Indexed key: guid
+DROP TABLE IF EXISTS `logs`;
+CREATE TABLE IF NOT EXISTS `logs` (
+  `id` int(255) NOT NULL AUTO_INCREMENT,
+  `guid` varchar(25) NOT NULL,
+  `adate` varchar(64) NOT NULL,
+  `ip` varchar(10) NOT NULL,
+  `hostname` varchar(80) NOT NULL,
+  `status` int(3) NOT NULL,
+  `agent` varchar(128) NOT NULL,
+  `query` varchar(128) NOT NULL,
+  PRIMARY KEY (`id`),
+  INDEX `guid` (`guid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci AUTO_INCREMENT=0;
+
 -- Re-enable the foreign key checks
 SET foreign_key_checks = 1;
