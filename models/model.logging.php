@@ -54,15 +54,89 @@ class logging {
  private function __construct($args)
  {
   $this->registry = $registry;
+  $x = $this->_main();
+  if (class_exists('validation')){
+   $x = validation::init($x);
+  }
  }
 
  /**
-  *! @function _get
-  *  @abstract Breaks up some client information into an array
+  *! @function _ip
+  *  @abstract Returns the associated IP
   */
  private function _ip()
  {
   return $this->registry->libs->_getRealIPv4();
+ }
+
+ /**
+  *! @function _host
+  *  @abstract Attempts to get hostname using DNS records
+  */
+ private function _host()
+ {
+  return gethostbyaddr($this->registry->libs->_getRealIPv4());
+ }
+
+ /**
+  *! @function _browser
+  *  @abstract Returns browser id
+  */
+ private function _browser()
+ {
+  return getenv('HTTP_USER_AGENT');
+ }
+
+ /**
+  *! @function _request
+  *  @abstract Returns the request string
+  */
+ private function _request()
+ {
+  return getenv('QUERY_STRING');
+ }
+
+ /**
+  *! @function _status
+  *  @abstract Returns redirect status code
+  */
+ private function _status()
+ {
+  return getenv('REDIRECT_STATUS');
+ }
+
+ /**
+  *! @function _time
+  *  @abstract Returns request time
+  */
+ private function _time()
+ {
+  return getenv('REQUEST_TIME');
+ }
+
+ /**
+  *! @function _create
+  *  @abstract Creates a new SQL statement
+  */
+ private function _create($array)
+ {
+  return sprintf('INSERT INTO `logs` (`guid`, `adate`, `ip`, `hostname`, `status`, `agent`, `query`) VALUES ("%s", "%s", "%s", "%s", "%s", "%s", "%s")', $array['guid'], $array['adate'], $array['hostname'], $array['status'], $array['agent'], $array['query']);
+ }
+
+ /**
+  *! @function _main
+  *  @abstract Gathers up required logging information
+  */
+ private function _main()
+ {
+  $x['guid'] = $this->registry->opts['token'];
+  $x['adate'] = $this->_time();
+  $x['ip'] = $this->_ip();
+  $x['hostname'] = $this->_host();
+  $x['status'] = $this->_status();
+  $x['agent'] = $this->_browser();
+  $x['query'] = $this->_request();
+  return $x;
  }
 
  public function __destruct()
