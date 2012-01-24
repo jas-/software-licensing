@@ -229,9 +229,7 @@ class pdoMySQL extends mysqlDBconn
  public function query($query, $all=0)
  {
   $query = $this->dbconn->prepare($query);
-  //echo '<pre>'; print_r(var_dump($query)); echo '</pre>';
   try {
-   //echo '<pre>'; print_r(var_dump($query->execute())); echo '</pre>';
    $query->execute();
    return ($all===1) ? $query->fetchAll(PDO::FETCH_ASSOC) : $query->fetch(PDO::FETCH_ASSOC);
   } catch(PDOException $e) {
@@ -331,7 +329,7 @@ class pdoMySQL extends mysqlDBconn
   */
  public function __destruct()
  {
-  $this->index($this->dbconn, $this->configuration['database']);
+  //$this->index($this->dbconn, $this->configuration['database']);
   $this->dbconn = null;
  }
 }
@@ -471,7 +469,7 @@ class dbMySQLi extends mysqlDBconn
   */
  public function __destruct()
  {
-  $this->index($this->dbconn, $this->configuration['database']);
+  //$this->index($this->dbconn, $this->configuration['database']);
   $this->dbconn->close();
  }
 }
@@ -617,7 +615,7 @@ class dbMySQL extends mysqlDBconn
   */
  public function __destruct()
  {
-  $this->index($this->dbconn, $this->configuration['database']);
+  //$this->index($this->dbconn, $this->configuration['database']);
   $this->close();
  }
 }
