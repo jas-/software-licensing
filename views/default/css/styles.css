@@ -1,9 +1,27 @@
 *{
-
+ margin:0px 0px 0px 0px;
 }
 
 body,html{
- margin: 0px, 0px, 0px, 0px;
+ margin: 0px 0px 20px 10px;
+}
+
+.rounder{
+ -moz-border-radius:12px;
+ -webkit-border-radius:12px;
+ -khtml-border-radius:12px;
+ border-radius:12px; 
+}
+
+.bottom-rounder{
+ -moz-border-radius-bottomleft:12px;
+ -moz-border-radius-bottomright:12px;
+ -webkit-border-bottom-left-radius:12px;
+ -webkit-border-bottom-right-radius:12px;
+ -khtml-border-bottom-left-radius:12px;
+ -khtml-border-bottom-right-radius:12px;
+ border-bottom-left-radius:12px;
+ border-bottom-right-radius:12px;
 }
 
 #full{
@@ -33,7 +51,13 @@ body,html{
 }
 
 #navigation{
-
+ table-layout:fixed;
+ border-bottom:0.1em solid;
+ border-left:0.1em solid;
+ border-right:0.1em solid;
+ margin-bottom:10px;
+ margin-top:0px;
+ padding-top:0px;
 }
 
 #navigation ul{
@@ -49,13 +73,10 @@ body,html{
  border: 0.1em solid;
  padding-left:10px;
  padding-bottom:10px;
- -moz-border-radius:12px;
- -webkit-border-radius:12px;
- -khtml-border-radius:12px;
- border-radius:12px;
 }
 
 #authenticate h2{
+ padding-left:15px;
  font-size:1.2em;
 }
 
