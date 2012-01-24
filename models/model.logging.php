@@ -41,9 +41,9 @@ class logging {
   */
  public static function init($args)
  {
-  if (self::$loader == NULL)
-   self::$loader = new self($args);
-  return self::$loader;
+  if (self::$instance == NULL)
+   self::$instance = new self($args);
+  return self::$instance;
  }
 
  /**
@@ -51,12 +51,18 @@ class logging {
   *  @abstract Class initialization to handle access logging
   *  @param $args array Array of registry items
   */
- private function __construct($args)
+ public function __construct($registry)
  {
   $this->registry = $registry;
   $x = $this->_main();
   if (class_exists('validation')){
-   $x = validation::init($x);
+   $this->registry->val = validation::init();
+  }
+  try{
+   $sql = $this->_create($this->registry->val->__do($x));
+   $this->registry->db->query($sql);
+  } catch(Exception $e){
+   // add some error handling class stuff
   }
  }
 
@@ -97,21 +103,12 @@ class logging {
  }
 
  /**
-  *! @function _status
-  *  @abstract Returns redirect status code
-  */
- private function _status()
- {
-  return getenv('REDIRECT_STATUS');
- }
-
- /**
   *! @function _time
   *  @abstract Returns request time
   */
  private function _time()
  {
-  return getenv('REQUEST_TIME');
+  return $_SERVER['REQUEST_TIME'];
  }
 
  /**
@@ -120,7 +117,7 @@ class logging {
   */
  private function _create($array)
  {
-  return sprintf('INSERT INTO `logs` (`guid`, `adate`, `ip`, `hostname`, `status`, `agent`, `query`) VALUES ("%s", "%s", "%s", "%s", "%s", "%s", "%s")', $array['guid'], $array['adate'], $array['hostname'], $array['status'], $array['agent'], $array['query']);
+  return sprintf('INSERT INTO `logs` (`guid`, `adate`, `ip`, `hostname`, `agent`, `query`) VALUES ("%s", "%s", "%s", "%s", "%s", "%s")', $array['guid'], $array['adate'], $array['ip'], $array['hostname'], $array['agent'], $array['query']);
  }
 
  /**
@@ -133,7 +130,6 @@ class logging {
   $x['adate'] = $this->_time();
   $x['ip'] = $this->_ip();
   $x['hostname'] = $this->_host();
-  $x['status'] = $this->_status();
   $x['agent'] = $this->_browser();
   $x['query'] = $this->_request();
   return $x;
@@ -142,7 +138,6 @@ class logging {
  public function __destruct()
  {
   unset($this->init);
-  return;
  }
 }
 ?>
