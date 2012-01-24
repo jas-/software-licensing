@@ -95,6 +95,10 @@ body,html{
  text-decoration:none;
 }
 
+#authenticate span{
+ color:#A00;
+}
+
 #authenticate label{
  float:left;
  font-size:0.9em;
