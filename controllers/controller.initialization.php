@@ -16,7 +16,7 @@ if ((empty($settings['db']['hostname']))&&
     (empty($settings['db']['username']))&&
     (empty($settings['db']['password']))&&
     (empty($settings['db']['database']))){
- exit('Installer has not been built');
+ exit('Installer has not been built, else call the installer');
 }
 
 /* execute autoload */
@@ -37,7 +37,35 @@ if (!class_exists('registry')){
 }
 $registry = new registry;
 
+/* intialize the libraries */
+if (!class_exists('libraries')){
+ exit('Error initializing libraries class, unable to proceed. 0x0c5');
+}
+$registry->libs = libraries::init();
+
+/* generate or use CSRF token */
+$settings['opts']['token'] = (!empty($_SESSION['csrf'])) ?
+                              $_SESSION['csrf'] : $registry->libs->uuid();
+
 /* Set application defaults within registry */
 $registry->opts = $settings['opts'];
+
+/* load up configured database driver */
+
+/* begin logging */
+
+/* query for application settings */
+
+/* perform access list evaluation */
+
+/* evaluate authentication status */
+
+/* initialize key exchange */
+
+/* apply customized headers */
+header('X-Alt-Referer: '.$settings['opts']['token']);
+header('X-Forwarded-Proto: http');
+header('X-Frame-Options: deny');
+header('X-XSS-Protecton: 1;mode=deny');
 
 ?>
