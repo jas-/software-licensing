@@ -82,5 +82,3 @@
   mod_gzip_item_exclude           rspheader       Content-Type:image/*
  </FilesMatch>
 </IfModule>
-
-AddType application/x-httpd-php53 .php
