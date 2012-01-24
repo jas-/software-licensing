@@ -46,6 +46,13 @@ body,html{
 
 #authenticate{
  position:relative;
+ border: 0.1em solid;
+ padding-left:10px;
+ padding-bottom:10px;
+ -moz-border-radius:12px;
+ -webkit-border-radius:12px;
+ -khtml-border-radius:12px;
+ border-radius:12px;
 }
 
 #authenticate h2{
@@ -65,7 +72,7 @@ body,html{
 #authenticate label{
  float:left;
  font-size:0.9em;
- width:30%;
+ width:25%;
  margin-right:0.5em;
  padding-top:0.7em;
  text-align:right;
