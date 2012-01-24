@@ -10,7 +10,7 @@ body,html{
  -moz-border-radius:12px;
  -webkit-border-radius:12px;
  -khtml-border-radius:12px;
- border-radius:12px; 
+ border-radius:12px;
 }
 
 .bottom-rounder{
@@ -102,9 +102,10 @@ body,html{
 #authenticate label{
  float:left;
  font-size:0.9em;
- width:25%;
+ width:20%;
  margin-right:0.5em;
- padding-top:0.7em;
+ padding-top:0.5em;
+ padding-right:0.8em;
  text-align:right;
  font-weight:bold;
 }
