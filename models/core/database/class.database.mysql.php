@@ -18,12 +18,12 @@
  */
 
 /**
- *! @class dbConn
+ *! @class mysqlDBconn
  *  @abstract Proxy for all available MySQL class methods
  *  @discussion Utilizes PDO/mysqli/mysql class extenders by degrading
  *              gracefully to any available method bsed on system configuration
  */
-class dbConn
+class mysqlDBconn
 {
  /**
   *! @var instance object - class singleton object
@@ -176,7 +176,7 @@ class dbConn
  *  @abstract Extends class dbConn for PDO MySQL functionality
  *  @discussion Utilizes PDO for MySQL database access, queries, results etc
  */
-class pdoMySQL extends dbConn
+class pdoMySQL extends mysqlDBconn
 {
 
  /**
@@ -341,7 +341,7 @@ class pdoMySQL extends dbConn
  *  @abstract Extends class dbConn for MySQLi functionality
  *  @discussion Utilizes MySQLi for database access, queries, results etc
  */
-class dbMySQLi extends dbConn
+class dbMySQLi extends mysqlDBconn
 {
 
  /**
@@ -481,7 +481,7 @@ class dbMySQLi extends dbConn
  *  @abstract Extends class dbConn for standard MySQL functionality
  *  @discussion Utilizes MySQL for database access, queries, results etc
  */
-class dbMySQL extends dbConn
+class dbMySQL extends mysqlDBconn
 {
 
  /**

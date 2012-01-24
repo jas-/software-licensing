@@ -57,7 +57,7 @@ class autoloader {
       if ($this->dir($path.'/'.$file)===true){
        $this->find($path.'/'.$file);
       } else {
-       array_push($this->files, $path.$file);
+       array_push($this->files, $path.'/'.$file);
       }
      }
     }

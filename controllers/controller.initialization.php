@@ -43,14 +43,19 @@ if (!class_exists('libraries')){
 }
 $registry->libs = libraries::init();
 
+/* load up configured database driver */
+$eng = $registry->libs->_dbEngine($settings['db']['engine']);
+if (!class_exists($eng)){
+ exit('Error loading configured database class, unable to proceed. 0x0c6');
+}
+$registry->db = $eng::instance($settings['db']);
+
 /* generate or use CSRF token */
 $settings['opts']['token'] = (!empty($_SESSION['csrf'])) ?
                               $_SESSION['csrf'] : $registry->libs->uuid();
 
 /* Set application defaults within registry */
 $registry->opts = $settings['opts'];
-
-/* load up configured database driver */
 
 /* begin logging */
 

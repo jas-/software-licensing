@@ -30,12 +30,45 @@ class libraries {
   }
   return self::$instance;
  }
- /* randomize 16char string for iv*/
+
+ /**
+  * @function _dbEngine
+  * @abstract Determine database engine and class
+  * @param $opt Option passed for database class to load
+  */
+ function _dbEngine($opt)
+ {
+  switch($opt){
+   case 'mssql':
+    $eng = 'mssqlDBconn';
+    break;
+   case 'pgsql':
+    $eng = 'pgSQLDBconn';
+    break;
+   case 'mysql':
+    $eng = 'mysqlDBconn';
+    break;
+   default:
+    $eng = 'mysqlDBconn';
+    break;
+  }
+  return $eng;
+ }
+
+ /**
+  * @function _16
+  * @abstract Creates substring of argument
+  * @param $string string String to return sub-string of
+  */
  function _16($string)
  {
   return substr($string, round(strlen($string)/3, 0, PHP_ROUND_HALF_UP), 16);
  }
- /* generate uuid */
+
+ /**
+  * @function _uuid
+  * @abstract Generates a random GUID
+  */
  function uuid() {
   return sprintf('%04x%04x-%04x-%04x-%04x-%04x%04x%04x', mt_rand(0, 0xffff),
                  mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0x0fff) | 0x4000,

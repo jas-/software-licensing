@@ -95,6 +95,12 @@ body,html{
  text-decoration:none;
 }
 
+#authenticate a:active,
+              a:hover,
+              a:focus{
+ text-decoration:underline;
+}
+
 #authenticate span{
  color:#A00;
 }
