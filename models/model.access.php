@@ -41,9 +41,9 @@ class access {
   */
  public static function init($args)
  {
-  if (self::$loader == NULL)
-   self::$loader = new self($args);
-  return self::$loader;
+  if (self::$instance == NULL)
+   self::$instance = new self($args);
+  return self::$instance;
  }
 
  /**
@@ -51,7 +51,7 @@ class access {
   *  @abstract Class initialization and ip to access/deny processing
   *  @param $args array Array of registry items
   */
- private function __construct($args)
+ private function __construct($registry)
  {
   $this->registry = $registry;
  }
