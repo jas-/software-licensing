@@ -37,9 +37,6 @@ if (!class_exists('registry')){
 }
 $registry = new registry;
 
-/* Set application defaults within registry */
-$registry->opts = $settings['opts'];
-
 /* intialize the libraries */
 if (!class_exists('libraries')){
  exit('Error initializing libraries class, unable to proceed. 0x0c5');
@@ -57,7 +54,13 @@ $registry->db = $eng::instance($settings['db']);
 $settings['opts']['token'] = (!empty($_SESSION['csrf'])) ?
                               $_SESSION['csrf'] : $registry->libs->uuid();
 
-/* begin logging */
+/* Set application defaults within registry */
+$registry->opts = $settings['opts'];
+
+if (!class_exists('logging')){
+ exit('Error initializing logging class, unable to proceed. 0x0c6');
+}
+logging::init($registry);
 
 /* query for application settings */
 
