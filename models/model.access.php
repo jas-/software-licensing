@@ -100,20 +100,21 @@ class access {
 
  /**
   *! @function __compare
-  *  @abstract Performs comparisions on hosts, ips and additional network declarations
+  *  @abstract Performs comparisions on hosts, ips and additional network
+  *            declarations
   */
  private function __compare($i, $l)
  {
   if (count($l)>0){
    foreach($l as $k => $v){
-    if ($k === 'allow'){
-     $r = $this->__allow($i, $v);
-    } else {
-     $r = $this->__deny($i, $v);
+    $n = (class_exists('IPFilter')) ? new IPFilter($v) : false;
+    if ($n){
+     $a = $n->check($i);
     }
+    unset($n);
    }
   }
-  return $r;
+  return $a;
  }
 
  /**
@@ -125,10 +126,11 @@ class access {
   $r = false;
   $n = (class_exists('networking')) ? networking::init() : false;
   if (is_object($n)){
-
+   $this->__process($i, $l, $n);
   } else {
    $r = true;
   }
+  unset($n);
   return $r;
  }
 
@@ -144,6 +146,32 @@ class access {
 
   } else {
    $r = true;
+  }
+  unset($n);
+  return $r;
+ }
+
+ /**
+  *! @function __process
+  *  @abstract Conditional processing
+  */
+ private function __process($i, $l, $n)
+ {
+  $r = false;
+  switch($l){
+   case (filter_var($l, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)):
+    $r = (strcmp($l, $i)===0) ? true : false;
+    break;
+   case (filter_var($l, FILTER_VALIDATE_REGEXP, array('options'=>array('regexp'=>'/\-/Di')))):
+    $a = explode('-', $l);
+
+    print_r($a);
+    break;
+   case (filter_var($l, FILTER_VALIDATE_REGEXP, array('options'=>array('regexp'=>'/\//Di')))):
+
+    break;
+   default:
+    break;
   }
   return $r;
  }
