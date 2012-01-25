@@ -73,7 +73,7 @@ class access {
  {
   $list = 0;
   try{
-   $list = $this->registry->db->query($this->__query());
+   $list = $this->registry->db->query($this->__query(), true);
   } catch(PDOException $e){
    // error handling
   }
@@ -102,9 +102,50 @@ class access {
   *! @function __compare
   *  @abstract Performs comparisions on hosts, ips and additional network declarations
   */
- private function __compare($list, $visitor)
+ private function __compare($i, $l)
  {
-  return func_get_args();
+  if (count($l)>0){
+   foreach($l as $k => $v){
+    if ($k === 'allow'){
+     $r = $this->__allow($i, $v);
+    } else {
+     $r = $this->__deny($i, $v);
+    }
+   }
+  }
+  return $r;
+ }
+
+ /**
+  *! @function __allow
+  *  @abstract Help process allowed hosts/ranges & cidr's
+  */
+ private function __allow($i, $l)
+ {
+  $r = false;
+  $n = (class_exists('networking')) ? networking::init() : false;
+  if (is_object($n)){
+
+  } else {
+   $r = true;
+  }
+  return $r;
+ }
+
+ /**
+  *! @function __deny
+  *  @abstract Help process denied hosts/ranges & cidr's
+  */
+ private function __deny($i, $l)
+ {
+  $r = false;
+  $n = (class_exists('networking')) ? networking::init() : false;
+  if (is_object($n)){
+
+  } else {
+   $r = true;
+  }
+  return $r;
  }
 
  public function __destruct()
