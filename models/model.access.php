@@ -29,18 +29,6 @@ class access {
  private $registry;
 
  /**
-  * @var remote string
-  * @abstract Holds the visiting network address
-  */
- private $remote;
-
- /**
-  * @var list array
-  * @abstract Allow/Deny array of configured hosts
-  */
- private $list;
-
- /**
   * @var instance object
   * @abstract This class handler
   */
@@ -66,7 +54,7 @@ class access {
  private function __construct($registry)
  {
   $this->registry = $registry;
-
+  return $this->__compare($this->__visitor(), $this->_get());
  }
 
  /**
