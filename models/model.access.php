@@ -29,6 +29,18 @@ class access {
  private $registry;
 
  /**
+  * @var remote string
+  * @abstract Holds the visiting network address
+  */
+ private $remote;
+
+ /**
+  * @var list array
+  * @abstract Allow/Deny array of configured hosts
+  */
+ private $list;
+
+ /**
   * @var instance object
   * @abstract This class handler
   */
@@ -54,20 +66,53 @@ class access {
  private function __construct($registry)
  {
   $this->registry = $registry;
+
  }
 
  /**
-  *! @function __get
+  *! @function _get
   *  @abstract Retrieves currently configured list of allowed/denied hosts
   */
  private function _get()
+ {
+  $list = 0;
+  try{
+   $list = $this->registry->db->query($this->__query());
+  } catch(PDOException $e){
+   // error handling
+  }
+  return $list;
+ }
+
+ /**
+  *! @function __visitor
+  *  @abstract Retrieves and assigns the visiting address
+  */
+ private function __visitor()
+ {
+  return $this->registry->libs->_getRealIPv4();
+ }
+
+ /**
+  *! @function __query
+  *  @abstract Generates SQL query to access list of allowed/denied hosts
+  */
+ private function __query()
+ {
+  return sprintf('SELECT `allow`,`deny` FROM `access`');
+ }
+
+ /**
+  *! @function __compare
+  *  @abstract Performs comparisions on hosts, ips and additional network declarations
+  */
+ private function __compare($list, $visitor)
  {
 
  }
 
  public function __destruct()
  {
-  unset($this->init);
   return;
  }
 }
