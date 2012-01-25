@@ -5,6 +5,7 @@ CREATE DATABASE `licensing`;
 -- Create a default user and assign limited permissions
 CREATE USER "licensing"@"localhost" IDENTIFIED BY "d3v3l0pm3n+";
 GRANT SELECT, INSERT, UPDATE, DELETE, REFERENCES, INDEX, CREATE TEMPORARY TABLES, LOCK TABLES, EXECUTE ON `licensing`.* TO "licensing"@"localhost";
+FLUSH PRIVILEGES;
 
 -- Switch to newly created db context
 USE `licensing`;
@@ -89,6 +90,16 @@ CREATE TABLE IF NOT EXISTS `configuration` (
   UNIQUE KEY `email` (`email`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci AUTO_INCREMENT=0;
 
+-- Create a table for default application access list
+--  Primary key: id
+DROP TABLE IF EXISTS `configuration_access`;
+CREATE TABLE IF NOT EXISTS `configuration_access` (
+  `id` int(255) NOT NULL AUTO_INCREMENT,
+  `allow` varchar(30) NOT NULL,
+  `deny` varchar(30) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci AUTO_INCREMENT=0;
+
 -- Create a table for the software licenses
 --  Primary key: id
 --  Indexed key: name
@@ -118,7 +129,6 @@ CREATE TABLE IF NOT EXISTS `logs` (
   `adate` varchar(64) NOT NULL,
   `ip` varchar(10) NOT NULL,
   `hostname` varchar(80) NOT NULL,
-  `status` int(3) NOT NULL,
   `agent` varchar(128) NOT NULL,
   `query` varchar(128) NOT NULL,
   PRIMARY KEY (`id`),
