@@ -198,9 +198,9 @@ class validation {
  public function __wakeup() {
   trigger_error('Deserialization of singleton prohibited ...', E_USER_ERROR);
  }
- private function __destruct()
+ public function __destruct()
  {
-  unset(self::$instance);
+  unset($instance);
   return true;
  }
 }

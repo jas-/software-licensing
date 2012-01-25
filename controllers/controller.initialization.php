@@ -50,6 +50,8 @@ if (!class_exists($eng)){
 }
 $registry->db = $eng::instance($settings['db']);
 
+/* query for application settings */
+
 /* generate or use CSRF token */
 $settings['opts']['token'] = (!empty($_SESSION['csrf'])) ?
                               $_SESSION['csrf'] : $registry->libs->uuid();
@@ -62,9 +64,11 @@ if (!class_exists('logging')){
 }
 logging::init($registry);
 
-/* query for application settings */
-
-/* perform access list evaluation */
+if (!class_exists('access')){
+ exit('Error initializing access class, unable to proceed. 0x0c7');
+}
+$registry->access = access::init($registry);
+echo '<pre>'; print_r(var_dump($registry->access->_do())); echo '</pre>';
 
 /* evaluate authentication status */
 

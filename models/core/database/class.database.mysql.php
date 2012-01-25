@@ -226,14 +226,13 @@ class pdoMySQL extends mysqlDBconn
   *  @param query string - SQL statement
   *  @return object - Returns SQL object
   */
- public function query($query, $all=0)
+ public function query($query, $all=false)
  {
   $query = $this->dbconn->prepare($query);
   try {
    $query->execute();
-   return ($all===1) ? $query->fetchAll(PDO::FETCH_ASSOC) : $query->fetch(PDO::FETCH_ASSOC);
-  } catch(PDOException $e) {
-   echo 'Error: '.$e->getMessage().'<br/>';
+   return ($all===true) ? $query->fetchAll(PDO::FETCH_ASSOC) : $query->fetch(PDO::FETCH_ASSOC);
+  } catch(PDOException $e){
    return $e->getMessage();
   }
  }

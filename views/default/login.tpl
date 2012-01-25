@@ -1,4 +1,4 @@
-<div id="authenticate" class="rounder">
+<div id="authenticate" class="rounder gradient">
  <h2>Authenticate</h2>
  <p>Please login to view active software licenses</p>
  <form id="auth" name="authenticate" method="post" action="">

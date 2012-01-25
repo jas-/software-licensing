@@ -1,4 +1,4 @@
-<div id="navigation" class="bottom-rounder">
+<div id="navigation" class="bottom-rounder gradient">
  <ul>
   <li><a href="" title="" rel="">Main</a></li>
   <li><a href="" title="" rel="">Link 1</a></li>

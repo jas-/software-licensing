@@ -3,8 +3,8 @@
 /* Database configuration settings */
 $settings['db']['engine']     = 'mysql';
 $settings['db']['hostname']   = 'localhost';
-$settings['db']['username']   = '';
-$settings['db']['password']   = '';
+$settings['db']['username']   = 'licensing';
+$settings['db']['password']   = 'd3v3l0pm3n+';
 $settings['db']['database']   = 'licensing';
 
 /* Application specific settings */
