@@ -54,6 +54,14 @@ class access {
  private function __construct($registry)
  {
   $this->registry = $registry;
+ }
+
+ /**
+  *! @function _do
+  *  @abstract Perform access list to visitor allow/deny functions
+  */
+ public function _do()
+ {
   return $this->__compare($this->__visitor(), $this->_get());
  }
 
@@ -87,7 +95,7 @@ class access {
   */
  private function __query()
  {
-  return sprintf('SELECT `allow`,`deny` FROM `access`');
+  return sprintf('SELECT `allow`,`deny` FROM `configuration_access`');
  }
 
  /**
@@ -96,7 +104,7 @@ class access {
   */
  private function __compare($list, $visitor)
  {
-
+  return func_get_args();
  }
 
  public function __destruct()
