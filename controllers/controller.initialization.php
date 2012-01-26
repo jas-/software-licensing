@@ -68,7 +68,9 @@ if (!class_exists('access')){
  exit('Error initializing access class, unable to proceed. 0x0c7');
 }
 $registry->access = access::init($registry);
-echo '<pre>'; print_r(var_dump($registry->access->_do())); echo '</pre>';
+if (!$registry->access->_do()){
+ exit('Error due to access restrictions');
+}
 
 /* evaluate authentication status */
 
