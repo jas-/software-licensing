@@ -1,7 +1,7 @@
 <div id="authenticate" class="rounder gradient">
  <h2>Authenticate</h2>
  <p>Please login to view active software licenses</p>
- <form id="auth" name="authenticate" method="post" action="">
+ <form id="auth" name="authenticate" method="post" action="?nxs=dashboard">
   <label for="email">Email: </label>
    <input type="email" id="email" name="email" value="" placeholder="Enter email address" required="required" /><span class="required">*</span>
   <label for="password">Password: </label>
