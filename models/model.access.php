@@ -62,18 +62,20 @@ class access {
   */
  public function _do()
  {
-  return $this->__compare($this->__visitor(), $this->_get());
+  $a = $this->__compare($this->__visitor(), $this->_get('allow'));
+  $b = $this->__compare($this->__visitor(), $this->_get('deny'));
+  return (($a)&&(!$b)) ? true : false;
  }
 
  /**
   *! @function _get
   *  @abstract Retrieves currently configured list of allowed/denied hosts
   */
- private function _get()
+ private function _get($t)
  {
   $list = 0;
   try{
-   $list = $this->registry->db->query($this->__query(), true);
+   $list = $this->registry->libs->__flatten($this->registry->db->query($this->__query($t), true));
   } catch(PDOException $e){
    // error handling
   }
@@ -93,9 +95,9 @@ class access {
   *! @function __query
   *  @abstract Generates SQL query to access list of allowed/denied hosts
   */
- private function __query()
+ private function __query($type)
  {
-  return sprintf('SELECT `allow`,`deny` FROM `configuration_access`');
+  return sprintf('SELECT `'.$type.'` FROM `configuration_access` WHERE `'.$type.'` != ""');
  }
 
  /**
@@ -105,9 +107,10 @@ class access {
   */
  private function __compare($i, $l)
  {
+  $a = false;
   if (count($l)>0){
    foreach($l as $k => $v){
-    $n = (class_exists('IPFilter')) ? new IPFilter($v) : false;
+    $n = (class_exists('ipFilter')) ? new ipFilter($v) : false;
     if ($n){
      $a = $n->check($i);
     }
@@ -115,65 +118,6 @@ class access {
    }
   }
   return $a;
- }
-
- /**
-  *! @function __allow
-  *  @abstract Help process allowed hosts/ranges & cidr's
-  */
- private function __allow($i, $l)
- {
-  $r = false;
-  $n = (class_exists('networking')) ? networking::init() : false;
-  if (is_object($n)){
-   $this->__process($i, $l, $n);
-  } else {
-   $r = true;
-  }
-  unset($n);
-  return $r;
- }
-
- /**
-  *! @function __deny
-  *  @abstract Help process denied hosts/ranges & cidr's
-  */
- private function __deny($i, $l)
- {
-  $r = false;
-  $n = (class_exists('networking')) ? networking::init() : false;
-  if (is_object($n)){
-
-  } else {
-   $r = true;
-  }
-  unset($n);
-  return $r;
- }
-
- /**
-  *! @function __process
-  *  @abstract Conditional processing
-  */
- private function __process($i, $l, $n)
- {
-  $r = false;
-  switch($l){
-   case (filter_var($l, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)):
-    $r = (strcmp($l, $i)===0) ? true : false;
-    break;
-   case (filter_var($l, FILTER_VALIDATE_REGEXP, array('options'=>array('regexp'=>'/\-/Di')))):
-    $a = explode('-', $l);
-
-    print_r($a);
-    break;
-   case (filter_var($l, FILTER_VALIDATE_REGEXP, array('options'=>array('regexp'=>'/\//Di')))):
-
-    break;
-   default:
-    break;
-  }
-  return $r;
  }
 
  public function __destruct()
