@@ -20,10 +20,11 @@ class dbSession
 {
  protected static $instance;
  private $dbconn;
- public function __construct($configuration)
+ public function __construct($configuration, $db)
  {
-		if (class_exists('dbConn')) {
-   $this->options($configuration);
+		if ((class_exists('dbConn'))||(is_object($db))) {
+   if (is_object($db)) $this->dbconn = $db;
+			$this->options($configuration);
    session_set_save_handler(
     array(&$this, 'open'),
     array(&$this, 'close'),
@@ -40,11 +41,11 @@ class dbSession
 			exit;
 		}
  }
- public static function instance($configuration)
+ public static function instance($configuration, $db)
  {
   if (!isset(self::$instance)) {
    $c = __CLASS__;
-   self::$instance = new self($configuration);
+   self::$instance = new self($configuration, $db);
   }
   return self::$instance;
  }
