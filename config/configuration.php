@@ -13,6 +13,12 @@ $settings['opts']['timeout']  = 3600;
 $settings['opts']['template'] = 'views/default';
 $settings['opts']['caching']  = 'views/cache';
 
+/* Sessions specific settings */
+$settings['sessions']['timeout'] = $settings['opts']['timeout'];
+$settings['sessions']['title']   = 'myApp';
+$settings['sessions']['cache']   = true;
+$settings['sessions']['cookie']  = true;
+
 /*
  * Site wide random salt (WARNING)
  * This random value gets generated upon initial framework
