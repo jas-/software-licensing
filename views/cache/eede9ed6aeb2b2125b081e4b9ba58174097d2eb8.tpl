@@ -1,7 +1,7 @@
 <div id="full">
  <div id="constrain">
   <div id="one-col">
-   <div id="navigation" class="bottom-rounder">
+   <div id="navigation" class="bottom-rounder gradient">
  <ul>
   <li><a href="" title="" rel="">Main</a></li>
   <li><a href="" title="" rel="">Link 1</a></li>
@@ -16,7 +16,7 @@
     
    </div>
    <div class="two">
-    <div id="authenticate" class="rounder">
+    <div id="authenticate" class="rounder gradient">
  <h2>Authenticate</h2>
  <p>Please login to view active software licenses</p>
  <form id="auth" name="authenticate" method="post" action="">

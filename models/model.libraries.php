@@ -140,6 +140,28 @@ class libraries {
    return false;
   }
  }
+
+ /**
+  *! @function __flatten
+  *  @abstract Flattens a multi-dimensional array into one array
+  */
+ public function __flatten($a)
+ {
+  $x = array();
+  if (count($a)>0){
+   foreach($a as $k => $v){
+    if (is_array($v)){
+     $x[] = $this->__flatten($v);
+    } else {
+     $x[] = $v;
+    }
+   }
+  } else {
+   $x = $a;
+  }
+  return $x;
+ }
+
  public function __clone() {
   trigger_error('Cloning prohibited', E_USER_ERROR);
  }

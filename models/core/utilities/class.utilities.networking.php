@@ -57,7 +57,7 @@ class networking
 }
 
 /* stolen from http://www.php.net/manual/en/function.ip2long.php#102898 */
-class IPFilter
+class ipFilter
 {
  private static $_IP_TYPE_SINGLE = 'single';
  private static $_IP_TYPE_WILDCARD = 'wildcard';
@@ -74,7 +74,7 @@ class IPFilter
  {
   $allowed_ips = $allowed_ips ? $allowed_ips : $this->_allowed_ips;
   foreach($allowed_ips as $allowed_ip){
-   $type = $this -> _judge_ip_type($allowed_ip);
+   $type = $this->_judge_ip_type($allowed_ip);
    $sub_rst = call_user_func(array($this,'_sub_checker_' . $type), $allowed_ip, $ip);
    if ($sub_rst){
     return true;
@@ -84,7 +84,7 @@ class IPFilter
  }
 
  private function _judge_ip_type($ip)
- {echo $ip;
+ {
   if (strpos($ip, '*')){
    return self :: $_IP_TYPE_WILDCARD;
   }

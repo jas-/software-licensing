@@ -76,7 +76,6 @@ class template
 
 class templates
 {
-
  public $strTemplateDir = '';
  public $strCacheDir    = '';
  public $strBeginTag    = '{';
