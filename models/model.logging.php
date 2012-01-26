@@ -117,7 +117,9 @@ class logging {
   */
  private function _create($array)
  {
-  return sprintf('INSERT INTO `logs` (`guid`, `adate`, `ip`, `hostname`, `agent`, `query`) VALUES ("%s", "%s", "%s", "%s", "%s", "%s")', $array['guid'], $array['adate'], $array['ip'], $array['hostname'], $array['agent'], $array['query']);
+  return sprintf('CALL Logs_Add("%s", "%s", "%s", "%s", "%s", "%s")',
+                 $array['guid'], $array['adate'], $array['ip'],
+                 $array['hostname'], $array['agent'], $array['query']);
  }
 
  /**

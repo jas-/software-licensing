@@ -54,11 +54,7 @@ $registry->db = $eng::instance($settings['db']);
 if (!class_exists('dbSession')){
  exit('Error loading database session support, unable to proceed. 0x0c6');
 }
-$registry->sessions = dbSession::instance($settings['sessions'], $registry->db);
-if ((empty($_SESSION['token']))||(empty($_SESSION['csrf']))){
- session_start();
-}
-echo '<pre>';  print_r($_SESSION); echo '</pre>';
+$registry->sessions = dbSession::instance($settings['sessions'], $registry);
 
 /* query for application settings */
 

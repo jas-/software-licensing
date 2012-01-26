@@ -20,11 +20,14 @@ class dbSession
 {
  protected static $instance;
  private $dbconn;
- public function __construct($configuration, $db)
+	private $registry;
+ public function __construct($configuration, $opts)
  {
-		if ((class_exists('dbConn'))||(is_object($db))) {
-   if (is_object($db)) $this->dbconn = $db;
+		if ((class_exists('dbConn'))||(is_object($opts))) {
+   echo '<pre>'; print_r($opts); echo '</pre>';
+   if (is_object($opts->db)) $this->dbconn = $opts->db;
 			$this->options($configuration);
+			$this->registry = $opts;
    session_set_save_handler(
     array(&$this, 'open'),
     array(&$this, 'close'),
@@ -36,16 +39,16 @@ class dbSession
    register_shutdown_function('session_write_close');
    if (!isset($_SESSION)) session_start();
 		} else {
-			echo 'Database class handler is missing.';
+			exit('Database class handler is missing.');
 			unset($instance);
 			exit;
 		}
  }
- public static function instance($configuration, $db)
+ public static function instance($configuration, $opts)
  {
   if (!isset(self::$instance)) {
    $c = __CLASS__;
-   self::$instance = new self($configuration, $db);
+   self::$instance = new self($configuration, $opts);
   }
   return self::$instance;
  }
@@ -66,31 +69,27 @@ class dbSession
  }
  public function read($id)
  {
-  if (isset($id)) {
-   $query = "SELECT * FROM `sessions` WHERE `session-id` = \"".$this->dbconn->sanitize($id)."\" LIMIT 1";
-   $result = $this->dbconn->query($query);
-   if ((is_resource($result))&&($this->dbconn->affected($result)>0)) {
-    $array = $this->dbconn->results($result);
-    return $this->sanitizeout($array[0]['session_data']);
-   }
+  if (isset($id)){
+   try{
+    $sql = $query = sprintf('CALL Session_Search("%s")', $this->dbconn->sanitize($id));
+    $result = $this->dbconn->query($sql);
+			} catch(PDOException $e){
+				// error handling
+			}
+   return (count($result)>0) ? $this->sanitizeout($result['session_data']) : '';
   }
-  return "";
+  return '';
  }
  public function write($id, $data)
  {
-  if ((isset($id))&&(isset($data))) {
-   $query = "INSERT INTO `sessions` (`session-id`, `session-data`,
-                                     `session-expire`, `session-agent`,
-                                     `session-ip`, `session-referrer`) VALUES
-                                    (\"".$id."\", \"".$this->sanitizein($data)."\",
-                                     \"".time()."\",
-                                     \"".$this->sanitizein(md5($_SERVER['HTTP_USER_AGENT']))."\",
-                                     \"".$this->sanitizein(md5($_SERVER['REMOTE_ADDR']))."\",
-                                     \"".$this->sanitizein($_SERVER['HTTP_REFERER'])."\")
-                                    ON DUPLICATE KEY UPDATE `session-id` = \"".$id."\",
-                                    `session-data` = \"".$this->sanitizein($data)."\",
-                                    `session-expire` = \"".time()."\"";
-   $result = $this->dbconn->query($query);
+  if ((isset($id))&&(isset($data))){
+   $sql = sprintf('CALL Session_Add("%s", "%s", "%d", "%s", "%s", "%s")',
+																		$this->sanitizein($id), $this->sanitizein($data),
+																		$this->sanitizein((int)time()),
+																		$this->sanitizein(sha1($_SERVER['HTTP_USER_AGENT'])),
+																		$this->sanitizein(sha1($this->registry->libs->_getRealIPv4())),
+																		$this->sanitizein($_SERVER['HTTP_REFERER']));
+   $result = $this->dbconn->query($sql); echo $sql;
    return ((is_resource($result))&&($this->dbconn->affected($result)>0)) ? true : false;
   }
   return false;
@@ -110,19 +109,11 @@ class dbSession
  }
  private function sanitizein($string)
  {
-  if (version_compare(PHP_VERSION, '5.2.11')>=0) {
-   return $this->dbconn->sanitize(serialize($string));
-  } else {
-   return $this->dbconn->sanitize($string);
-  }
+  return $this->dbconn->sanitize($string);
  }
  private function sanitizeout($string)
  {
-  if (version_compare(PHP_VERSION, '5.2.11')>=0) {
-   return stripslashes(unserialize($string));
-  } else {
-   return stripslashes($string);
-  }
+  return stripslashes($string);
  }
  public function regen($flag=false)
 	{

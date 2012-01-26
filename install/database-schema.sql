@@ -164,7 +164,7 @@ CREATE TABLE IF NOT EXISTS `logs` (
   `agent` varchar(128) NOT NULL,
   `query` varchar(128) NOT NULL,
   PRIMARY KEY (`id`),
-  INDEX `guid` (`guid`)
+  UNIQUE KEY `guid` (`guid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci AUTO_INCREMENT=0;
 
 DROP TABLE IF EXISTS `sessions`;
@@ -175,7 +175,7 @@ CREATE TABLE IF NOT EXISTS `sessions` (
   `session_expire` int(10) NOT NULL,
   `session_agent` varchar(64) NOT NULL,
   `session_ip` varchar(64) NOT NULL,
-  `session_referrer` varchar(64) NOT NULL,
+  `session_referer` varchar(64) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `session_id` (`session_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci AUTO_INCREMENT=0;
