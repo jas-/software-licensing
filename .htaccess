@@ -2,9 +2,11 @@
  RewriteEngine On
  RewriteBase /
  RewriteRule ^index\.php$ - [L]
+
  RewriteCond %{REQUEST_FILENAME} !-f
  RewriteCond %{REQUEST_FILENAME} !-d
- RewriteRule . /index.php?rt=$1 [L,QSA]
+# RewriteRule . /index.php?nxs=$1 [L,QSA]
+ RewriteRule ^nxs/([^/\.]+)/?$ index.php?nxs=$1 [L]
 
  RewriteCond %{REQUEST_METHOD} ^(HEAD|TRACE|DELETE|TRACK) [NC]
  RewriteRule ^(.*)$ - [F,L]
@@ -26,6 +28,7 @@
  RewriteCond %{QUERY_STRING} ^.*(globals|encode|localhost|loopback).* [NC,OR]
  RewriteCond %{QUERY_STRING} ^.*(execute|exec|sp_executesql|request|select|insert|union|declare|drop|delete|create|alter|update|order|char|set|cast|convert|meta|script|truncate).* [NC]
  RewriteRule ^(.*)$ - [F,L]
+
 </IfModule>
 
 <FilesMatch "^(\.htaccess)">
