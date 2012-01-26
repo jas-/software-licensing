@@ -125,7 +125,7 @@ CREATE TABLE IF NOT EXISTS `license` (
 DROP TABLE IF EXISTS `logs`;
 CREATE TABLE IF NOT EXISTS `logs` (
   `id` int(255) NOT NULL AUTO_INCREMENT,
-  `guid` varchar(25) NOT NULL,
+  `guid` varchar(40) NOT NULL,
   `adate` varchar(64) NOT NULL,
   `ip` varchar(10) NOT NULL,
   `hostname` varchar(80) NOT NULL,
