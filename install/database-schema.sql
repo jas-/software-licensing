@@ -57,13 +57,13 @@ INSERT INTO `authentication_levels` (`level`) VALUES ("view");
 DROP TABLE IF EXISTS `authentication`;
 CREATE TABLE IF NOT EXISTS `authentication` (
   `id` int(255) NOT NULL AUTO_INCREMENT,
-  `username` varchar(128) NOT NULL,
+  `email` varchar(128) NOT NULL,
   `password` mediumtext NOT NULL,
   `level` varchar(40) NOT NULL,
   `group` varchar(128) NOT NULL,
   `authentication_token` longtext NOT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `username` (`username`),
+  UNIQUE KEY `email` (`email`),
   INDEX `group` (`group`),
   CONSTRAINT `fk_groups` FOREIGN KEY (`group`)
    REFERENCES `authentication_groups` (`group`)
@@ -72,7 +72,7 @@ CREATE TABLE IF NOT EXISTS `authentication` (
   CONSTRAINT `fk_levels` FOREIGN KEY (`level`)
    REFERENCES `authentication_levels` (`level`)
     ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci AUTO_INCREMENT=0;
 
 -- Create a table for default application settings
 --  Primary key: id
@@ -98,6 +98,38 @@ CREATE TABLE IF NOT EXISTS `configuration_access` (
   `allow` varchar(30) NOT NULL,
   `deny` varchar(30) NOT NULL,
   PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci AUTO_INCREMENT=0;
+
+DROP TABLE IF EXISTS `configuration_openssl_cnf`;
+CREATE TABLE IF NOT EXISTS `configuration_openssl_cnf` (
+  `id` INT( 255 ) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  `config` VARCHAR( 64 ) NOT NULL,
+  `encrypt_key` BOOLEAN NOT NULL,
+  `private_key_type` VARCHAR( 64 ) NOT NULL,
+  `digest_algorithm` VARCHAR( 64 ) NOT NULL,
+  `private_key_bits` INT( 4 ) NOT NULL,
+  `x509_extensions` VARCHAR( 32 ) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci AUTO_INCREMENT=0;
+
+INSERT INTO `configuration_openssl_cnf` (`id`, `config`, `encrypt_key`, `private_key_type`, `digest_algorithm`, `private_key_bits`, `x509_extensions`) VALUES (1, 'config/openssl.cnf', 1, 'OPENSSL_KEYTYPE_RSA', 'sha1', 2048, 'usr_cert');
+
+DROP TABLE IF EXISTS `configuration_openssl_keys`;
+CREATE TABLE IF NOT EXISTS `configuration_openssl_keys` (
+  `id` int(255) NOT NULL AUTO_INCREMENT,
+  `countryName` varchar(64) NOT NULL,
+  `stateOrProvinceName` varchar(64) NOT NULL,
+  `localityName` varchar(64) NOT NULL,
+  `organizationName` varchar(64) NOT NULL,
+  `organizationalUnitName` varchar(64) NOT NULL,
+  `commonName` varchar(64) NOT NULL,
+  `emailAddress` varchar(64) NOT NULL,
+  `privateKey` longtext NOT NULL,
+  `publicKey` longtext NOT NULL,
+  PRIMARY KEY (`id`),
+  INDEX (`emailAddress`),
+  FOREIGN KEY (`emailAddress`)
+   REFERENCES `authentication` (`email`)
+    ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci AUTO_INCREMENT=0;
 
 -- Create a table for the software licenses
@@ -133,6 +165,19 @@ CREATE TABLE IF NOT EXISTS `logs` (
   `query` varchar(128) NOT NULL,
   PRIMARY KEY (`id`),
   INDEX `guid` (`guid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci AUTO_INCREMENT=0;
+
+DROP TABLE IF EXISTS `sessions`;
+CREATE TABLE IF NOT EXISTS `sessions` (
+  `id` int(255) NOT NULL AUTO_INCREMENT,
+  `session_id` varchar(64) NOT NULL,
+  `session_data` longtext NOT NULL,
+  `session_expire` int(10) NOT NULL,
+  `session_agent` varchar(64) NOT NULL,
+  `session_ip` varchar(64) NOT NULL,
+  `session_referrer` varchar(64) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `session_id` (`session_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci AUTO_INCREMENT=0;
 
 -- Re-enable the foreign key checks
