@@ -50,6 +50,16 @@ if (!class_exists($eng)){
 }
 $registry->db = $eng::instance($settings['db']);
 
+/* load and start up session support */
+if (!class_exists('dbSession')){
+ exit('Error loading database session support, unable to proceed. 0x0c6');
+}
+$registry->sessions = dbSession::instance($settings['sessions'], $registry->db);
+if ((empty($_SESSION['token']))||(empty($_SESSION['csrf']))){
+ session_start();
+}
+echo '<pre>';  print_r($_SESSION); echo '</pre>';
+
 /* query for application settings */
 
 /* generate or use CSRF token */
@@ -60,21 +70,17 @@ $settings['opts']['token'] = (!empty($_SESSION['csrf'])) ?
 $registry->opts = $settings['opts'];
 
 if (!class_exists('logging')){
- exit('Error initializing logging class, unable to proceed. 0x0c6');
+ exit('Error initializing logging class, unable to proceed. 0x0c7');
 }
 logging::init($registry);
 
 if (!class_exists('access')){
- exit('Error initializing access class, unable to proceed. 0x0c7');
+ exit('Error initializing access class, unable to proceed. 0x0c8');
 }
 $registry->access = access::init($registry);
 if (!$registry->access->_do()){
  exit('Error due to access restrictions');
 }
-
-/* evaluate authentication status */
-
-/* initialize key exchange */
 
 /* apply customized headers */
 header('X-Alt-Referer: '.$settings['opts']['token']);
