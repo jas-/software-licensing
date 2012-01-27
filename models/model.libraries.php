@@ -85,16 +85,16 @@ class libraries {
   return (getenv('HTTP_CLIENT_IP') && $this->_ip(getenv('HTTP_CLIENT_IP'))) ?
            getenv('HTTP_CLIENT_IP') :
             (getenv('HTTP_X_FORWARDED_FOR') && $this->_forwarded(getenv('HTTP_X_FORWARDED_FOR'))) ?
-             $this->_forwarded(getenv('HTTP_X_FORWARDED_FOR')) :
-              (getenv('HTTP_X_FORWARDED') && $this->_ip(getenv('HTTP_X_FORWARDED'))) ?
-                getenv('HTTP_X_FORWARDED') :
-                 (getenv('HTTP_X_FORWARDED_HOST') && $this->_ip(getenv('HTTP_FORWARDED_HOST'))) ?
-                   getenv('HTTP_X_FORWARDED_HOST') :
-                    (getenv('HTTP_X_FORWARDED_SERVER') && $this->_ip(getenv('HTTP_X_FORWARDED_SERVER'))) ?
-                      getenv('HTTP_X_FORWARDED_SERVER') :
-                       (getenv('HTTP_X_CLUSTER_CLIENT_IP') && $this->_ip(getenv('HTTP_X_CLIUSTER_CLIENT_IP'))) ?
-                         getenv('HTTP_X_CLUSTER_CLIENT_IP') :
-                          getenv('REMOTE_ADDR');
+              $this->_forwarded(getenv('HTTP_X_FORWARDED_FOR')) :
+               (getenv('HTTP_X_FORWARDED') && $this->_ip(getenv('HTTP_X_FORWARDED'))) ?
+                 getenv('HTTP_X_FORWARDED') :
+                  (getenv('HTTP_X_FORWARDED_HOST') && $this->_ip(getenv('HTTP_FORWARDED_HOST'))) ?
+                    getenv('HTTP_X_FORWARDED_HOST') :
+                     (getenv('HTTP_X_FORWARDED_SERVER') && $this->_ip(getenv('HTTP_X_FORWARDED_SERVER'))) ?
+                       getenv('HTTP_X_FORWARDED_SERVER') :
+                        (getenv('HTTP_X_CLUSTER_CLIENT_IP') && $this->_ip(getenv('HTTP_X_CLIUSTER_CLIENT_IP'))) ?
+                          getenv('HTTP_X_CLUSTER_CLIENT_IP') :
+                           getenv('REMOTE_ADDR');
  }
 
  /**
@@ -268,6 +268,24 @@ class libraries {
            crypt($string, "\$2a\$07\$".substr($salt, 0, CRYPT_SALT_LENGTH)) :
            crypt($string, $this->_salt("\$2a\$07\$".substr($string, 0, CRYPT_SALT_LENGTH))) :
           false;
+ }
+
+ /**
+  * @function _serialize
+  * @abstract Perform serialization of sent POST data. This is required for the
+  *           jQuery.AJAX plug-in checksum verification as the current PHP
+  *           serialize() function will not create an accurate hash
+  */
+ function _serialize($array)
+ {
+  if (count($array)>0){
+   $x = '';
+   foreach($array as $key => $value){
+    $x .= $key.'='.$value.'&';
+   }
+   $x = substr($x, 0, -1);
+  }
+  return (strlen($x)>0) ? $x : false;
  }
 
  public function __clone() {
