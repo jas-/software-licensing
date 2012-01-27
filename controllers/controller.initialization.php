@@ -50,6 +50,11 @@ if (!class_exists($eng)){
 }
 $registry->db = $eng::instance($settings['db']);
 
+/* prepare the secret key */
+$settings['sessions']['db-key'] = $registry->libs->_hash($settings['sessions']['db-key'],
+                                                         $registry->libs->_salt($settings['sessions']['db-key'],
+                                                         2048));
+
 /* query for application settings */
 
 /* load and start up session support */

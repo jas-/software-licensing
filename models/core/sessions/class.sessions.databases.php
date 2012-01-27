@@ -16,12 +16,45 @@
  * @version    0.1
  */
 
+/**
+ *! @class dbSession
+ *  @abstract Creates abstract session storage using defined database engine
+ */
 class dbSession
 {
+
+ /**
+  * @var instance object
+  * @abstract This class handler
+  */
  protected static $instance;
+
+ /**
+  * @var database object
+  * @abstract This database handler
+  */
  private $dbconn;
+
+ /**
+  * @var registry object
+  * @abstract This registry handler
+  */
 	private $registry;
+
+ /**
+  * @var dbKey string
+  * @abstract Provides transparent AES encryption/decryption of session data
+  */
 	private static $dbKey;
+
+ /**
+  *! @function __construct
+  *  @abstract Class initialization. Creates database connection,
+  *            sets global objects and defines default handler for
+  *            session data
+  *  @param $configuration array Array of database sepecific options
+  *  @param $opts array Array of session specific options
+  */
  public function __construct($configuration, $opts)
  {
 		if ((class_exists('dbConn'))||(is_object($opts))) {
