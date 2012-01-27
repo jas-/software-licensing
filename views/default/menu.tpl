@@ -1,5 +1,11 @@
 <div id="navigation" class="bottom-rounder gradient">
  <ul>
+  <li><a href="" title="" rel="">Dashboard</a></li>
+  <li><a href="" title="" rel="">Main</a></li>
+  <li><a href="" title="" rel="">Main</a></li>
+  <li><a href="" title="" rel="">Main</a></li>
+  <li><a href="" title="" rel="">Main</a></li>
+  <li><a href="" title="" rel="">Main</a></li>
   <li><a href="" title="" rel="">Main</a></li>
  </ul>
 </div>
