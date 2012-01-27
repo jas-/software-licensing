@@ -21,9 +21,11 @@ class dbSession
  protected static $instance;
  private $dbconn;
 	private $registry;
+	private static $dbKey;
  public function __construct($configuration, $opts)
  {
 		if ((class_exists('dbConn'))||(is_object($opts))) {
+   $this->dbKey = $configuration['db-key'];
    if (is_object($opts->db)) $this->dbconn = $opts->db;
 			$this->options($configuration);
 			$this->registry = $opts;
@@ -79,9 +81,11 @@ class dbSession
  {
   if (isset($id)){
    try{
-    $sql = $query = sprintf('CALL Session_Search("%s")', $this->dbconn->sanitize($id));
+    $sql = $query = sprintf('CALL Session_Search("%s", "%s")',
+																												$this->dbconn->sanitize($id),
+																												$this->dbconn->sanitize($this->dbKey));
     $result = $this->dbconn->query($sql);
-			} catch(PDOException $e){
+			} catch(Exception $e){
 				// error handling
 			}
    return (count($result)>0) ? $this->sanitizeout($result['session_data']) : '';
@@ -92,13 +96,18 @@ class dbSession
  {
   if ((isset($id))&&(isset($data))){
 			$x = (isset($_SERVER['HTTP_REFERER'])) ? $_SERVER['HTTP_REFERER'] : $this->_path();
-   $sql = sprintf('CALL Session_Add("%s", "%s", "%d", "%s", "%s", "%s")',
-																		$this->dbconn->sanitize($id), $this->sanitizein($data),
-																		$this->dbconn->sanitize((int)time()),
-																		$this->dbconn->sanitize(sha1($_SERVER['HTTP_USER_AGENT'])),
-																		$this->dbconn->sanitize(sha1($this->registry->libs->_getRealIPv4())),
-																		$this->dbconn->sanitize($x));
-   $r = $this->dbconn->query($sql);
+   try{
+    $sql = sprintf('CALL Session_Add("%s", "%s", "%d", "%s", "%s", "%s", "%s")',
+ 																		$this->dbconn->sanitize($id), $this->sanitizein($data),
+ 																		$this->dbconn->sanitize((int)time()),
+ 																		$this->dbconn->sanitize(sha1($_SERVER['HTTP_USER_AGENT'])),
+ 																		$this->dbconn->sanitize(sha1($this->registry->libs->_getRealIPv4())),
+  																		$this->dbconn->sanitize($x),
+ 																		$this->dbconn->sanitize($this->dbKey));
+    $r = $this->dbconn->query($sql);
+			} catch(Exception $e){
+				// error handling
+			}
    return ((is_resource($r))&&($this->dbconn->affected($r)>0)) ? true : false;
   }
   return false;
@@ -110,8 +119,12 @@ class dbSession
  private function destroy($id)
  {
   if (isset($id)){
-   $sql = sprintf('CALL Session_destroy("%s")', $this->dbconn->sanitize($id));
-			$r = $this->dbconn->query($sql);
+   try{
+ 			$sql = sprintf('CALL Session_destroy("%s")', $this->dbconn->sanitize($id));
+ 			$r = $this->dbconn->query($sql);
+			} catch(Exception $e){
+				// error handling
+			}
    return ((is_resource($r))&&($this->dbconn->affected($this->dbconn)>0)) ? true : false;
   }
   return false;
