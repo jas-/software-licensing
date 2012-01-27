@@ -15,9 +15,11 @@ $settings['opts']['caching']  = 'views/cache';
 
 /* Sessions specific settings */
 $settings['sessions']['timeout'] = $settings['opts']['timeout'];
-$settings['sessions']['title']   = 'myApp';
+$settings['sessions']['title']   = sha1($settings['opts']['title']);
 $settings['sessions']['cache']   = true;
 $settings['sessions']['cookie']  = true;
+$settings['sessions']['secure']  = true;
+$settings['sessions']['proto']   = true;
 
 /*
  * Site wide random salt (WARNING)
@@ -30,6 +32,6 @@ $settings['sessions']['cookie']  = true;
  * database contents. If you change this manually you will
  * loose everything in the database.
  */
-$settings['opts']['db-key']   = '';
+$settings['sessions']['db-key']   = '91GQYCn5oIofKCB2S8z552pQUyNbFliT04aZMyMKGZP4Zpgfh808g8Ga4w65sj6';
 
 ?>

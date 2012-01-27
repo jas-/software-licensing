@@ -34,6 +34,22 @@ body,html{
  -ms-filter: "progid:DXImageTransform.Microsoft.Gradient(GradientType=0,StartColorStr=#FFFAFAFA,EndColorStr=#FFEAEAEA)";
 }
 
+.margins{
+ margin: 10px 10px 10px 10px;
+}
+
+.main{
+
+}
+
+.main h3{
+ margin: 10px 10px 10px 10px;
+}
+
+.main p{
+ font-size:0.9em;
+}
+
 #full{
  width:100%;
 }

@@ -6,5 +6,8 @@
  <title>{$title}</title>
  <link rel="stylesheet" type="text/css" href="{$templates}/css/styles.css" media="screen,projection" />
  <script src="http://code.jquery.com/jquery.min.js" type="text/javascript"></script>
+ <script src="{$templates}/js/gibberish-aes.min.js" type="text/javascript"></script>
+ <script src="{$templates}/js/jQuery.AJAX.min.js" type="text/javascript"></script>
+ <script src="{$templates}/js/jQuery.handleStorage.min.js" type="text/javascript"></script>
 </head>
 <body>

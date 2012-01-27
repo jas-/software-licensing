@@ -101,6 +101,8 @@ CREATE TABLE IF NOT EXISTS `configuration_access` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci AUTO_INCREMENT=0;
 
+-- Create a table for default OpenSSL extension options
+--  Primary key: id
 DROP TABLE IF EXISTS `configuration_openssl_cnf`;
 CREATE TABLE IF NOT EXISTS `configuration_openssl_cnf` (
   `id` INT( 255 ) NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -114,6 +116,10 @@ CREATE TABLE IF NOT EXISTS `configuration_openssl_cnf` (
 
 INSERT INTO `configuration_openssl_cnf` (`id`, `config`, `encrypt_key`, `private_key_type`, `digest_algorithm`, `private_key_bits`, `x509_extensions`) VALUES (1, 'config/openssl.cnf', 1, 'OPENSSL_KEYTYPE_RSA', 'sha1', 2048, 'usr_cert');
 
+-- Create a table for configuration of OpenSSL keys
+--  Primary key: id
+--  Indexed key: emailAddress
+--  Foreign key: authentication.email
 DROP TABLE IF EXISTS `configuration_openssl_keys`;
 CREATE TABLE IF NOT EXISTS `configuration_openssl_keys` (
   `id` int(255) NOT NULL AUTO_INCREMENT,
@@ -168,6 +174,9 @@ CREATE TABLE IF NOT EXISTS `logs` (
   UNIQUE KEY `guid` (`guid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci AUTO_INCREMENT=0;
 
+-- Create a table for per user session data
+--  Primary key: id
+--  Unique key: session_id
 DROP TABLE IF EXISTS `sessions`;
 CREATE TABLE IF NOT EXISTS `sessions` (
   `id` int(255) NOT NULL AUTO_INCREMENT,
