@@ -155,3 +155,33 @@ body,html{
 #authenticate textarea{
  margin-top:0.3em;
 }
+
+.info, .success, .warning, .error, .validation{
+ font-size:0.8em;
+ border: 1px solid;
+ margin: 10px 10px 10px 10px;
+ padding:10px 10px 10px 50px;
+ background-repeat: no-repeat;
+ background-position: 10px center;
+}
+.info {
+ color: #00529B;
+ background-color: #BDE5F8;
+ background-image: url('../images/info.png') 10px 10px no-repeat;
+}
+.success {
+ color: #4F8A10;
+ background-color: #DFF2BF;
+ background-image:url('../images/success.png');
+ background-size: 20px 20px;
+}
+.warning {
+ color: #9F6000;
+ background-color: #FEEFB3;
+ background-image: url('../images/warning.png') 10px 10px no-repeat;
+}
+.error {
+ color: #D8000C;
+ background-color: #FFBABA;
+ background-image: url('../images/error.png') 10px 10px no-repeat;
+}
