@@ -107,17 +107,18 @@ class access {
   */
  private function __compare($i, $l)
  {
-  $a = false;
+  $a = false; $x = false;
   if (count($l)>0){
    foreach($l as $k => $v){
     $n = (class_exists('ipFilter')) ? new ipFilter($v) : false;
     if ($n){
      $a = $n->check($i);
+     if($a) $x=true;
     }
     unset($n);
    }
   }
-  return $a;
+  return $x;
  }
 
  public function __destruct()
