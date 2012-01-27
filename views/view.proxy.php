@@ -9,7 +9,7 @@
  * the GPL License and are unable to obtain it through the web, please
  *
  * @category   views
- * @discussion Authenticated dashboard
+ * @discussion Handle XMLHttpRequests
  * @author     jason.gerfen@gmail.com
  * @copyright  2008-2012 Jason Gerfen
  * @license    http://www.gnu.org/licenses/gpl.html  GPL License 3
@@ -58,6 +58,34 @@ class proxyView
    self::$instance = new self($configuration);
   }
   return self::$instance;
+ }
+
+ /**
+  *! @function __vRequest
+  *  @abstract Verify the request was valid XMLHttpRequest
+  */
+ private function __vRequest($request)
+ {
+  return (strcmp($request, 'XMLHttpRequest')!==0) ? false : true;
+ }
+
+ /**
+  *! @function __vCSRF
+  *  @abstract Verify the CSRF token
+  */
+ private function __vCSRF($header, $token)
+ {
+  return (strcmp($header, $token)!==0) ? true : false;
+ }
+
+ /**
+  *! @function __vCheckSum
+  *  @abstract Verify the post data contained a valid checksum in the header
+  */
+ private function __vCheckSum($header, $array)
+ {
+  return (strcmp(base64_decode($header),
+                 md5($registry->libs->_serialize($array)))!==0) ? false : true;
  }
 
  /**
