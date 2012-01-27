@@ -1,3 +1,9 @@
+<script type="text/javascript">
+ var $j = jQuery.noConflict();
+ $j(document).ready(function(){
+  $j('#authenticate').AJAX({appID:'{$token}',strict:true});
+ });
+</script>
 <div id="authenticate" class="rounder gradient">
  <h2>Authenticate</h2>
  <p>Please login to view active software licenses</p>
