@@ -72,11 +72,11 @@ class ipFilter
 
  public function check($ip, $allowed_ips = null)
  {
-  $allowed_ips = $allowed_ips ? $allowed_ips : $this->_allowed_ips;
+		$allowed_ips = $allowed_ips ? $allowed_ips : $this->_allowed_ips;
   foreach($allowed_ips as $allowed_ip){
    $type = $this->_judge_ip_type($allowed_ip);
    $sub_rst = call_user_func(array($this,'_sub_checker_' . $type), $allowed_ip, $ip);
-   if ($sub_rst){
+			if ($sub_rst){
     return true;
    }
   }
@@ -113,7 +113,7 @@ class ipFilter
    if ($allowed_ip_arr[$i] == '*'){
     return true;
    } else {
-    if (false == ($allowed_ip_arr[$i] == $ip_arr[$i])){
+    if (false == ($allowed_ip_arr[$i] === $ip_arr[$i])){
      return false;
     }
    }

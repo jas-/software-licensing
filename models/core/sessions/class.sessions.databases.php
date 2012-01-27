@@ -24,7 +24,6 @@ class dbSession
  public function __construct($configuration, $opts)
  {
 		if ((class_exists('dbConn'))||(is_object($opts))) {
-   echo '<pre>'; print_r($opts); echo '</pre>';
    if (is_object($opts->db)) $this->dbconn = $opts->db;
 			$this->options($configuration);
 			$this->registry = $opts;
@@ -84,13 +83,13 @@ class dbSession
  {
   if ((isset($id))&&(isset($data))){
    $sql = sprintf('CALL Session_Add("%s", "%s", "%d", "%s", "%s", "%s")',
-																		$this->sanitizein($id), $this->sanitizein($data),
-																		$this->sanitizein((int)time()),
-																		$this->sanitizein(sha1($_SERVER['HTTP_USER_AGENT'])),
-																		$this->sanitizein(sha1($this->registry->libs->_getRealIPv4())),
-																		$this->sanitizein($_SERVER['HTTP_REFERER']));
-   $result = $this->dbconn->query($sql); echo $sql;
-   return ((is_resource($result))&&($this->dbconn->affected($result)>0)) ? true : false;
+																		$this->dbconn->sanitize($id), $this->sanitizein($data),
+																		$this->dbconn->sanitize((int)time()),
+																		$this->dbconn->sanitize(sha1($_SERVER['HTTP_USER_AGENT'])),
+																		$this->dbconn->sanitize(sha1($this->registry->libs->_getRealIPv4())),
+																		$this->dbconn->sanitize($_SERVER['HTTP_REFERER']));
+   $r = $this->dbconn->query($sql);
+   return ((is_resource($r))&&($this->dbconn->affected($r)>0)) ? true : false;
   }
   return false;
  }
@@ -100,24 +99,32 @@ class dbSession
  }
  private function destroy($id)
  {
-  if (isset($id)) {
-   $query = "DELETE FROM `sessions` WHERE `session-id` = \"".$this->dbconn->sanitize($id)."\" LIMIT 1";
-   $result = $this->dbconn->query($query);
-   return ((is_resource($result))&&($this->dbconn->affected($this->dbconn)>0)) ? true : false;
+  if (isset($id)){
+   $sql = sprintf('CALL Session_destroy("%s")', $this->dbconn->sanitize($id));
+			$r = $this->dbconn->query($sql);
+   return ((is_resource($r))&&($this->dbconn->affected($this->dbconn)>0)) ? true : false;
   }
   return false;
  }
  private function sanitizein($string)
  {
-  return $this->dbconn->sanitize($string);
+		if (version_compare(PHP_VERSION, '5.2.11')>=0) {
+   return $this->dbconn->sanitize(addslashes(serialize($string)));
+  } else {
+   return $this->dbconn->sanitize($string);
+  }
  }
  private function sanitizeout($string)
  {
-  return stripslashes($string);
+		if (version_compare(PHP_VERSION, '5.2.11')>=0) {
+   return stripslashes(stripslashes(unserialize($string)));
+  } else {
+   return stripslashes($string);
+  }
  }
  public function regen($flag=false)
 	{
-  if ($flag!==false) {
+  if ($flag!==false){
    $this->register('id', session_id());
    session_regenerate_id($flag);
    $this->id = session_id();
@@ -132,9 +139,9 @@ class dbSession
  private function gc($timeout)
  {
   if (isset($timeout)) {
-   $query = "DELETE FROM `sessions` WHERE `session_expire` > \"".time()-$timeout."\"";
-   $result = $this->dbconn->query($query);
-   return ((is_resource($result))&&($this->dbconn->affected()>0)) ? true : false;
+   $sql = sprintf('CALL Session_Timeout("%d")', time()-$timeout);
+   $r = $this->dbconn->query($sql);
+   return ((is_resource($r))&&($this->dbconn->affected()>0)) ? true : false;
   }
   return false;
  }

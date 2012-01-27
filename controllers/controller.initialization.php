@@ -50,17 +50,20 @@ if (!class_exists($eng)){
 }
 $registry->db = $eng::instance($settings['db']);
 
+/* query for application settings */
+
 /* load and start up session support */
 if (!class_exists('dbSession')){
  exit('Error loading database session support, unable to proceed. 0x0c6');
 }
 $registry->sessions = dbSession::instance($settings['sessions'], $registry);
 
-/* query for application settings */
-
 /* generate or use CSRF token */
-$settings['opts']['token'] = (!empty($_SESSION['csrf'])) ?
-                              $_SESSION['csrf'] : $registry->libs->uuid();
+$_SESSION['csrf'] = (!empty($_SESSION['csrf'])) ?
+                      $_SESSION['csrf'] : $registry->libs->uuid();
+
+/* always reset the session_id */
+$registry->sessions->regen(true);
 
 /* Set application defaults within registry */
 $registry->opts = $settings['opts'];
@@ -77,11 +80,5 @@ $registry->access = access::init($registry);
 if (!$registry->access->_do()){
  exit('Error due to access restrictions');
 }
-
-/* apply customized headers */
-header('X-Alt-Referer: '.$settings['opts']['token']);
-header('X-Forwarded-Proto: http');
-header('X-Frame-Options: deny');
-header('X-XSS-Protecton: 1;mode=deny');
 
 ?>

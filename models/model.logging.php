@@ -128,7 +128,7 @@ class logging {
   */
  private function _main()
  {
-  $x['guid'] = $this->registry->opts['token'];
+  $x['guid'] = $_SESSION['csrf'];
   $x['adate'] = $this->_time();
   $x['ip'] = $this->_ip();
   $x['hostname'] = $this->_host();

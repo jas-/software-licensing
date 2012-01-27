@@ -117,8 +117,27 @@ BEGIN
  INSERT INTO `sessions` (`session_id`,`session_data`,`session_expire`,`session_agent`,`session_ip`,`session_referer`) VALUES (session_id, session_data, session_expire, session_agent, session_ip, session_referer) ON DUPLICATE KEY UPDATE `session_id`=session_id, `session_data`=session_data, `session_expire`=session_expire;
 END//
 
+DROP PROCEDURE IF EXISTS Session_Destroy//
+CREATE DEFINER='licensing'@'localhost' PROCEDURE Session_Destroy(IN `session_id` VARCHAR(64))
+ DETERMINISTIC
+ SQL SECURITY INVOKER
+ COMMENT 'Delete users sessions id'
+BEGIN
+ DELETE FROM `sessions` WHERE `session_id`=session_id LIMIT 1;
+END//
+
+DELIMITER //
+DROP PROCEDURE IF EXISTS Session_Timeout//
+CREATE DEFINER='licensing'@'localhost' PROCEDURE Session_Timeout(IN `session_expire` INT(10))
+ DETERMINISTIC
+ SQL SECURITY INVOKER
+ COMMENT 'Expire session based on timeout option'
+BEGIN
+ DELETE FROM `sessions` WHERE `session_expire`>session_expire LIMIT 1;
+END//
+
 DROP PROCEDURE IF EXISTS Logs_Add//
-CREATE DEFINER='licensing'@'localhost' PROCEDURE Logs_Add(IN `guid` VARCHAR(25), `adate` VARCHAR(64), `ip` VARCHAR(10), `hostname` VARCHAR(80), `agent` VARCHAR(128), `query` VARCHAR(128))
+CREATE DEFINER='licensing'@'localhost' PROCEDURE Logs_Add(IN `guid` VARCHAR(64), `adate` VARCHAR(64), `ip` VARCHAR(10), `hostname` VARCHAR(80), `agent` VARCHAR(128), `query` VARCHAR(128))
  DETERMINISTIC
  SQL SECURITY INVOKER
  COMMENT 'Add or update logs'

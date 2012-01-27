@@ -64,6 +64,7 @@ CREATE TABLE IF NOT EXISTS `authentication` (
   `authentication_token` longtext NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `email` (`email`),
+  INDEX `authentication_token`,
   INDEX `group` (`group`),
   CONSTRAINT `fk_groups` FOREIGN KEY (`group`)
    REFERENCES `authentication_groups` (`group`)
@@ -157,7 +158,7 @@ CREATE TABLE IF NOT EXISTS `license` (
 DROP TABLE IF EXISTS `logs`;
 CREATE TABLE IF NOT EXISTS `logs` (
   `id` int(255) NOT NULL AUTO_INCREMENT,
-  `guid` varchar(40) NOT NULL,
+  `guid` varchar(64) NOT NULL,
   `adate` varchar(64) NOT NULL,
   `ip` varchar(10) NOT NULL,
   `hostname` varchar(80) NOT NULL,
