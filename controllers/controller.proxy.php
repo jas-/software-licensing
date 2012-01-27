@@ -102,8 +102,8 @@ class proxyController
   */
  public function index()
  {
-  if (file_exists('views/view.dashboard.php')){
-   require 'views/view.dashboard.php';
+  if (file_exists('views/view.proxy.php')){
+   require 'views/view.proxy.php';
   }
   dashboardView::instance($this->registry);
  }
