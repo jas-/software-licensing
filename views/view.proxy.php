@@ -42,17 +42,6 @@ class proxyView
  private function __construct($registry)
  {
   $this->registry = $registry;
-
-  $post (!empty($_POST)) ?
-   $this->registry->libs->_serialize($_POST) : md5($_SESSION['token']);
-
-  if ((!$this->__vRequest(getenv('HTTP_X_REQUESTED_WITH')))||
-      (!$this->__vCSRF(getenv('HTTP_X_ALT_REFERER'), $_SESSION['csrf']))||
-      (!$this->__vCheckSum(getenv('HTTP_CONTENT_MD5'), $post))){
-   // process using switch case on success
-  } else {
-   exit($this->registry->libs->JSONencode(array('Error'=>'Necessary sanitation checks were not included on request.'));
-  }
  }
 
  /**
@@ -68,34 +57,6 @@ class proxyView
    self::$instance = new self($configuration);
   }
   return self::$instance;
- }
-
- /**
-  *! @function __vRequest
-  *  @abstract Verify the request was valid XMLHttpRequest
-  */
- private function __vRequest($request)
- {
-  return (strcmp($request, 'XMLHttpRequest')!==0) ? false : true;
- }
-
- /**
-  *! @function __vCSRF
-  *  @abstract Verify the CSRF token
-  */
- private function __vCSRF($header, $token)
- {
-  return (strcmp($header, $token)!==0) ? true : false;
- }
-
- /**
-  *! @function __vCheckSum
-  *  @abstract Verify the post data contained a valid checksum in the header
-  */
- private function __vCheckSum($header, $array)
- {
-  return (strcmp(base64_decode($header),
-                 md5($registry->libs->_serialize($array)))!==0) ? false : true;
  }
 
  /**
