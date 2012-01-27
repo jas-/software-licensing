@@ -58,6 +58,15 @@ class dbSession
   ini_set('cache_limiter', $configuration['cache']);
 		ini_set('cache_expire', $configuration['timeout']);
 		ini_set('use_cookies', $configuration['cookie']);
+		if ($configuration['cookie']){
+			session_set_cookie_params(
+    $configuration['timeout'],
+				$this->_path(),
+				$this->_domain(),
+				$configuration['secure'],
+				$configuration['proto']
+			);
+		}
  }
  private function open($configuration)
  {
@@ -126,7 +135,7 @@ class dbSession
  public function regen($flag=false)
 	{
   if ($flag!==false){
-   $this->register('id', session_id());
+			$_SESSION['id'] = session_id();
    session_regenerate_id($flag);
    $this->id = session_id();
    $this->destroy($_SESSION['id']);
@@ -140,6 +149,10 @@ class dbSession
  private function _path()
 	{
 		return $_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
+	}
+ private function _domain()
+	{
+		return $_SERVER['HTTP_HOST'];
 	}
  private function gc($timeout)
  {
