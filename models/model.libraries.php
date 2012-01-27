@@ -162,6 +162,114 @@ class libraries {
   return $x;
  }
 
+ /*!
+  * @function response
+  * @abstract Handle older versions of PHP that do not have json_encode, json_decode
+  * @param $array Array Nested array of configuration options
+  * @return object A JSON object
+  */
+ public function JSONencode($array){
+  if (!function_exists('json_encode')) {
+   return self::arr2json($array);
+  } else {
+   return json_encode($array);
+  }
+ }
+
+ /*!
+  * @function arr2json
+  * @abstract Private function to create a JSON object
+  * @param $array Array Associative array
+  * @return object The resulting JSON object
+  */
+ private function arr2json($array)
+ {
+  if (is_array($array)) {
+   foreach($array as $key => $value) $json[] = $key . ':' . self::php2js($value);
+   if(count($json)>0) return '{'.implode(',',$json).'}';
+   else return '';
+  }
+ }
+
+ /*!
+  * @function php2js
+  * @abstract Private function using to determine array value type
+  * @param $value String|INT|BOOL|NULL|ARRAY Mixed
+  * @return STRING|INT|BOOL|NULL|ARRAY The typecasted variable
+  */
+ public function php2js($value)
+ {
+  if(is_array($value)) return self::arr2json($val);
+  if(is_string($value)) return '"'.addslashes($value).'"';
+  if(is_bool($value)) return 'Boolean('.(int) $value.')';
+  if(is_null($value)) return '""';
+  return $value;
+ }
+
+ /*!
+  * @function geolocation
+  * @abstract Public function to retrieve GEO location data
+  * @param $ip String IPv4 string
+  * @return object The results of the GEO object
+  */
+ public function geolocation($ip)
+ {
+  $opts = array('http'=>array('method'=>'GET','header'=>'Accept-language: en\r\n'));
+  $context = stream_context_create($opts);
+  $ex = unserialize(file_get_contents('http://www.geoplugin.net/php.gp?ip='.$ip, false, $context));
+  return $ex;
+ }
+
+ /*!
+  * @function parsegeo
+  * @abstract Public function to parse GEO data
+  * @param $data Object Parses and returns the GEO data as an array
+  * @return Array The CN data returned from the GEO lookup
+  */
+ public function parsegeo($data)
+ {
+  $settings['localityName']        = (!empty($data['geoplugin_city'])) ?
+                                             $data['geoplugin_city'] :
+                                             false;
+  $settings['stateOrProvinceName'] = (!empty($data['geoplugin_region'])) ?
+                                             $data['geoplugin_region'] :
+                                             false;
+  $settings['countryName']         = (!empty($data['geoplugin_countryCode'])) ?
+                                             $data['geoplugin_countryCode'] :
+                                             false;
+  return $settings;
+ }
+
+ /**
+  * @function _salt
+  * @abstract Generate a random salt value of specified length based on input
+  */
+ public function _salt($string, $len=null)
+ {
+  return (!empty($len)) ?
+          hash('sha512', str_pad($string, (strlen($string) + $len),
+                                 substr(hash('sha512', $string),
+                                        @round((float)strlen($string)/3, 0,
+                                              PHP_ROUND_HALF_UP),
+                                        ($len - strlen($string))),
+                                 STR_PAD_BOTH)) :
+          hash('sha512', substr($string,
+                                @round((float)strlen($string)/3, 0,
+                                       PHP_ROUND_HALF_UP), 16));
+}
+ /**
+  * @function _hash
+  * @abstract Mimic bcrypt
+  */
+ public function _hash($string, $salt=null)
+ {
+  return (CRYPT_BLOWFISH==1) ?
+          (!empty($salt)) ?
+           crypt($string, "\$2a\$07\$".substr($salt, 0, CRYPT_SALT_LENGTH)) :
+           crypt($string, $this->_salt("\$2a\$07\$".substr($string, 0, CRYPT_SALT_LENGTH))) :
+          false;
+ }
+
  public function __clone() {
   trigger_error('Cloning prohibited', E_USER_ERROR);
  }
