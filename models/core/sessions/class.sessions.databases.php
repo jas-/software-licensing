@@ -82,12 +82,13 @@ class dbSession
  public function write($id, $data)
  {
   if ((isset($id))&&(isset($data))){
+			$x = (isset($_SERVER['HTTP_REFERER'])) ? $_SERVER['HTTP_REFERER'] : $this->_path();
    $sql = sprintf('CALL Session_Add("%s", "%s", "%d", "%s", "%s", "%s")',
 																		$this->dbconn->sanitize($id), $this->sanitizein($data),
 																		$this->dbconn->sanitize((int)time()),
 																		$this->dbconn->sanitize(sha1($_SERVER['HTTP_USER_AGENT'])),
 																		$this->dbconn->sanitize(sha1($this->registry->libs->_getRealIPv4())),
-																		$this->dbconn->sanitize($_SERVER['HTTP_REFERER']));
+																		$this->dbconn->sanitize($x));
    $r = $this->dbconn->query($sql);
    return ((is_resource($r))&&($this->dbconn->affected($r)>0)) ? true : false;
   }
@@ -136,6 +137,10 @@ class dbSession
  {
   return ((isset($name))&&(isset($value))) ? $_SESSION[$name] : false;
  }
+ private function _path()
+	{
+		return $_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
+	}
  private function gc($timeout)
  {
   if (isset($timeout)) {
