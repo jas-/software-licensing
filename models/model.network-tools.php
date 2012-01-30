@@ -1,4 +1,8 @@
 <?PHP
+
+/* prevent direct access */
+if (!defined('__SITE')) exit('No direct calls please...');
+
 class networkTools
 {
  function process($target,$ports,$worms,$type,$tools,$callback)

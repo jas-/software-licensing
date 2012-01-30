@@ -1,5 +1,8 @@
 <?php
 
+/* prevent direct access */
+if (!defined('__SITE')) exit('No direct calls please...');
+
 /* first load the application config */
 if (!file_exists(__SITE.'/config/configuration.php')){
  exit('Necessary configuration missing, unable to proceed. 0x0c1');

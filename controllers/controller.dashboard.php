@@ -1,4 +1,7 @@
 <?php
+/* prevent direct access */
+if (!defined('__SITE')) exit('No direct calls please...');
+
 /**
  * Handle dashboard 
  *

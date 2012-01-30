@@ -1,5 +1,8 @@
 <?php
 
+/* prevent direct access */
+if (!defined('__SITE')) exit('No direct calls please...');
+
 /* Database configuration settings */
 $settings['db']['engine']     = 'mysql';
 $settings['db']['hostname']   = 'localhost';
