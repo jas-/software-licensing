@@ -1,6 +1,6 @@
 <?php
 /**
- * Handle dashboard
+ * Handle XMLHttpRequests
  *
  *
  * LICENSE: This source file is subject to version 3.01 of the GPL license
@@ -9,7 +9,7 @@
  * the GPL License and are unable to obtain it through the web, please
  *
  * @category   views
- * @discussion Handles the dashboard
+ * @discussion Handles XMLHttpRequests
  * @author     jason.gerfen@gmail.com
  * @copyright  2008-2012 Jason Gerfen
  * @license    http://www.gnu.org/licenses/gpl.html  GPL License 3
