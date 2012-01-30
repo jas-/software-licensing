@@ -3,9 +3,9 @@ DROP DATABASE IF EXISTS `licensing`;
 CREATE DATABASE `licensing`;
 
 -- Create a default user and assign limited permissions
-CREATE USER "licensing"@"localhost" IDENTIFIED BY "d3v3l0pm3n+";
-GRANT SELECT, INSERT, UPDATE, DELETE, REFERENCES, INDEX, CREATE TEMPORARY TABLES, LOCK TABLES, EXECUTE ON `licensing`.* TO "licensing"@"localhost";
-FLUSH PRIVILEGES;
+-- CREATE USER "licensing"@"localhost" IDENTIFIED BY "d3v3l0pm3n+";
+-- GRANT SELECT, INSERT, UPDATE, DELETE, REFERENCES, INDEX, CREATE TEMPORARY TABLES, LOCK TABLES, EXECUTE ON `licensing`.* TO "licensing"@"localhost";
+-- FLUSH PRIVILEGES;
 
 -- Switch to newly created db context
 USE `licensing`;
@@ -57,23 +57,24 @@ INSERT INTO `authentication_levels` (`level`) VALUES ("view");
 DROP TABLE IF EXISTS `authentication`;
 CREATE TABLE IF NOT EXISTS `authentication` (
   `id` int(255) NOT NULL AUTO_INCREMENT,
+  `resource` varchar(128) NOT NULL,
   `email` varchar(128) NOT NULL,
-  `password` mediumtext NOT NULL,
+  `password` blob NOT NULL,
   `level` varchar(40) NOT NULL,
   `group` varchar(128) NOT NULL,
   `authentication_token` longtext NOT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `email` (`email`),
-  INDEX `authentication_token`,
-  INDEX `group` (`group`),
-  CONSTRAINT `fk_groups` FOREIGN KEY (`group`)
+  INDEX (`email`),
+  UNIQUE KEY `resource` (`resource`),
+  INDEX (`group`),
+  FOREIGN KEY (`group`)
    REFERENCES `authentication_groups` (`group`)
     ON DELETE CASCADE ON UPDATE CASCADE,
-  INDEX `level` (`level`),
-  CONSTRAINT `fk_levels` FOREIGN KEY (`level`)
+  INDEX (`level`),
+  FOREIGN KEY (`level`)
    REFERENCES `authentication_levels` (`level`)
     ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci AUTO_INCREMENT=0;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=0;
 
 -- Create a table for default application settings
 --  Primary key: id
