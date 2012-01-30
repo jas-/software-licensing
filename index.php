@@ -20,7 +20,7 @@ $registry->template = new template($registry);
 /* begin routing requests */
 $registry->router->loader();
 
-/* apply customized headers */
+/* apply some security headers for clients */
 header('X-Alt-Referer: '.$_SESSION['csrf']);
 header('X-Forwarded-Proto: http');
 header('X-Frame-Options: deny');
