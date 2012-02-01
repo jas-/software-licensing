@@ -1,6 +1,6 @@
 <?php
 /**
- * Authenticated dashboard
+ * Proxy view (conditionally handles XMLHttpRequests)
  *
  *
  * LICENSE: This source file is subject to version 3.01 of the GPL license
@@ -67,13 +67,47 @@ class proxyView
   */
  private function __decide($cmd)
  {
+  $x = false;
   if (!empty($cmd)){
+   $cmd = $this->registry->val->__do($cmd, 'string');
    switch($cmd){
     case 'authenticate':
-     return $cmd.' command called';
+     $x = $this->__decrypt($this->registry->val->__do($_POST));
+    case 'keys':
+     // return default or user public key
+     $x = $key;
+     return;
     default:
-     return $cmd;
+     $x = false;
    }
+  }
+  return $x;
+ }
+
+ /**
+  *! @function __settings
+  *  @abstract Handles the retrieval of current OpenSSL configuration data
+  */
+ private function __settings()
+ {
+  try{
+   $sql = sprintf('CALL Configuration_cnf_get()');
+   $r = $this->registry->db->query($sql);
+  } catch(Exception $e){
+   // error handler
+  }
+  return (!empty($r)) ? $r : false;
+ }
+
+ /**
+  *! @function __decrypt
+  *  @abstract Handle decryption of submitted form data
+  */
+ private function __decrypt($obj)
+ {
+  if (class_exists('openssl')){
+   $this->registry->ssl = openssl::instance($opts, array('config'=>$this->__settings()));
+echo '<pre>'; print_r($this->registry->ssl);
   }
  }
 }
