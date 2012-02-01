@@ -18,10 +18,7 @@
     }
    });
   }
-  $j('#auth').AJAX({appID:'{$token}',
-                    strict:true,
-                    callback:function(){ _message(this); }
-                   });
+  $j('#auth').pidCrypt({appID:'{$token}',callback:function(){_message(this);}});
  });
 </script>
 <div id="authenticate" class="rounder gradient">

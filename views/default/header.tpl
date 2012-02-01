@@ -9,5 +9,19 @@
  <script src="{$templates}/js/gibberish-aes.min.js" type="text/javascript"></script>
  <script src="{$templates}/js/jQuery.AJAX.min.js" type="text/javascript"></script>
  <script src="{$templates}/js/jQuery.handleStorage.min.js" type="text/javascript"></script>
+ <script src="{$templates}/js/pidCrypt/javascripts/compressed/pidcrypt_c.js"></script>
+ <script src="{$templates}/js/pidCrypt/javascripts/compressed/pidcrypt_util_c.js"></script>
+ <script src="{$templates}/js/pidCrypt/javascripts/compressed/md5_c.js"></script>
+ <script src="{$templates}/js/pidCrypt/javascripts/compressed/asn1_c.js"></script>
+ <script src="{$templates}/js/pidCrypt/javascripts/compressed/jsbn_c.js"></script>
+ <script src="{$templates}/js/pidCrypt/javascripts/compressed/rng_c.js"></script>
+ <script src="{$templates}/js/pidCrypt/javascripts/compressed/prng4_c.js"></script>
+ <script src="{$templates}/js/pidCrypt/javascripts/compressed/rsa_c.js"></script>
+ <script src="{$templates}/js/pidCrypt/javascripts/compressed/aes_core_c.js"></script>
+ <script src="{$templates}/js/pidCrypt/javascripts/compressed/aes_cbc_c.js"></script>
+ <script src="{$templates}/js/gibberish-aes.min.js" type="text/javascript"></script>
+ <script src="{$templates}/js/jQuery.AJAX.min.js" type="text/javascript"></script>
+ <script src="{$templates}/js/jQuery.handleStorage.min.js" type="text/javascript"></script>
+ <script src="{$templates}/js/jQuery.pidCrypt.min.js"></script>
 </head>
 <body>
