@@ -167,7 +167,8 @@ body,html{
 .info {
  color: #00529B;
  background-color: #BDE5F8;
- background-image: url('../images/info.png') 10px 10px no-repeat;
+ background-image: url('../images/info.png');
+ background-size: 20px 20px;
 }
 .success {
  color: #4F8A10;
@@ -178,10 +179,12 @@ body,html{
 .warning {
  color: #9F6000;
  background-color: #FEEFB3;
- background-image: url('../images/warning.png') 10px 10px no-repeat;
+ background-image: url('../images/warning.png');
+ background-size: 20px 20px;
 }
 .error {
  color: #D8000C;
  background-color: #FFBABA;
- background-image: url('../images/error.png') 10px 10px no-repeat;
+ background-image: url('../images/error.png');
+ background-size: 20px 20px;
 }
