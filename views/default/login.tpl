@@ -3,6 +3,7 @@
  $j(document).ready(function(){
   function _message(obj){
    var details = '';
+   obj = (typeof obj=='object') ? JSON.parse(obj) : obj;
    $j.each(obj, function(k, v){
     if (k=='error'){
      $j('#message').html('<div class="error">'+v+'</div>').fadeIn(1000);
@@ -18,7 +19,7 @@
     }
    });
   }
-  $j('#auth').pidCrypt({appID:'{$token}',callback:function(){_message(this);}});
+  $j('#auth').pidCrypt({appID:'{$token}',callback:function(){ _message(this); }});
  });
 </script>
 <div id="authenticate" class="rounder gradient">
