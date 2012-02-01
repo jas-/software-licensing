@@ -3,21 +3,25 @@
  $j(document).ready(function(){
   function _message(obj){
    var details = '';
-   obj = (typeof obj=='object') ? JSON.parse(obj) : obj;
-   $j.each(obj, function(k, v){
-    if (k=='error'){
-     $j('#message').html('<div class="error">'+v+'</div>').fadeIn(1000);
-    }
-    if (k=='warning'){
-     $j('#message').html('<div class="warning">'+v+'</div>').fadeIn(1000);
-    }
-    if (k=='info'){
-     $j('#message').html('<div class="info">'+v+'</div>').fadeIn(1000);
-    }
-    if (k=='success'){
-     $j('#message').html('<div class="success">'+v+'</div>').fadeIn(1000);
-    }
-   });
+   if (obj!=''){
+    obj = (typeof obj=='object') ? JSON.parse(obj) : obj;
+    $j.each(obj, function(k, v){
+     if (k=='error'){
+      $j('#message').html('<div class="error">'+v+'</div>').fadeIn(1000);
+     }
+     if (k=='warning'){
+      $j('#message').html('<div class="warning">'+v+'</div>').fadeIn(1000);
+     }
+     if (k=='info'){
+      $j('#message').html('<div class="info">'+v+'</div>').fadeIn(1000);
+     }
+     if (k=='success'){
+      $j('#message').html('<div class="success">'+v+'</div>').fadeIn(1000);
+     }
+    });
+   } else {
+    $j('#message').html('<div class="warning">Empty response for request</div>').fadeIn(1000);
+   }
   }
   $j('#auth').pidCrypt({appID:'{$token}',callback:function(){ _message(this); }});
  });
@@ -26,7 +30,7 @@
  <h2>Authenticate</h2>
  <p>Please login to view active software licenses</p>
  <div id="message"></div>
- <form id="auth" name="authenticate" method="post" action="?nxs=proxy">
+ <form id="auth" name="authenticate" method="post" action="?nxs=proxy/authenticate">
   <label for="email">Email: </label>
    <input type="email" id="email" name="email" value="" placeholder="Enter email address" required="required" /><span class="required">*</span>
   <label for="password">Password: </label>

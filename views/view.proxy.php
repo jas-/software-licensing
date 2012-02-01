@@ -42,6 +42,7 @@ class proxyView
  private function __construct($registry)
  {
   $this->registry = $registry;
+  exit($this->registry->libs->JSONencode(array('success'=>$this->__decide($this->registry->router->action))));
  }
 
  /**
@@ -60,19 +61,20 @@ class proxyView
  }
 
  /**
-  *! @function __clone
-  *  @abstract Prevent cloning of singleton object
+  *! @function __decide
+  *  @abstract Switch/Case to decide what to do
+  *  @param args array - Array of arguments
   */
- public function __clone() {
-  trigger_error('Cloning prohibited', E_USER_ERROR);
- }
-
- /**
-  *! @function __wakeup
-  *  @abstract Prevent deserialization of singleton object
-  */
- public function __wakeup() {
-  trigger_error('Deserialization of singleton prohibited ...', E_USER_ERROR);
+ private function __decide($cmd)
+ {
+  if (!empty($cmd)){
+   switch($cmd){
+    case 'authenticate':
+     return $cmd.' command called';
+    default:
+     return $cmd;
+   }
+  }
  }
 }
 ?>
