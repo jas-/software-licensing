@@ -109,6 +109,78 @@ class keyring
   }
  }
 
+ /*
+  * Verify our $this->config array
+  */
+ private function __vsettings($array)
+ {
+  return ((!empty($array['config']))&&
+          (!empty($array['encrypt_key']))&&
+          (!empty($array['private_key_type']))&&
+          (!empty($array['digest_algorithm']))&&
+          (!empty($array['private_key_bits']))&&
+          (!empty($array['x509_extensions']))&&
+          (!empty($array['skey']))) ? true : false;
+ }
+
+ /*
+  * Verify our $this->dn array
+  */
+ private function __vdn($array)
+ {
+  return ((!empty($array['countryName']))&&
+          (!empty($array['stateOrProvinceName']))&&
+          (!empty($array['localityName']))&&
+          (!empty($array['organizationName']))&&
+          (!empty($array['organizationalUnitName']))&&
+          (!empty($array['commonName']))&&
+          (!empty($array['emailAddress']))) ? true : false;
+ }
+
+ /**
+  *! @function __public
+  *  @abstract Retrieves the public key for the specified account (defaults to
+  *            the current system key pair if email is empty)
+  */
+ private function __public($email=false)
+ {
+  $r = false;
+  try{
+   if (!$email){
+    $sql = sprintf('CALL Configuration_def_get("%s")',
+                   $this->registry->db->sanitize($this->registry->libs->_hash($this->registry->opts['dbKey'],
+                                                                              $this->registry->libs->_salt($this->registry->opts['dbKey'],
+                                                                              2048))));
+   } else {
+    $sql = sprintf('CALL Configuration_keys_get("%s, %s")',
+                   $this->registry->db->sanitize($email),
+                   $this->registry->db->sanitize($this->registry->libs->_hash($this->registry->opts['dbKey'],
+                                                                              $this->registry->libs->_salt($this->registry->opts['dbKey'],
+                                                                              2048))));
+   }
+   $r = $this->registry->db->query($sql);
+   $r = ((!empty($r['publicKey']))&&(!empty($r['email']))) ? array('email'=>$r['email'],'key'=>$r['publicKey']) : false;
+  } catch(Exception $e){
+   // error handler
+  }
+  return $r;
+ }
+
+ /**
+  *! @function __settings
+  *  @abstract Handles the retrieval of current OpenSSL configuration data
+  */
+ private function __settings()
+ {
+  try{
+   $sql = sprintf('CALL Configuration_cnf_get()');
+   $r = $this->registry->db->query($sql);
+  } catch(Exception $e){
+   // error handler
+  }
+  return (!empty($r)) ? $r : false;
+ }
+
  public function __clone() {
   trigger_error('Cannot clone instance of Singleton pattern ...', E_USER_ERROR);
  }

@@ -91,50 +91,6 @@ class proxyView
  }
 
  /**
-  *! @function __public
-  *  @abstract Retrieves the public key for the specified account (defaults to
-  *            the current system key pair if email is empty)
-  */
- private function __public($email=false)
- {
-  $r = false;
-  try{
-   if (!$email){
-    $sql = sprintf('CALL Configuration_def_get("%s")',
-                   $this->registry->db->sanitize($this->registry->libs->_hash($this->registry->opts['dbKey'],
-                                                                              $this->registry->libs->_salt($this->registry->opts['dbKey'],
-                                                                              2048))));
-   } else {
-    $sql = sprintf('CALL Configuration_keys_get("%s, %s")',
-                   $this->registry->db->sanitize($email),
-                   $this->registry->db->sanitize($this->registry->libs->_hash($this->registry->opts['dbKey'],
-                                                                              $this->registry->libs->_salt($this->registry->opts['dbKey'],
-                                                                              2048))));
-   }
-   $r = $this->registry->db->query($sql);
-   $r = ((!empty($r['publicKey']))&&(!empty($r['email']))) ? array('email'=>$r['email'],'key'=>$r['publicKey']) : false;
-  } catch(Exception $e){
-   // error handler
-  }
-  return $r;
- }
-
- /**
-  *! @function __settings
-  *  @abstract Handles the retrieval of current OpenSSL configuration data
-  */
- private function __settings()
- {
-  try{
-   $sql = sprintf('CALL Configuration_cnf_get()');
-   $r = $this->registry->db->query($sql);
-  } catch(Exception $e){
-   // error handler
-  }
-  return (!empty($r)) ? $r : false;
- }
-
- /**
   *! @function __decrypt
   *  @abstract Handle decryption of submitted form data
   */
