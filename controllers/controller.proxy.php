@@ -48,28 +48,10 @@ class proxyController
   if ((!$this->__vRequest(getenv('HTTP_X_REQUESTED_WITH')))||
       (!$this->__vCSRF(getenv('HTTP_X_ALT_REFERER'), $_SESSION['csrf']))||
       (!$this->__vCheckSum(getenv('HTTP_CONTENT_MD5'), $post))){
-   exit($this->registry->libs->JSONencode(array('success'=>'Necessary sanitation checks passed')));
+   return;
   } else {
-   exit($this->registry->libs->JSONencode(array('error'=>'Necessary sanitation checks were not included on request.')));
+   exit($this->registry->libs->JSONencode(array('error'=>'Invalid request made')));
   }
- }
-
- /**
-  *! @function __auth
-  *  @abstract Handles authentication
-  */
- private function __auth()
- {
-
- }
-
- /**
-  *! @function __query
-  *  @abstract Builds authentication query
-  */
- private function __query()
- {
-
  }
 
  /**
@@ -109,7 +91,7 @@ class proxyController
   if (file_exists('views/view.proxy.php')){
    require 'views/view.proxy.php';
   }
-  dashboardView::instance($this->registry);
+  proxyView::instance($this->registry);
  }
 }
 ?>

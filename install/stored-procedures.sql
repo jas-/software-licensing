@@ -127,7 +127,6 @@ BEGIN
  DELETE FROM `sessions` WHERE `session_id`=session_id LIMIT 1;
 END//
 
-DELIMITER //
 DROP PROCEDURE IF EXISTS Session_Timeout//
 CREATE DEFINER='licensing'@'localhost' PROCEDURE Session_Timeout(IN `session_expire` INT(10))
  DETERMINISTIC
@@ -144,6 +143,51 @@ CREATE DEFINER='licensing'@'localhost' PROCEDURE Logs_Add(IN `guid` VARCHAR(64),
  COMMENT 'Add or update logs'
 BEGIN
  INSERT INTO `logs` (`guid`,`adate`,`ip`,`hostname`,`agent`,`query`) VALUES (guid, adate, ip, hostname, agent, query);
+END//
+
+DROP PROCEDURE IF EXISTS Configuration_cnf_add//
+CREATE DEFINER='licesning'@'localhost' PROCEDURE Configuration_cnf_add(IN `config` VARCHAR(64), IN `encrypt_key` INT(1), IN `private_key_type` VARCHAR(64), IN `digest_algorithm` VARCHAR(64), IN `private_key_bits` INT(4), IN `x509_extensions` VARCHAR(32), OUT `x` INT)
+ DETERMINISTIC
+ SQL SECURITY INVOKER
+ COMMENT 'Add or updates OpenSSL configuration'
+BEGIN
+ SET x=0;
+ SELECT COUNT(*) INTO x FROM `configuration_openssl_cnf`;
+ IF x>0 THEN
+  INSERT INTO `configuration_openssl_cnf` (`config`, `encrypt_key`, `private_key_type`, `digest_algorithm`, `private_key_bits`, `x509_extensions`) VALUES (config, encrypt_key, private_key_type, digest_algorithm, private_key_bits, x509_extensions) ON DUPLICATE KEY UPDATE `config`=config, `encrypt_key`=encrypt_key, `private_key_type`=private_key_type, `digest_algorithm`=digest_algorithm, `x509_extennsions`=x509_extensions;
+ ELSE
+  UPDATE `configuration_openssl_cnf` SET `config`=config, `encrypt_key`=encrypt_key, `private_key_type`=private_key_type, `digest_algorithm`=digest_algorithm, `x509_extennsions`=x509_extensions;
+ END IF;
+ SET x=ROW_COUNT();
+ SELECT x;
+END//
+
+DELIMITER //
+DROP PROCEDURE IF EXISTS Configuration_cnf_get//
+CREATE DEFINER='licensing'@'localhost' PROCEDURE Configuration_cnf_get()
+ DETERMINISTIC
+ SQL SECURITY INVOKER
+ COMMENT 'Retrieves OpenSSL configuration'
+BEGIN
+ SELECT `config`,`encrypt_key`,`private_key_type`,`digest_algorithm`,`private_key_bits`,`x509_extensions` FROM `configuration_openssl_cnf`;
+END//
+
+DROP PROCEDURE IF EXISTS Configuration_keys_add//
+CREATE DEFINER='licesning'@'localhost' PROCEDURE Configuration_keys_add(IN `countryName` VARCHAR(64), IN `stateOrProvinceName` VARCHAR(64), IN `localityName` VARCHAR(64), IN `organizationalName` VARCHAR(64), IN `organizationalUnitName` VARCHAR(64), IN `commonName` VARCHAR(64), IN `emailAddress` VARCHAR(64), IN `privateKey` LONGTEXT, IN `publicKey` LONGTEXT, IN `sKey` LONGTEXT)
+ DETERMINISTIC
+ SQL SECURITY INVOKER
+ COMMENT 'Add or updates users key pair'
+BEGIN
+ INSERT INTO `configuration_openssl_keys` (`countryName`, `stateOrProvinceName`, `localityName`, `organizationalName`, `organizationalUnitName`, `commonName`, `emailAddress`, `privateKey`, `publicKey`) VALUES (countryName, stateOrProvinceName, localityName, organizationalName, organizationalUnitName, commonName, emailAddress, HEX(AES_ENCRYPT(privateKey, SHA1(sKey))), HEX(AES_ENCRYPT(publicKey, SHA1(sKey)))) ON DUPLICATE KEY UPDATE `countryName`=countryName, `stateOrProvinceName`=stateOrProvinceName, `localityName`=localityName, `organizationalName`=organizationalName, `organizationalUnitName`=organizationalUnitName, `commonName`=commonName, `emailAddress`=emailAddress, `privateKey`=HEX(AES_ENCRYPT(privateKey, SHA1(sKey))), `publicKey`=HEX(AES_ENCRYPT(publicKey, SHA1(sKey)));
+END//
+
+DROP PROCEDURE IF EXISTS Configuration_keys_get//
+CREATE DEFINER='licesning'@'localhost' PROCEDURE Configuration_keys_get(IN `emailAddress` VARCHAR(64), IN `sKey` LONGTEXT)
+ DETERMINISTIC
+ SQL SECURITY INVOKER
+ COMMENT 'Retrieves OpenSSL keypair by email address'
+BEGIN
+ SELECT `countryName`, `stateOrProvinceName`, `localityName`, `organizationalName`, `organizationalUnitName`, `commonName`, `emailAddress`, AES_DECRYPT(BINARY(UNHEX(privateKey)), SHA1(sKey)) AS privateKey, AES_DECRYPT(BINARY(UNHEX(publicKey)), SHA1(sKey)) AS publicKey FROM `configuration_openssl_keys` WHERE `emailAddress`=emailAddress;
 END//
 
 DELIMITER ;

@@ -34,12 +34,12 @@ class validation {
   }
   return self::$instance;
  }
- public function __do($array)
+ public function __do($array, $type=false)
  {
   if (is_array($array)) {
    return $this->__switch($array);
   } else {
-   return $this->__perform($array);
+   return $this->__perform($array, $type);
   }
  }
  private function __switch($array)
@@ -110,7 +110,7 @@ class validation {
    case 'integer':
     return filter_var($item, FILTER_SANITIZE_NUMBER_INT);
    case 'string':
-    return filter_var($item, FILTER_SANITIZE_STRING);
+    return filter_var($item, FILTER_SANITIZE_STRING, FILTER_FLAG_ENCODE_LOW|FILTER_FLAG_ENCODE_HIGH);
    case 'alpha':
     return filter_var($item, FILTER_SANITIZE_MAGIC_QUOTES);
    case 'decimal':
