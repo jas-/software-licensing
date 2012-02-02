@@ -151,14 +151,7 @@ CREATE DEFINER='licensing'@'localhost' PROCEDURE Configuration_def_add(IN `title
  SQL SECURITY INVOKER
  COMMENT 'Add or updates configuration'
 BEGIN
- DECLARE x INT DEFAULT 0;
- SELECT COUNT(*) INTO x FROM `configuration`;
- IF x>0 THEN
-  INSERT INTO `configuration` (`title`, `private`, `email`, `timeout`, `pkey`, `pvkey`, `pass`) VALUES (title, private, email, timeout, HEX(AES_ENCRYPT(pkey, SHA1(skey))), HEX(AES_ENCRYPT(pvkey, SHA1(skey))), HEX(AES_ENCRYPT(pass, SHA1(skey)))) ON DUPLICATE KEY UPDATE `title`=title, `private`=private, `email`=email, `timeout`=timeout, `pkey`=HEX(AES_ENCRYPT(pkey, SHA1(skey))), `pvkey`=HEX(AES_ENCRYPT(pvkey, SHA1(skey))), `pass`=HEX(AES_ENCRYPT(pass, SHA1(skey)));
- ELSE
-  UPDATE `configuration` SET `title`=title, `private`=private, `email`=email, `timeout`=timeout, `pkey`=HEX(AES_ENCRYPT(pkey, SHA1(skey))), `pvkey`=HEX(AES_ENCRYPT(pvkey, SHA1(skey))), `pass`=HEX(AES_ENCRYPT(pass, SHA1(skey)));
- END IF;
- SELECT ROW_COUNT() INTO x;
+ INSERT INTO `configuration` (`title`, `private`, `email`, `timeout`, `pkey`, `pvkey`, `pass`) VALUES (title, private, email, timeout, HEX(AES_ENCRYPT(pkey, SHA1(skey))), HEX(AES_ENCRYPT(pvkey, SHA1(skey))), HEX(AES_ENCRYPT(pass, SHA1(skey)))) ON DUPLICATE KEY UPDATE `title`=title, `private`=private, `email`=email, `timeout`=timeout, `pkey`=HEX(AES_ENCRYPT(pkey, SHA1(skey))), `pvkey`=HEX(AES_ENCRYPT(pvkey, SHA1(skey))), `pass`=HEX(AES_ENCRYPT(pass, SHA1(skey)));
 END//
 
 DROP PROCEDURE IF EXISTS Configuration_def_get//
