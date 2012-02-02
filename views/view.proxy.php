@@ -38,14 +38,6 @@ class proxyView
   */
  protected static $instance;
 
- private $dn = array('countryName'             => 'US',
-                     'stateOrProvinceName'     => 'Utah',
-                     'localityName'            => 'Salt Lake City',
-                     'organizationName'        => 'jQuery.pidCrypt',
-                     'organizationalUnitName'  => 'Plug-in for easy implementation of RSA public key encryption',
-                     'commonName'              => 'Jason Gerfen',
-                     'emailAddress'            => 'jason.gerfen@gmail.com');
-
  /**
   *! @function __construct
   *  @abstract Initializes singleton for proxyView class
@@ -54,10 +46,6 @@ class proxyView
  public function __construct($registry)
  {
   $this->registry = $registry;
-  if (class_exists('openssl')){
-   $this->registry->ssl = openssl::instance(array('config'=>$this->__settings(),
-                                                  'dn'=>$this->dn));
-  }
   $do = (!empty($_POST['key'])) ? 'key' : $this->registry->router->action;
   exit($this->registry->libs->JSONencode($this->__decide($do)));
  }
@@ -124,7 +112,7 @@ class proxyView
                                                                               2048))));
    }
    $r = $this->registry->db->query($sql);
-   $r = ((!empty($r['public']))&&(!empty($r['email']))) ? array('email'=>$r['email'],'key'=>$r['public']) : false;
+   $r = ((!empty($r['publicKey']))&&(!empty($r['email']))) ? array('email'=>$r['email'],'key'=>$r['publicKey']) : false;
   } catch(Exception $e){
    // error handler
   }

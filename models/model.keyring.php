@@ -4,7 +4,7 @@
 if (!defined('__SITE')) exit('No direct calls please...');
 
 /**
- * Manage RSA keys
+ * Manage RSA keys and encryption
  *
  *
  * LICENSE: This source file is subject to version 3.01 of the GPL license
@@ -32,6 +32,12 @@ class keyring
   * @abstract Global class handler
   */
  private $registry;
+
+ /**
+  * @var ssl object
+  * @abstract Handles current users ssl object
+  */
+ private $ssl;
 
  /**
   *! @var instance object - class singleton object
@@ -68,6 +74,8 @@ class keyring
  private function __construct($registry)
  {
   $this->registry = $registry;
+  $this->__setup($this->registry->val->__do($_POST['email'], 'email'));
+
  }
 
  /**
@@ -83,6 +91,22 @@ class keyring
    self::$instance = new self($config, $args);
   }
   return self::$instance;
+ }
+
+ /**
+  *! @function setup
+  *  @abstract Creates new OpenSSL object based on current user or default settings
+  */
+ private function __setup($email=false)
+ {
+  $c = $this->__settings();
+  $d = $this->__dn($email);
+  $this->config = ($this->__vsettings($c)) ? $c : $this->config;
+  $this->dn = ($this->__vdn($d)) ? $d : $this->dn;
+  if (class_exists('openssl')){
+   $this->ssl = openssl::instance(array('config'=>$this->config,
+                                        'dn'=>$this->dn));
+  }
  }
 
  public function __clone() {

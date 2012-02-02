@@ -118,7 +118,7 @@ class validation {
    case 'boolean':
     return filter_var((bool)$item, FILTER_SANITIZE_NUMBER_INT);
    case 'email':
-    return filter_var($item, FILTER_SANITIZE_EMAIL);
+    return filter_var($item, FILTER_SANITIZE_EMAIL, FILTER_FLAG_ENCODE_LOW|FILTER_FLAG_ENCODE_HIGH);
    case 'phone':
     return filter_var($item, FILTER_SANITIZE_STRING);
    case 'ipv4':
