@@ -74,6 +74,7 @@ $_SESSION['csrf'] = (!empty($_SESSION['csrf'])) ?
 $registry->sessions->regen(true);
 
 /* Set application defaults within registry */
+$settings['opts']['dbKey']=$settings['sessions']['db-key'];
 $registry->opts = $settings['opts'];
 
 /* start logging access */

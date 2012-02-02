@@ -49,7 +49,7 @@ class dbSession
   * @var dbKey string
   * @abstract Provides transparent AES encryption/decryption of session data
   */
-	private static $dbKey;
+	public static $dbKey;
 
  /**
   *! @function __construct
