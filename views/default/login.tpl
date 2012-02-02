@@ -24,7 +24,10 @@
     $j('#message').html('<div class="warning">Empty response for request</div>').fadeIn(1000);
    }
   }
-  $j('#auth').pidCrypt({appID:'{$token}',callback:function(){ _message(this); }});
+  function _load(){
+   // load a spinner or something 
+  }
+  $j('#auth').pidCrypt({appID:'{$token}',callback:function(){ _message(this); },preCallback:function(){ _load(); }});
  });
 </script>
 <div id="authenticate" class="rounder gradient">

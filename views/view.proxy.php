@@ -58,7 +58,8 @@ class proxyView
    $this->registry->ssl = openssl::instance(array('config'=>$this->__settings(),
                                                   'dn'=>$this->dn));
   }
-  exit($this->registry->libs->JSONencode(array('success'=>$this->__decide($this->registry->router->action))));
+  $do = (!empty($_POST['key'])) ? 'key' : $this->registry->router->action;
+  exit($this->registry->libs->JSONencode($this->__decide($do)));
  }
 
  /**
@@ -89,11 +90,13 @@ class proxyView
    switch($cmd){
     case 'authenticate':
      $x = $this->__decrypt($this->registry->val->__do($_POST));
+     break;
     case 'key':
-     $x = $this->__public();;
-     return;
+     $x = $this->__public();
+     break;
     default:
      $x = false;
+     break;
    }
   }
   return $x;
@@ -106,28 +109,18 @@ class proxyView
   */
  private function __public($email=false)
  {
-  $this->registry->ssl->genRand();
-  $priv = $this->registry->ssl->genPriv($this->registry->opts['dbKey']);
-  $pub = $this->registry->ssl->genPub();
-  $email = (!empty($email)) ? $email : 'default';
+  $r = false;
   try{
-   $sql = sprintf('CALL Configuration_def_add("%s", "%d", "%s", "%d", "%s", "%s", "%s", "%s")',
-                  $this->registry->db->sanitize('Marriott Library - Software Licensing'),
-                  $this->registry->db->sanitize(1),
-                  $this->registry->db->sanitize('jason.gerfen@gmail.com'),
-                  $this->registry->db->sanitize(3600),
-                  $this->registry->db->sanitize($priv),
-                  $this->registry->db->sanitize($pub),
-                  $this->registry->db->sanitize($this->registry->opts['dbKey']),
+   $sql = sprintf('CALL Configuration_def_get("%s")',
                   $this->registry->db->sanitize($this->registry->libs->_hash($this->registry->opts['dbKey'],
-                                                                            $this->registry->libs->_salt($this->registry->opts['dbKey'],
-                                                                            2048))));
-   echo $sql;
+                                                                             $this->registry->libs->_salt($this->registry->opts['dbKey'],
+                                                                             2048))));
    $r = $this->registry->db->query($sql);
+   $r = ((!empty($r['public']))&&(!empty($r['email']))) ? array('email'=>$r['email'],'key'=>$r['public']) : false;
   } catch(Exception $e){
    // error handler
   }
-  $this->opts['config'] = (!empty($r)) ? $r : false;
+  return $r;
  }
 
  /**
@@ -151,7 +144,8 @@ class proxyView
   */
  private function __decrypt($obj)
  {
-
+  return array('successs'=>'Processing encrypted form data');
  }
 }
+
 ?>
