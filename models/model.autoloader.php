@@ -32,7 +32,7 @@ class autoloader {
   return self::$loader;
  }
 
- private function __construct($path)
+ public function __construct($path)
  {
   static::$path = (!empty($path)) ? $path : $_SERVER['DOCUMENT_ROOT'];
   $this->find(static::$path);

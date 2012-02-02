@@ -91,7 +91,7 @@ class proxyController
   if (file_exists('views/view.proxy.php')){
    require 'views/view.proxy.php';
   }
-  proxyView::instance($this->registry);
+  new proxyView($this->registry);
  }
 }
 ?>

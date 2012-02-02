@@ -18,8 +18,14 @@ if (!defined('__SITE')) exit('No direct calls please...');
  * @license    http://www.gnu.org/licenses/gpl.html  GPL License 3
  * @version    0.1
  */
+
+/**
+ *! @function signals
+ *  @abstract Handles signals handling
+ */
 class signals
 {
+
  protected static $instance;
  private $handle;
  private function __construct($configuration)

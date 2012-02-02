@@ -1,15 +1,17 @@
+<!-- primary page template start -->
 <div id="full">
  <div id="constrain">
   <div id="one-col">
-   {$menu}
+{$menu}
   </div>
   <div id="two-col">
    <div class="one">
-    {$main}
+{$main}
    </div>
    <div class="two">
-    {$login}
+{$login}
    </div>
   </div>
  </div>
 </div>
+<!-- primary page template end -->

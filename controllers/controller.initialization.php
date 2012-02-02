@@ -32,7 +32,7 @@ include __SITE.'/models/model.autoloader.php';
 if (!class_exists('autoloader')){
  exit('Error initializing autoloader class, unable to proceed. 0x0c3');
 }
-autoloader::instance('models/');
+new autoloader('models/');
 
 /* load the registry class */
 if (!class_exists('registry')){
@@ -51,7 +51,7 @@ $eng = $registry->libs->_dbEngine($settings['db']['engine']);
 if (!class_exists($eng)){
  exit('Error loading configured database class, unable to proceed. 0x0c6');
 }
-$registry->db = $eng::instance($settings['db']);
+$registry->db = new $eng($settings['db']);
 
 /* prepare the secret key */
 $settings['sessions']['db-key'] = $registry->libs->_hash($settings['sessions']['db-key'],
@@ -64,7 +64,7 @@ $settings['sessions']['db-key'] = $registry->libs->_hash($settings['sessions']['
 if (!class_exists('dbSession')){
  exit('Error loading database session support, unable to proceed. 0x0c6');
 }
-$registry->sessions = dbSession::instance($settings['sessions'], $registry);
+$registry->sessions = new dbSession($settings['sessions'], $registry);
 
 /* generate or use CSRF token */
 $_SESSION['csrf'] = (!empty($_SESSION['csrf'])) ?
@@ -76,16 +76,17 @@ $registry->sessions->regen(true);
 /* Set application defaults within registry */
 $registry->opts = $settings['opts'];
 
+/* start logging access */
 if (!class_exists('logging')){
  exit('Error initializing logging class, unable to proceed. 0x0c7');
 }
-logging::init($registry);
+new logging($registry);
 
+/* load up access filtering */
 if (!class_exists('access')){
  exit('Error initializing access class, unable to proceed. 0x0c8');
 }
-$registry->access = access::init($registry);
-if (!$registry->access->_do()){
+if (!new access($registry)){
  exit('Error due to access restrictions');
 }
 

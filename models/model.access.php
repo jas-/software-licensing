@@ -55,9 +55,10 @@ class access {
   *  @abstract Class initialization and ip to access/deny processing
   *  @param $args array Array of registry items
   */
- private function __construct($registry)
+ public function __construct($registry)
  {
   $this->registry = $registry;
+  $this->_do();
  }
 
  /**

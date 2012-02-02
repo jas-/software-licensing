@@ -39,13 +39,20 @@ class proxyView
  protected static $instance;
 
  /**
+  * @var opts array
+  * @abstract Global array of OpenSSL options
+  */
+ private $opts = array();
+
+ /**
   *! @function __construct
   *  @abstract Initializes singleton for proxyView class
   *  @param registry array - Global array of class objects
   */
- private function __construct($registry)
+ public function __construct($registry)
  {
   $this->registry = $registry;
+  echo '<pre>'; print_r($registry); echo '</pre>';
   exit($this->registry->libs->JSONencode(array('success'=>$this->__decide($this->registry->router->action))));
  }
 
@@ -77,8 +84,8 @@ class proxyView
    switch($cmd){
     case 'authenticate':
      $x = $this->__decrypt($this->registry->val->__do($_POST));
-    case 'keys':
-     // return default or user public key
+    case 'key':
+     
      $x = $key;
      return;
     default:
@@ -100,7 +107,7 @@ class proxyView
   } catch(Exception $e){
    // error handler
   }
-  return (!empty($r)) ? $r : false;
+  $this->opts['config'] = (!empty($r)) ? $r : false;
  }
 
  /**
@@ -110,8 +117,8 @@ class proxyView
  private function __decrypt($obj)
  {
   if (class_exists('openssl')){
-   $this->registry->ssl = openssl::instance($opts, array('config'=>$this->__settings()));
-echo '<pre>'; print_r($this->registry->ssl);
+   $this->registry->ssl = openssl::instance($opts, $this->opts['config']);
+echo '<pre>'; print_r($this->opts['config']); echo '</pre>';
   }
  }
 }

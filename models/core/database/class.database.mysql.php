@@ -50,7 +50,7 @@ class mysqlDBconn
   *            PDO, MySQLi or MySQL access methods
   *  @param configuration array - Server address, username, password, database
   */
- private function __construct($configuration)
+ public function __construct($configuration)
  {
   $this->flag = $this->decide($this->flag);
   switch($this->flag) {

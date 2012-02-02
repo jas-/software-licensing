@@ -1,3 +1,4 @@
+<!-- authentication template state -->
 <script type="text/javascript">
  var $j = jQuery.noConflict();
  $j(document).ready(function(){
@@ -39,3 +40,4 @@
   <a href="">Register</a> | <a href="">Forgot username?</a>
  </form>
 </div>
+<!-- authentication template end -->
