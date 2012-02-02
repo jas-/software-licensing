@@ -160,10 +160,10 @@ CREATE DEFINER='licensing'@'localhost' PROCEDURE Configuration_def_get(IN `skey`
  SQL SECURITY INVOKER
  COMMENT 'Retrieves configuration'
 BEGIN
- DECLARE public VARCHAR(255) DEFAULT '';
- DECLARE priv VARCHAR(255) DEFAULT '';
- DECLARE password VARCHAR(255) DEFAULT '';
- SELECT `title`, `private`, `email`, `timeout`, AES_DECRYPT(BINARY(UNHEX(pkey)), SHA1(skey)) AS public, AES_DECRYPT(BINARY(UNHEX(pvkey)), SHA1(skey)) AS priv, AES_DECRYPT(BINARY(UNHEX(pass)), SHA1(skey)) AS password FROM `configuration`;
+ DECLARE publicKey LONGTEXT DEFAULT '';
+ DECLARE privateKey LONGTEXT DEFAULT '';
+ DECLARE password LONGTEXT DEFAULT '';
+ SELECT `title`, `private`, `email`, `timeout`, AES_DECRYPT(BINARY(UNHEX(pkey)), SHA1(skey)) AS publicKey, AES_DECRYPT(BINARY(UNHEX(pvkey)), SHA1(skey)) AS privateKey, AES_DECRYPT(BINARY(UNHEX(pass)), SHA1(skey)) AS password FROM `configuration`;
 END//
 
 DROP PROCEDURE IF EXISTS Configuration_cnf_add//

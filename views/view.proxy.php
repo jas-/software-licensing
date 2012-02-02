@@ -92,7 +92,7 @@ class proxyView
      $x = $this->__decrypt($this->registry->val->__do($_POST));
      break;
     case 'key':
-     $x = $this->__public();
+     $x = $this->__public($this->registry->val->__do($_POST['email']));
      break;
     default:
      $x = false;
@@ -111,10 +111,18 @@ class proxyView
  {
   $r = false;
   try{
-   $sql = sprintf('CALL Configuration_def_get("%s")',
-                  $this->registry->db->sanitize($this->registry->libs->_hash($this->registry->opts['dbKey'],
-                                                                             $this->registry->libs->_salt($this->registry->opts['dbKey'],
-                                                                             2048))));
+   if (!$email){
+    $sql = sprintf('CALL Configuration_def_get("%s")',
+                   $this->registry->db->sanitize($this->registry->libs->_hash($this->registry->opts['dbKey'],
+                                                                              $this->registry->libs->_salt($this->registry->opts['dbKey'],
+                                                                              2048))));
+   } else {
+    $sql = sprintf('CALL Configuration_keys_get("%s, %s")',
+                   $this->registry->db->sanitize($email),
+                   $this->registry->db->sanitize($this->registry->libs->_hash($this->registry->opts['dbKey'],
+                                                                              $this->registry->libs->_salt($this->registry->opts['dbKey'],
+                                                                              2048))));
+   }
    $r = $this->registry->db->query($sql);
    $r = ((!empty($r['public']))&&(!empty($r['email']))) ? array('email'=>$r['email'],'key'=>$r['public']) : false;
   } catch(Exception $e){
