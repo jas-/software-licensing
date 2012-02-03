@@ -79,7 +79,7 @@ class proxyController
  private function __vCheckSum($header, $array)
  {
   return (strcmp(base64_decode($header),
-                 md5($registry->libs->_serialize($array)))!==0) ? false : true;
+                 md5($this->registry->libs->_serialize($array)))!==0) ? false : true;
  }
 
  /**
