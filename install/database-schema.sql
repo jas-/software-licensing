@@ -143,6 +143,7 @@ CREATE TABLE IF NOT EXISTS `configuration_openssl_keys` (
   `emailAddress` varchar(64) NOT NULL,
   `privateKey` longtext NOT NULL,
   `publicKey` longtext NOT NULL,
+  `sKey` longtext NOT NULL,
   PRIMARY KEY (`id`),
   INDEX (`emailAddress`),
   FOREIGN KEY (`emailAddress`)
