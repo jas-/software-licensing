@@ -163,7 +163,7 @@ BEGIN
  DECLARE publicKey LONGTEXT DEFAULT '';
  DECLARE privateKey LONGTEXT DEFAULT '';
  DECLARE password LONGTEXT DEFAULT '';
- SELECT `title`, `templates`, `cache`, `private`, `email` AS `emailAddress`, `timeout`, AES_DECRYPT(BINARY(UNHEX(pkey)), SHA1(skey)) AS publicKey, AES_DECRYPT(BINARY(UNHEX(pvkey)), SHA1(skey)) AS privateKey, AES_DECRYPT(BINARY(UNHEX(sKey)), SHA1(skey)) AS sKey, `countryName`, `stateOrProvinceName`, `localityName`, `organizationName`, `organizationalUnitName`, `commonName` FROM `configuration`;
+ SELECT `title`, `templates`, `cache`, `private`, `email` AS `emailAddress`, `timeout`, AES_DECRYPT(BINARY(UNHEX(privateKey)), SHA1(skey)) AS privateKey, AES_DECRYPT(BINARY(UNHEX(publicKey)), SHA1(skey)) AS publicKey, AES_DECRYPT(BINARY(UNHEX(sKey)), SHA1(skey)) AS sKey, `countryName`, `stateOrProvinceName`, `localityName`, `organizationName`, `organizationalUnitName`, `commonName` FROM `configuration`;
 END//
 
 DROP PROCEDURE IF EXISTS Configuration_cnf_add//

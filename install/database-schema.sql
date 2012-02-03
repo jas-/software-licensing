@@ -200,5 +200,45 @@ CREATE TABLE IF NOT EXISTS `sessions` (
   UNIQUE KEY `session_id` (`session_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci AUTO_INCREMENT=0;
 
+DROP TABLE IF EXISTS `resources`;
+CREATE TABLE IF NOT EXISTS `resources` (
+  `id` int(255) NOT NULL AUTO_INCREMENT,
+  `resource` varchar(128) NOT NULL,
+  `common_name` varchar(128) NOT NULL,
+  `owner` varchar(128) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `resource` (`resource`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=0;
+
+DROP TABLE IF EXISTS `resources_groups`;
+CREATE TABLE IF NOT EXISTS `resources_groups` (
+  `id` int(255) NOT NULL AUTO_INCREMENT,
+  `resource` varchar(128) NOT NULL,
+  `ggroup` varchar(128) NOT NULL,
+  `read` tinyint(1) NOT NULL,
+  `write` tinyint(1) NOT NULL,
+  `owner` varchar(128) NOT NULL,
+  PRIMARY KEY (`id`),
+  INDEX (`resource`),
+  FOREIGN KEY (`resource`)
+   REFERENCES `resources` (`resource`)
+    ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=0;
+
+DROP TABLE IF EXISTS `resources_users`;
+CREATE TABLE IF NOT EXISTS `resources_users` (
+  `id` int(255) NOT NULL AUTO_INCREMENT,
+  `resource` varchar(128) NOT NULL,
+  `uuser` varchar(128) NOT NULL,
+  `read` tinyint(1) NOT NULL,
+  `write` tinyint(1) NOT NULL,
+  `owner` varchar(128) NOT NULL,
+  PRIMARY KEY (`id`),
+  INDEX (`resource`),
+  FOREIGN KEY (`resource`)
+   REFERENCES `resources` (`resource`)
+    ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=0;
+
 -- Re-enable the foreign key checks
 SET foreign_key_checks = 1;
