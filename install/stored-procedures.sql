@@ -199,7 +199,7 @@ CREATE DEFINER='licensing'@'localhost' PROCEDURE Configuration_get_dn()
  SQL SECURITY INVOKER
  COMMENT 'Retrieves OpenSSL DN configuration'
 BEGIN
- SELECT `countryName`,`stateOrProvinceName`,`localityName`,`organizationalName`,`organizationalUnitName`,`commonName`,`email` AS emailAddress FROM `configuration`;
+ SELECT `countryName`,`stateOrProvinceName`,`localityName`,`organizationName`,`organizationalUnitName`,`commonName`,`email` AS emailAddress FROM `configuration`;
 END//
 DELIMITER ;
 
