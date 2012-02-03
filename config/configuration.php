@@ -35,6 +35,6 @@ $settings['sessions']['proto']   = true;
  * database contents. If you change this manually you will
  * loose everything in the database.
  */
-$settings['sessions']['db-key']   = '91GQYCn5oIofKCB2S8z552pQUyNbFliT04aZMyMKGZP4Zpgfh808g8Ga4w65sj6';
+$settings['sessions']['db-key']   = '*1lPM-bgC0L(%=ofR=eY%%M[J_)jV-aA(xa!HOS}J,*gzi}nOGqY4^Ihqy*=k+^(t|ZdFO(l6iq]U|y-@tb<HRzmfeR6Ri{HcsSMW)jUpJ`@\P{`3Z-uh=[p<~hn4x[Z';
 
 ?>

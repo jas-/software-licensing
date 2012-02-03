@@ -75,12 +75,14 @@ class proxyView
   $x = false;
   if (!empty($cmd)){
    $cmd = $this->registry->val->__do($cmd, 'string');
+   $this->registry->keyring = new keyring($this->registry,
+                                          $this->registry->val->__do($_POST));
    switch($cmd){
     case 'authenticate':
-     $x = $this->__decrypt($this->registry->val->__do($_POST));
+     $x = $this->registry->keyring->__decrypt($this->registry->val->__do($_POST));
      break;
     case 'key':
-     $x = $this->__public($this->registry->val->__do($_POST['email']));
+     $x = $this->registry->keyring->__public($this->registry->val->__do($_POST['email']));
      break;
     default:
      $x = false;
@@ -88,15 +90,6 @@ class proxyView
    }
   }
   return $x;
- }
-
- /**
-  *! @function __decrypt
-  *  @abstract Handle decryption of submitted form data
-  */
- private function __decrypt($obj)
- {
-  return array('successs'=>'Processing encrypted form data');
  }
 }
 
