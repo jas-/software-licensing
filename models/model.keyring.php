@@ -51,7 +51,7 @@ class keyring
                          'encrypt_key'         => true,
                          'private_key_type'    => OPENSSL_KEYTYPE_RSA,
                          'digest_algorithm'    => 'sha256',
-                         'private_key_bits'    => 512,
+                         'private_key_bits'    => 2048,
                          'x509_extensions'     => 'usr_cert',
                          'encrypt_key_cipher'  => OPENSSL_CIPHER_3DES);
 
@@ -103,7 +103,7 @@ class keyring
   $c = $this->__settings();
   $d = $this->__dn();
 
-  $this->config = ($this->__vsettings($c)) ? $c : $this->config;
+  //$this->config = ($this->__vsettings($c)) ? $c : $this->config;
   $this->dn = ($this->__vdn($d)) ? $d : $this->dn;
 
   if (class_exists('openssl')){
@@ -111,6 +111,11 @@ class keyring
                                         'dn'=>$this->dn));
 
   $this->ssl->genRand();
+  $h = openssl_pkey_new(array('private_key_bits'=>1024));
+  print_r($h);
+  openssl_pkey_export($h, $key, $this->registry->opts['dbKey']);
+  print_r($key);
+
   echo 'PRIVATE KEY: <pre>'; print_r($this->ssl->genPriv($this->registry->opts['dbKey'])); echo '</pre>';
   echo 'PUBLIC KEY: <pre>'; print_r($this->ssl->genPub()); echo '</pre>';
 
@@ -121,7 +126,7 @@ class keyring
   * Verify our $this->config array
   */
  private function __vsettings($array)
- { print_r($array);
+ {
   return ((!empty($array['config']))&&
           (!empty($array['encrypt_key']))&&
           (!empty($array['private_key_type']))&&
@@ -221,9 +226,9 @@ class keyring
   trigger_error('Cannot deserialize instance of Singleton pattern ...', E_USER_ERROR);
  }
 
- private function __destruct()
+ public function __destruct()
  {
-  unset(self::$instance);
+  unset($instance);
   return true;
  }
 }
