@@ -47,12 +47,13 @@ class keyring
  /**
   *! @var config array - OpenSSL configuration settings
   */
- private $config = array('config'            => 'config/openssl.cnf',
-                         'encrypt_key'       => 1,
-                         'private_key_type'  => OPENSSL_KEYTYPE_RSA,
-                         'digest_algorithm'  => 'sha512',
-                         'private_key_bits'  => 512,
-                         'x509_extensions'   => 'usr_cert');
+ private $config = array('config'              => 'config/openssl.cnf',
+                         'encrypt_key'         => true,
+                         'private_key_type'    => OPENSSL_KEYTYPE_RSA,
+                         'digest_algorithm'    => 'sha256',
+                         'private_key_bits'    => 512,
+                         'x509_extensions'     => 'usr_cert',
+                         'encrypt_key_cipher'  => OPENSSL_CIPHER_3DES);
 
  /**
   *! @var dn array - Contains location specific settings
@@ -63,7 +64,7 @@ class keyring
                      'organizationName'        => 'University Of Utah',
                      'organizationalUnitName'  => 'Marriott Library',
                      'commonName'              => 'localhost:8080',
-                     'emailAddress'            => '');
+                     'emailAddress'            => 'licensing@utah.edu');
 
  /**
   *! @function __construct
@@ -101,11 +102,18 @@ class keyring
  {
   $c = $this->__settings();
   $d = $this->__dn();
+
   $this->config = ($this->__vsettings($c)) ? $c : $this->config;
   $this->dn = ($this->__vdn($d)) ? $d : $this->dn;
+
   if (class_exists('openssl')){
    $this->ssl = openssl::instance(array('config'=>$this->config,
                                         'dn'=>$this->dn));
+
+  $this->ssl->genRand();
+  echo 'PRIVATE KEY: <pre>'; print_r($this->ssl->genPriv($this->registry->opts['dbKey'])); echo '</pre>';
+  echo 'PUBLIC KEY: <pre>'; print_r($this->ssl->genPub()); echo '</pre>';
+
   }
  }
 
@@ -113,13 +121,14 @@ class keyring
   * Verify our $this->config array
   */
  private function __vsettings($array)
- {
+ { print_r($array);
   return ((!empty($array['config']))&&
           (!empty($array['encrypt_key']))&&
           (!empty($array['private_key_type']))&&
           (!empty($array['digest_algorithm']))&&
           (!empty($array['private_key_bits']))&&
-          (!empty($array['x509_extensions']))) ? true : false;
+          (!empty($array['x509_extensions']))&&
+          (!empty($array['encrypt_key_cipher']))) ? true : false;
  }
 
  /*

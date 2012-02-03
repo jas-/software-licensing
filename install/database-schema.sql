@@ -115,16 +115,17 @@ CREATE TABLE IF NOT EXISTS `configuration_access` (
 --  Primary key: id
 DROP TABLE IF EXISTS `configuration_openssl_cnf`;
 CREATE TABLE IF NOT EXISTS `configuration_openssl_cnf` (
-  `id` INT( 255 ) NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  `config` VARCHAR( 64 ) NOT NULL,
+  `id` INT(255) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  `config` VARCHAR(64) NOT NULL,
   `encrypt_key` BOOLEAN NOT NULL,
-  `private_key_type` VARCHAR( 64 ) NOT NULL,
-  `digest_algorithm` VARCHAR( 64 ) NOT NULL,
-  `private_key_bits` INT( 4 ) NOT NULL,
-  `x509_extensions` VARCHAR( 32 ) NOT NULL
+  `private_key_type` VARCHAR(64) NOT NULL,
+  `digest_algorithm` VARCHAR(64) NOT NULL,
+  `private_key_bits` INT(4) NOT NULL,
+  `x509_extensions` VARCHAR(32) NOT NULL,
+  `encrypt_key_cipher` varchar(32) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci AUTO_INCREMENT=0;
 
-INSERT INTO `configuration_openssl_cnf` (`id`, `config`, `encrypt_key`, `private_key_type`, `digest_algorithm`, `private_key_bits`, `x509_extensions`) VALUES (1, 'config/openssl.cnf', 1, 'OPENSSL_KEYTYPE_RSA', 'sha1', 2048, 'usr_cert');
+INSERT INTO `configuration_openssl_cnf` (`id`, `config`, `encrypt_key`, `private_key_type`, `digest_algorithm`, `private_key_bits`, `x509_extensions`, `encrypt_key_cipher`) VALUES (1, 'config/openssl.cnf', 1, 'OPENSSL_KEYTYPE_RSA', 'sha1', 2048, 'usr_cert', 'OPENSSL_CIPHER_3DES');
 
 -- Create a table for configuration of OpenSSL keys
 --  Primary key: id

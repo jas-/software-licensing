@@ -171,7 +171,7 @@ class openssl
   */
  public function genPriv($password)
  {
-  $this->handle = openssl_pkey_new();
+  $this->handle = openssl_pkey_new($this->opt);
   openssl_pkey_export($this->handle, $privatekey, $password, $this->opt);
   return $privatekey;
  }

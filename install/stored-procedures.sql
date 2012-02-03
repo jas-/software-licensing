@@ -189,7 +189,7 @@ CREATE DEFINER='licensing'@'localhost' PROCEDURE Configuration_cnf_get()
  SQL SECURITY INVOKER
  COMMENT 'Retrieves OpenSSL configuration'
 BEGIN
- SELECT `config`,`encrypt_key`,`private_key_type`,`digest_algorithm`,`private_key_bits`,`x509_extensions` FROM `configuration_openssl_cnf`;
+ SELECT `config`,`encrypt_key`,`private_key_type`,`digest_algorithm`,`private_key_bits`,`x509_extensions`,`encrypt_key_cipher` FROM `configuration_openssl_cnf`;
 END//
 
 DROP PROCEDURE IF EXISTS Configuration_get_dn//
