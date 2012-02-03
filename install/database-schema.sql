@@ -88,6 +88,15 @@ CREATE TABLE IF NOT EXISTS `configuration` (
   `private` tinyint(1) NOT NULL,
   `email` varchar(45) NOT NULL,
   `timeout` int(10) NOT NULL,
+  `privateKey` longtext NOT NULL,
+  `publicKey` longtext NOT NULL,
+  `sKey` longtext NOT NULL,
+  `countryName` varchar(64) NOT NULL,
+  `stateOrProvinceName` varchar(64) NOT NULL,
+  `localityName` varchar(64) NOT NULL,
+  `organizationName` varchar(64) NOT NULL,
+  `organizationalUnitName` varchar(64) NOT NULL,
+  `commonName` varchar(64) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `email` (`email`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci AUTO_INCREMENT=0;

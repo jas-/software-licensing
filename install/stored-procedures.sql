@@ -163,7 +163,7 @@ BEGIN
  DECLARE publicKey LONGTEXT DEFAULT '';
  DECLARE privateKey LONGTEXT DEFAULT '';
  DECLARE password LONGTEXT DEFAULT '';
- SELECT `title`, `private`, `email`, `timeout`, AES_DECRYPT(BINARY(UNHEX(pkey)), SHA1(skey)) AS publicKey, AES_DECRYPT(BINARY(UNHEX(pvkey)), SHA1(skey)) AS privateKey, AES_DECRYPT(BINARY(UNHEX(pass)), SHA1(skey)) AS password FROM `configuration`;
+ SELECT `title`, `templates`, `cache`, `private`, `email` AS `emailAddress`, `timeout`, AES_DECRYPT(BINARY(UNHEX(pkey)), SHA1(skey)) AS publicKey, AES_DECRYPT(BINARY(UNHEX(pvkey)), SHA1(skey)) AS privateKey, AES_DECRYPT(BINARY(UNHEX(sKey)), SHA1(skey)) AS sKey, `countryName`, `stateOrProvinceName`, `localityName`, `organizationName`, `organizationalUnitName`, `commonName` FROM `configuration`;
 END//
 
 DROP PROCEDURE IF EXISTS Configuration_cnf_add//
@@ -191,6 +191,17 @@ CREATE DEFINER='licensing'@'localhost' PROCEDURE Configuration_cnf_get()
 BEGIN
  SELECT `config`,`encrypt_key`,`private_key_type`,`digest_algorithm`,`private_key_bits`,`x509_extensions` FROM `configuration_openssl_cnf`;
 END//
+
+DELIMITER //
+DROP PROCEDURE IF EXISTS Configuration_get_dn//
+CREATE DEFINER='licensing'@'localhost' PROCEDURE Configuration_get_dn()
+ DETERMINISTIC
+ SQL SECURITY INVOKER
+ COMMENT 'Retrieves OpenSSL DN configuration'
+BEGIN
+ SELECT `countryName`,`stateOrProvinceName`,`localityName`,`organizationalName`,`organizationalUnitName`,`commonName`,`email` AS emailAddress FROM `configuration`;
+END//
+DELIMITER ;
 
 DROP PROCEDURE IF EXISTS Configuration_keys_add//
 CREATE DEFINER='licesning'@'localhost' PROCEDURE Configuration_keys_add(IN `countryName` VARCHAR(64), IN `stateOrProvinceName` VARCHAR(64), IN `localityName` VARCHAR(64), IN `organizationalName` VARCHAR(64), IN `organizationalUnitName` VARCHAR(64), IN `commonName` VARCHAR(64), IN `emailAddress` VARCHAR(64), IN `privateKey` LONGTEXT, IN `publicKey` LONGTEXT, IN `sKey` LONGTEXT)
