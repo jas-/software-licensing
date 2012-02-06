@@ -71,10 +71,10 @@ class keyring
   *  @abstract Initializes singleton for proxyView class
   *  @param registry array - Global array of class objects
   */
- public function __construct($registry)
+ public function __construct($registry, $args)
  {
   $this->registry = $registry;
-  $this->__setup($this->registry->val->__do($_POST['email'], 'email'));
+  $this->__setup($this->registry->val->__do($args['email'], 'email'));
 
  }
 
@@ -111,7 +111,7 @@ class keyring
                                         'dn'=>$this->dn));
 
   echo 'SETTINGS: <pre>'; print_r(array('config'=>$this->config, 'dn'=>$this->dn)); echo '</pre>';
-
+  echo 'PASSWORD: <pre>'; print_r($this->registry->opts['dbKey']); echo '</pre>';
   echo 'PRIVATE KEY: <pre>'; print_r($this->ssl->genPriv($this->registry->opts['dbKey'])); echo '</pre>';
   echo 'PUBLIC KEY: <pre>'; print_r($this->ssl->genPub()); echo '</pre>';
 
