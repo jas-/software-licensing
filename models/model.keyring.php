@@ -50,7 +50,7 @@ class keyring
  private $config = array('config'              => 'config/openssl.cnf',
                          'encrypt_key'         => true,
                          'private_key_type'    => OPENSSL_KEYTYPE_RSA,
-                         'digest_algorithm'    => 'sha256',
+                         'digest_algorithm'    => 'sha512',
                          'private_key_bits'    => 2048,
                          'x509_extensions'     => 'usr_cert',
                          'encrypt_key_cipher'  => OPENSSL_CIPHER_3DES);
@@ -100,21 +100,17 @@ class keyring
   */
  private function __setup($email=false)
  {
-  $c = $this->__settings();
+  $c = $this->__tsettings($this->__settings());
   $d = $this->__dn();
 
-  //$this->config = ($this->__vsettings($c)) ? $c : $this->config;
+  $this->config = ($this->__vsettings($c)) ? $c : $this->config;
   $this->dn = ($this->__vdn($d)) ? $d : $this->dn;
 
   if (class_exists('openssl')){
    $this->ssl = openssl::instance(array('config'=>$this->config,
                                         'dn'=>$this->dn));
 
-  $this->ssl->genRand();
-  $h = openssl_pkey_new(array('private_key_bits'=>1024));
-  print_r($h);
-  openssl_pkey_export($h, $key, $this->registry->opts['dbKey']);
-  print_r($key);
+  echo 'SETTINGS: <pre>'; print_r(array('config'=>$this->config, 'dn'=>$this->dn)); echo '</pre>';
 
   echo 'PRIVATE KEY: <pre>'; print_r($this->ssl->genPriv($this->registry->opts['dbKey'])); echo '</pre>';
   echo 'PUBLIC KEY: <pre>'; print_r($this->ssl->genPub()); echo '</pre>';
@@ -134,6 +130,16 @@ class keyring
           (!empty($array['private_key_bits']))&&
           (!empty($array['x509_extensions']))&&
           (!empty($array['encrypt_key_cipher']))) ? true : false;
+ }
+
+ /*
+  * Perform typecasting on required elements
+  */
+ private function __tsettings($array)
+ {
+  $array['private_key_type'] = (int)$array['private_key_type'];
+  $array['encrypt_key_cipher'] = (int)$array['encrypt_key_cipher'];
+  return $array;
  }
 
  /*
@@ -232,50 +238,4 @@ class keyring
   return true;
  }
 }
-/*
-echo $this->registry->opts['dbKey'];
-$this->ssl->genRand();
-echo '<pre>'; print_r($this->ssl->genPriv($this->registry->opts['dbKey'])); echo '</pre>';
-echo '<pre>'; print_r($this->ssl->genPub()); echo '</pre>';
-echo '<pre>'; print_r($this->registry->libs->_hash($this->registry->opts['dbKey'], $this->registry->libs->_salt($this->registry->opts['dbKey'],2048))); echo '</pre>';
-
-CALL Configuration_def_add('Marriott Library - Software Licensing', 'default', 'default/cache', 1, 'licensing@utah.edu', 3600, '-----BEGIN ENCRYPTED PRIVATE KEY-----
-MIIFDjBABgkqhkiG9w0BBQ0wMzAbBgkqhkiG9w0BBQwwDgQIawFdxeJ/e/oCAggA
-MBQGCCqGSIb3DQMHBAgsaetAtZlzmgSCBMi/XNdF8G+d/PrpEj3C6hEnxPSYPpJc
-6RWJQKx4h8QvQD4q3HuOPBjBtEnFJl0vfRM12Vm72h+Kdm5KcCrjCWXmAyp3eyJ8
-EO+eq5lqTBviZfxHZgrToGoWrkNpzU5HizYZ+6i+7khDyP0kNQ3osIdPSjDdbfah
-a5SGaUQt8pno1ByQxbVcYJFJhr1iRkAK0AMd+zVdd5CVuzikkT1pjyS3x9tnCS5O
-y3wZN/a/WAWUSGdA7mNzNWJ79VxZLvfWJ2uC2jXTZ34OFiC4Bzf3YRSOaLSds6yJ
-9z0owYAZ0LKfr3zXVgWYqqZ5nFyz2/C2lezfbpCzMhkUS37N1UqCZFHEApo2qUpQ
-QzWY0QNYnnDb3cN57d2y8eyltaqQzL0WbDmgPPwni2J6Ed1wosqXPqfR8tou2YaF
-da3S797Cv2//g1nUtCPUW5zTPXifO94YDRVLUeN3zM936ng3GF8fh3r/G1DG8/zB
-wlgEffomvbr5zFibDUNLslYTOXx+kPaEdYsTk4i7YhtctgH1qnDJdVnsqM1JAPfi
-As/s4MIxKPc4hxwp6txRJSEZMTSGDutgO5KRRV4YA3VzDe0edMoI/vT3zXhuczqg
-KdxlQLk1+KybsyD5MQ4mXwRUFVPGYM0+0Eio9sUWegMS2rKgXzgXis6SDeJ0hydH
-PZOsCJCNbqQ/ep1iFs4lHLRq5wZzC5CN14eSJjFckEvJIduC4R69CMFT92zQOmwy
-0H/y7Si7Fqm8iFZOJDPhlM7DfUZUzJP8zN4sJEfFqQ8VM0IpEFMuLtiIrWGsZWK7
-ndMdBgaJ6nrrMd1+QcYjtLjK23vyL6sWefLAPrWr8awdyXWRPMNhlvp69co75d8b
-mSUQqzRbT9/IgCokcxvSxt6YmuztdItunA6o7R4SEfGgg/xLC1bVLikQqLoSAAni
-3t9l3A7TlO5+yGwbuiyVF2y3WDR7asKuPMOUbF3HTFKDX0vpMIs4yTFwRzQHfDcl
-kAZ5bd69qfnuUZFHsO0LnzCuHHNUdv+amJkS2XMuXuM54lvGtlEhlotuHbjr+rOV
-4+LT5n3ObWIbG7ndc74rRz7/eeEesk6o/fz3hgk3x2Yl1+CWdc8xnE8X8ojBSTnp
-xWkFllfKxP+i/MGsNvmFf4EFBVSZvZ+csqr99A6fQUUl06WZrYXWVAlHg8jfWD+x
-tpSGpOi6KHg3qUVUF+qqruKU3DGIXc1GMFzxqEf7hP57f28eml0ZboIVpJ+INrZ+
-Sqpiu0q0qaPuf0rC8phWoVBcDMOcnMB9dfi2rUcS/d2IbeGBx4go1tPKHf6LJoCK
-C4zvmoMi0zBxyLcWqVnnXaCQ018cr8QAUHlHJjKLJdWDXCyb0XNjWsoX3L/MHuI2
-2dd3JXC3kZfL+2vxnIlAIxhbynV/lginlScfYep6FglMnaCSQS0uRnldIdjeUX0g
-8NkhYiJrZpa/wBOE22Km3gl9fQnsby+feL+ADyHcJmGBDaw+beeW+wgEpTfJw0+1
-vXdBHEjlQJ1l8pFrP4QZx/kz1xBL18EkmOqtFk7tmX/SYBt8tB/TDLXbcetrTz/T
-h8JPONr6j7Pl1UBUiahDkEjG67pEcvUUg5dMVdT0UXAuGluKsHabrTA1uaKNGQX+
-wcY=
------END ENCRYPTED PRIVATE KEY-----', '-----BEGIN PUBLIC KEY-----
-MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA50kQjkvlfmi/jOvM+0bO
-BLL7xwtyeDy54zIW2U441R0qbZiXQdxRhOsFUPRHIwmdR6IxUSQ0Ij6/bmFB8vrt
-yCvThFXqhEodD0rlpXg494bWTQJOV0Kp+0Fkc4oP2suVkNpeVNqeBAqYJE9dJC1T
-c5/HrpLwA/5DA1gvaPugsdyZEBx380jG63unB4rnjktCEDHYx2c6bfkjPTrJBdmK
-/SIq+xZiBsna2e8XphoyXnx0PjdHbbmle58vXVHAqjTFVh0KO8Hi/jFw8ZR3mxHi
-hGlkC/btFbIPCTZjyWSQgv2FHU5IhrD6PuEWfdGxgSwNqsipXXPeoF5Q+AGOV11a
-mQIDAQAB
------END PUBLIC KEY-----', '$2a$07$31a9f929d102f5f0374deughM4JFpGypzdIROjgU4dLK32NCKN2Y.', 'UT', 'Utah', 'Salt Lake City', 'University Of Utah', 'Marriott Library', 'localhost:8080');
-*/
 ?>
