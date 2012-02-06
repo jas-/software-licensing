@@ -1,7 +1,7 @@
 DELIMITER //
 
 DROP PROCEDURE IF EXISTS Configuration_keys_add//
-CREATE DEFINER='jas'@'localhost' PROCEDURE Configuration_keys_add(IN `countryName` VARCHAR(64), IN `stateOrProvinceName` VARCHAR(64), IN `localityName` VARCHAR(64), IN `organizationalName` VARCHAR(64), IN `organizationalUnitName` VARCHAR(64), IN `commonName` VARCHAR(64), IN `emailAddress` VARCHAR(64), IN `privateKey` LONGTEXT, IN `publicKey` LONGTEXT, IN `sKey` LONGTEXT)
+CREATE DEFINER='licesning'@'localhost' PROCEDURE Configuration_keys_add(IN `countryName` VARCHAR(64), IN `stateOrProvinceName` VARCHAR(64), IN `localityName` VARCHAR(64), IN `organizationalName` VARCHAR(64), IN `organizationalUnitName` VARCHAR(64), IN `commonName` VARCHAR(64), IN `emailAddress` VARCHAR(64), IN `privateKey` LONGTEXT, IN `publicKey` LONGTEXT, IN `sKey` LONGTEXT)
  DETERMINISTIC
  SQL SECURITY INVOKER
  COMMENT 'Add or updates users key pair'
@@ -10,7 +10,7 @@ BEGIN
 END//
 
 DROP PROCEDURE IF EXISTS Configuration_keys_get//
-CREATE DEFINER='jas'@'localhost' PROCEDURE Configuration_keys_get(IN `emailAddress` VARCHAR(64), IN `sKey` LONGTEXT)
+CREATE DEFINER='licesning'@'localhost' PROCEDURE Configuration_keys_get(IN `emailAddress` VARCHAR(64), IN `sKey` LONGTEXT)
  DETERMINISTIC
  SQL SECURITY INVOKER
  COMMENT 'Retrieves OpenSSL keypair by email address'

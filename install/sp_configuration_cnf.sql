@@ -1,7 +1,7 @@
 DELIMITER //
 
 DROP PROCEDURE IF EXISTS Configuration_cnf_add//
-CREATE DEFINER='jas'@'localhost' PROCEDURE Configuration_cnf_add(IN `config` VARCHAR(64), IN `encrypt_key` INT(1), IN `private_key_type` VARCHAR(64), IN `digest_algorithm` VARCHAR(64), IN `private_key_bits` INT(4), IN `x509_extensions` VARCHAR(32), OUT `x` INT)
+CREATE DEFINER='licesning'@'localhost' PROCEDURE Configuration_cnf_add(IN `config` VARCHAR(64), IN `encrypt_key` INT(1), IN `private_key_type` VARCHAR(64), IN `digest_algorithm` VARCHAR(64), IN `private_key_bits` INT(4), IN `x509_extensions` VARCHAR(32), OUT `x` INT)
  DETERMINISTIC
  SQL SECURITY INVOKER
  COMMENT 'Add or updates OpenSSL configuration'
@@ -18,12 +18,12 @@ BEGIN
 END//
 
 DROP PROCEDURE IF EXISTS Configuration_cnf_get//
-CREATE DEFINER='jas'@'localhost' PROCEDURE Configuration_cnf_get()
+CREATE DEFINER='licensing'@'localhost' PROCEDURE Configuration_cnf_get()
  DETERMINISTIC
  SQL SECURITY INVOKER
  COMMENT 'Retrieves OpenSSL configuration'
 BEGIN
- SELECT * FROM `configuration_openssl_cnf`;
+ SELECT `config`,`encrypt_key`,`private_key_type`,`digest_algorithm`,`private_key_bits`,`x509_extensions`,`encrypt_key_cipher` FROM `configuration_openssl_cnf`;
 END//
 
 DELIMITER ;
