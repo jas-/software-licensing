@@ -20,91 +20,130 @@ if (!defined('__SITE')) exit('No direct calls please...');
  * @version    0.1
  */
 
+/**
+ *! @class authentication
+ *  @abstract Performs primary and additional authentication mechanisms
+ */
 class authentication
 {
+ /**
+  * @var registry object
+  * @abstract Global class handler
+  */
+ private $registry;
+
+ /**
+  *! @var instance object - class singleton object
+  */
  protected static $instance;
- private function __construct($handles, $credentials, $server)
+
+ /**
+  *! @function __construct
+  *  @abstract Initializes singleton for proxyView class
+  *  @param registry array - Global array of class objects
+  */
+ private function __construct($registry)
  {
-  return $this->decide($handles, $credentials, $server);
+  $this->registry = $registry;
+  return $this->__setup($registry);
  }
- public static function instance($handles, $credentials, $server)
+
+ public static function instance($registry)
  {
   if (!isset(self::$instance)) {
    $c = __CLASS__;
-   self::$instance = new self($handles, $credentials, $server);
+   self::$instance = new self($registry);
   }
   return self::$instance;
  }
- private function decide($handles, $credentials=array(), $server)
+ 
+ /**
+  *! @function setup
+  *  @abstract Performs initial requirements
+  */
+ private function __setup($args)
  {
-  $a = (array_key_exists('token', $credentials)) ?
-                         $this->reauthenticate($handles, $credentials,
-                         $server) :
-                         $this->initial($handles, $credentials, $server);
-  if ($a===1) {
-   return ($this->newtoken($handles, $credentials, $server)===true) ? true : false;
-  } else {
-   return false;
-  }
- }
- public function initial($handles, $credentials, $server)
- {
-  if ((is_array($credentials))&&
-      (array_key_exists('username', $credentials))&&
-      (array_key_exists('password', $credentials))&&
-      (array_key_exists('key', $credentials))) {
-   if (is_object($handles['db'])) {
-    $s = sprintf('SELECT `password` FROM `authentication` WHERE `e-mail` = "%s"',
-                 $handles['db']->sanitize($u));
-    $results = $handles['db']->query($s);
-    if ($handles['db']->affected($results)>0) {
-     $r = $handles['db']->results($results);
-     return (strcmp($x, $p)===0) ? true : false;
-    } else {
-      return false;
-    }
-   } else {
-    return false;
+  echo '<pre>'; print_r($this->registry); echo '</pre>';
+  // get private key associated with encrypted data
    }
-  } else {
-   return false;
-  }
- }
- private function reauthenticate($handles, $credentials, $server)
- {
-  return false;
- }
- private function expired($certificate)
- {
 
- }
- public function newtoken($handles, $credentials, $server)
+ /**
+  *! @function __do
+  *  @abstract Performs initial authentication
+  */
+ public function __do($creds)
  {
-  if ((is_array($credentials))&&
-      (array_key_exists('username', $credentials))&&
-      (array_key_exists('password', $credentials))&&
-      (array_key_exists('key', $credentials))) {
-   if ((is_object($handles['ssl']))&&(is_object($handles['db']))) {
-    $u = $handles['ssl']->privDenc($credentials['username'], $credentials['key'],
-                                   $server['REMOTE_ADDR']);
-    $s = sprintf('%s', $handles['db']->sanitize($u));
-//echo $s;
-    $results = $handles['db']->query($s);
-/*
-    if ($handles['db']->affected($results)>0) {
-     $r = $handles['db']->results($results);
-echo '<pre>'; print_r($r); echo '</pre>';
-    } else {
-     return false;
-    }
-*/
-   } else {
-    return false;
-   }
-  } else {
-   return false;
-  }
+  // decrypt supplied authentication credentials
+  
+  // perform authentication using decrypted credentials
+  
+  // push public key to client keyring
+  
+  // switch to users private key (ssl initialization)
+  
+  // generate authentication token
+
+  // register token within users account
+
+  // return boolean
  }
+
+ /**
+  *! @function __redo
+  *  @abstract Decodes and re-authenticates user
+  */
+ public function __redo($token)
+ {
+  // verify supplied token matches entry in users table
+
+  // decode token
+
+  // verify unique computer and timeout information
+
+  // perform new token generation and registration per user account
+
+  // return boolean
+ }
+
+ /**
+  *! @function __decrypt
+  *  @abstract Handle decryption of submitted form data
+  */
+ private function __decrypt($obj)
+ {
+  // returns decrypted object
+ }
+
+ /**
+  *! @function __decode
+  *  @abstract Handle decoding of authentication token
+  */
+ private function __decode($token)
+ {
+  // returns array of elements within authentication token
+ }
+
+ /**
+  *! @function __hijack
+  *  @abstract Performs anti-session hijacking validations
+  */
+ private function __hijack($array)
+ {
+  // performs validation of current session data to array of unique computer
+  // identifiers located within decoded authentication token array
+ }
+
+ /**
+  *! @function __genToken
+  *  @abstract Creates unique token based on visiting machine and
+  *            authenticated user information
+  */
+ private function __genToken($obj)
+ {
+  // users timestamp and additional unique identifiers to be used during
+  // authentication and re-authentication processes
+ }
+
  public function __clone() {
   trigger_error('Cloning prohibited', E_USER_ERROR);
  }
@@ -113,7 +152,7 @@ echo '<pre>'; print_r($r); echo '</pre>';
  }
  private function __destruct()
  {
-  unset(self::$instance);
+  unset($this->instance);
   return true;
  }
 }

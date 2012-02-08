@@ -75,14 +75,15 @@ class proxyView
   $x = false;
   if (!empty($cmd)){
    $cmd = $this->registry->val->__do($cmd, 'string');
-   $this->registry->keyring = new keyring($this->registry,
-                                          $this->registry->val->__do($_POST));
    switch($cmd){
     case 'authenticate':
-     $x = $this->registry->keyring->__decrypt($this->registry->val->__do($_POST));
+     $auth = authentication::instance($this->registry);
+     $x = $auth->__do($this->registry->val->__do($_POST));
      break;
     case 'key':
-     $x = $this->registry->keyring->__public($this->registry->val->__do($_POST['email']));
+     $keyring = new keyring($this->registry,
+                            $this->registry->val->__do($_POST));
+     $x = $keyring->__public($this->registry->val->__do($_POST['email']));
      break;
     default:
      $x = false;

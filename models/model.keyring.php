@@ -110,11 +110,6 @@ class keyring
    $this->ssl = openssl::instance(array('config'=>$this->config,
                                         'dn'=>$this->dn));
 
-  echo 'SETTINGS: <pre>'; print_r(array('config'=>$this->config, 'dn'=>$this->dn)); echo '</pre>';
-  echo 'PASSWORD: <pre>'; print_r($this->registry->opts['dbKey']); echo '</pre>';
-  echo 'PRIVATE KEY: <pre>'; print_r($this->ssl->genPriv($this->registry->opts['dbKey'])); echo '</pre>';
-  echo 'PUBLIC KEY: <pre>'; print_r($this->ssl->genPub()); echo '</pre>';
-
   }
  }
 
@@ -169,16 +164,17 @@ class keyring
     $sql = sprintf('CALL Configuration_def_get("%s")',
                    $this->registry->db->sanitize($this->registry->libs->_hash($this->registry->opts['dbKey'],
                                                                               $this->registry->libs->_salt($this->registry->opts['dbKey'],
-                                                                              2048))));
+                                                                                                           2048))));
    } else {
     $sql = sprintf('CALL Configuration_keys_get("%s, %s")',
                    $this->registry->db->sanitize($email),
                    $this->registry->db->sanitize($this->registry->libs->_hash($this->registry->opts['dbKey'],
                                                                               $this->registry->libs->_salt($this->registry->opts['dbKey'],
-                                                                              2048))));
+                                                                                                           2048))));
    }
    $r = $this->registry->db->query($sql);
-   $r = ((!empty($r['publicKey']))&&(!empty($r['emailAddress']))) ? array('email'=>$r['email'],'key'=>$r['publicKey']) : false;
+   $r = ((!empty($r['publicKey']))&&(!empty($r['emailAddress']))) ?
+          array('email'=>$r['emailAddress'],'key'=>$r['publicKey']) : false;
   } catch(Exception $e){
    // error handler
   }
@@ -216,12 +212,37 @@ class keyring
  }
 
  /**
-  *! @function __decrypt
-  *  @abstract Handle decryption of submitted form data
+  *! @function __installer
+  *  @abstract Temporary installer function
   */
- private function __decrypt($obj)
+ private function __installer()
  {
-  return array('successs'=>'Processing encrypted form data');
+  try{
+   $sql = sprintf('CALL Configuration_def_add("%s", "%s", "%s", "%d", "%s",
+                                              "%d", "%s", "%s", "%s", "%s",
+                                              "%s", "%s", "%s", "%s", "%s", "%s")',
+                  $this->registry->db->sanitize($this->registry->opts['title']),
+                  $this->registry->db->sanitize($this->registry->opts['template']),
+                  $this->registry->db->sanitize($this->registry->opts['caching']),
+                  $this->registry->db->sanitize($this->config['encrypt_key']),
+                  $this->registry->db->sanitize($this->dn['emailAddress']),
+                  $this->registry->db->sanitize($this->registry->opts['timeout']),
+                  $this->registry->db->sanitize($this->privateKey),
+                  $this->registry->db->sanitize($this->publicKey),
+                  $this->registry->db->sanitize($this->registry->opts['dbKey']),
+                  $this->registry->db->sanitize($this->dn['countryName']),
+                  $this->registry->db->sanitize($this->dn['stateOrProvinceName']),
+                  $this->registry->db->sanitize($this->dn['localityName']),
+                  $this->registry->db->sanitize($this->dn['organizationName']),
+                  $this->registry->db->sanitize($this->dn['organizationalUnitName']),
+                  $this->registry->db->sanitize($this->dn['commonName']),
+                  $this->registry->db->sanitize($this->registry->libs->_hash($this->registry->opts['dbKey'],
+                                                                             $this->registry->libs->_salt($this->registry->opts['dbKey'],
+                                                                                                          2048))));
+   echo $sql;
+  } catch(Exception $e){
+   // error handling
+  }
  }
 
  public function __clone() {
