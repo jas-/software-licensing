@@ -56,14 +56,14 @@ class authentication
   }
   return self::$instance;
  }
- 
+
  /**
   *! @function setup
   *  @abstract Performs initial requirements
   */
  private function __setup($args)
  {
-  echo '<pre>'; print_r($this->registry); echo '</pre>';
+  //echo '<pre>'; print_r($this->registry); echo '</pre>';
   // get private key associated with encrypted data
    }
 
@@ -74,13 +74,13 @@ class authentication
  public function __do($creds)
  {
   // decrypt supplied authentication credentials
-  
+
   // perform authentication using decrypted credentials
-  
+
   // push public key to client keyring
-  
+
   // switch to users private key (ssl initialization)
-  
+
   // generate authentication token
 
   // register token within users account

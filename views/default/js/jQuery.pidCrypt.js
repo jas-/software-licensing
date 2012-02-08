@@ -153,8 +153,9 @@
    __hK: function(o){
     var y = function(){
      var z = (this) ? JSON.parse(this) : false;
-     var email = (z.email) ? z.email : o.appID;
-     var key = (z.key) ? z.key : false;
+     var email = ((z)&&(z.email)) ? z.email : o.appID;
+     var key = ((z)&&(z.key)) ? z.key : false;
+     if (!key) return false;
      var p = _keys.__gUUID(null); var obj = {}; obj[p] = {};
      obj[p]['email'] = encodeURI(o.aes.encryptText(email, p, {nBits:256, salt:_keys.__strIV(p)}));
      obj[p]['key'] = encodeURI(o.aes.encryptText(key, p, {nBits:256, salt:_keys.__strIV(p)}));
@@ -162,7 +163,7 @@
      _storage.__sI(o.storage, _keys.__id(), JSON.stringify(obj));
     }
     o.callback = y;
-    _main.__do(o, {'k': true});
+    _main.__do(o, {'key': true});
     return true;
    },
 
@@ -302,6 +303,7 @@
     * (Copyright https://www.pidder.com/pidcrypt/?page=demo_rsa-encryption)
     */
    __certParser: function(cert){
+    if (!cert) return false;
     var lines = cert.split('\n');
     var read = false;
     var b64 = false;

@@ -25,9 +25,13 @@
    }
   }
   function _load(){
-   // load a spinner or something 
+   // load a spinner or something
   }
-  $j('#auth').pidCrypt({appID:'{$token}',callback:function(){ _message(this); },preCallback:function(){ _load(); }});
+  $j('#auth').pidCrypt({
+   appID:'{$token}',
+   callback:function(){ _message(this); },
+   preCallback:function(){ _load(); }
+  });
  });
 </script>
 <div id="authenticate" class="rounder gradient">

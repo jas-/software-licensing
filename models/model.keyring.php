@@ -109,7 +109,6 @@ class keyring
   if (class_exists('openssl')){
    $this->ssl = openssl::instance(array('config'=>$this->config,
                                         'dn'=>$this->dn));
-
   }
  }
 
@@ -217,6 +216,8 @@ class keyring
   */
  private function __installer()
  {
+  $privateKey = $this->ssl->genPriv($this->registry->opts['dbKey']);
+  $publicKey = $this->ssl->genPub();
   try{
    $sql = sprintf('CALL Configuration_def_add("%s", "%s", "%s", "%d", "%s",
                                               "%d", "%s", "%s", "%s", "%s",
@@ -227,8 +228,8 @@ class keyring
                   $this->registry->db->sanitize($this->config['encrypt_key']),
                   $this->registry->db->sanitize($this->dn['emailAddress']),
                   $this->registry->db->sanitize($this->registry->opts['timeout']),
-                  $this->registry->db->sanitize($this->privateKey),
-                  $this->registry->db->sanitize($this->publicKey),
+                  $this->registry->db->sanitize($privateKey),
+                  $this->registry->db->sanitize($publicKey),
                   $this->registry->db->sanitize($this->registry->opts['dbKey']),
                   $this->registry->db->sanitize($this->dn['countryName']),
                   $this->registry->db->sanitize($this->dn['stateOrProvinceName']),
