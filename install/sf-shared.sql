@@ -85,29 +85,4 @@ BEGIN
  RETURN nKey;
 END//
 
--- Creates a function to return a list of configured tables
-DROP FUNCTION IF EXISTS `getTables`//
-CREATE DEFINER=`inventory2011`@`localhost` FUNCTION `getTables`(db VARCHAR(128)) RETURNS LONGTEXT CHARSET utf8
- DETERMINISTIC
- SQL SECURITY INVOKER
- COMMENT 'Returns a list of tables for "db" argument'
-BEGIN
- DECLARE list VARCHAR(2048) DEFAULT '';
- RETURN list;
-END//
-
-DROP FUNCTION IF EXISTS `aTest`//
-CREATE DEFINER=`inventory2011`@`localhost` FUNCTION `aTest`(one VARCHAR(128)) RETURNS VARCHAR(255) CHARSET utf8
- DETERMINISTIC
- SQL SECURITY INVOKER
- COMMENT 'A tester function'
-BEGIN
- DECLARE sqlTmp VARCHAR(255) DEFAULT '';
- DECLARE w INT;
- SET sqlTmp = "INSERT INTO `table` (`field1`) VALUES ('?')";
- PREPARE stmt FROM sqlTmp;
- EXECUTE stmt USING one AS w;
- RETURN w;
-END//
-
 DELIMITER ;

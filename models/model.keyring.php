@@ -45,6 +45,12 @@ class keyring
  protected static $instance;
 
  /**
+  *! @var keys array
+  *  @abstract array containing private and public keys per email
+  */
+ protected static $keys = array();
+
+ /**
   *! @var config array - OpenSSL configuration settings
   */
  private $config = array('config'              => 'config/openssl.cnf',
@@ -75,7 +81,6 @@ class keyring
  {
   $this->registry = $registry;
   $this->__setup($this->registry->val->__do($args['email'], 'email'));
-
  }
 
  /**
@@ -178,6 +183,48 @@ class keyring
    // error handler
   }
   return $r;
+ }
+
+ /**
+  *! @function __keyring
+  *  @abstract Adds to current keys array
+  */
+ private function __keyring($args)
+ {
+  $r = false;
+  try{
+   if (!$args['email']){
+    $sql = sprintf('CALL Configuration_def_get("%s")',
+                   $this->registry->db->sanitize($this->registry->libs->_hash($this->registry->opts['dbKey'],
+                                                                              $this->registry->libs->_salt($this->registry->opts['dbKey'],
+                                                                                                           2048))));
+   } else {
+    $sql = sprintf('CALL Configuration_keys_get("%s, %s")',
+                   $this->registry->db->sanitize($args['email']),
+                   $this->registry->db->sanitize($this->registry->libs->_hash($this->registry->opts['dbKey'],
+                                                                              $this->registry->libs->_salt($this->registry->opts['dbKey'],
+                                                                                                           2048))));
+   }
+   $r = $this->registry->db->query($sql);
+   $r = ((!empty($r['publicKey']))&&(!empty($r['emailAddress']))&&(!empty($r['privateKey']))) ?
+          $this->__setKeys($r) : false;
+  } catch(Exception $e){
+   // error handler
+  }
+  return $r;
+ }
+
+ /**
+  *! @function __setKeys
+  *  @abstract Adds or merges current keys with available keys
+  */
+ private function __setKeys($a)
+ {
+  if ((is_array($this->keys))&&
+      (count($this->keys)>=1)&&
+      (!in_array($a['privateKey'], $this->keys))){
+   array_push($this->keys, $a);
+  }
  }
 
  /**
