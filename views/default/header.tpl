@@ -6,11 +6,7 @@
  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
  <title>{$title}</title>
  <link rel="stylesheet" type="text/css" href="{$templates}/css/styles.css" media="screen,projection" />
- <!--script src="http://code.jquery.com/jquery.min.js" type="text/javascript"></script-->
  <script src="{$templates}/js/jquery.min.js" type="text/javascript"></script>
- <script src="{$templates}/js/gibberish-aes.min.js" type="text/javascript"></script>
- <script src="{$templates}/js/jQuery.AJAX.min.js" type="text/javascript"></script>
- <script src="{$templates}/js/jQuery.handleStorage.min.js" type="text/javascript"></script>
  <script src="{$templates}/js/pidCrypt/javascripts/compressed/pidcrypt_c.js"></script>
  <script src="{$templates}/js/pidCrypt/javascripts/compressed/pidcrypt_util_c.js"></script>
  <script src="{$templates}/js/pidCrypt/javascripts/compressed/md5_c.js"></script>
