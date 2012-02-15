@@ -45,7 +45,9 @@ class authentication
  private function __construct($registry)
  {
   $this->registry = $registry;
-  return $this->__setup($registry);
+  if (!$this->__setup($registry)){
+   exit(array('Error'=>'Necessary keys are missing, cannot continue'));
+  }
  }
 
  public static function instance($registry)
@@ -63,9 +65,14 @@ class authentication
   */
  private function __setup($args)
  {
-  //echo '<pre>'; print_r($_SESSION); echo '</pre>';
-  //echo '<pre>'; print_r($this->registry); echo '</pre>';
-  // get private key associated with encrypted data
+  if ((!empty($_SESSION[$this->registry->libs->_getRealIPv4()]['email']))&&
+      (!empty($_SESSION[$this->registry->libs->_getRealIPv4()]['privateKey']))&&
+      (!empty($_SESSION[$this->registry->libs->_getRealIPv4()]['publicKey']))&&
+      (!empty($_SESSION[$this->registry->libs->_getRealIPv4()]['password']))){
+   return true;
+  }else{
+   return false;
+  }
  }
 
  /**
@@ -74,9 +81,9 @@ class authentication
   */
  public function __do($creds)
  {
-  // decrypt supplied authentication credentials
+  $obj = $this->__decrypt($creds);
 
-  // perform authentication using decrypted credentials
+  
 
   // push public key to client keyring
 
@@ -112,7 +119,15 @@ class authentication
   */
  private function __decrypt($obj)
  {
-  // returns decrypted object
+  if (count($obj)>0){
+   $x = array();
+   foreach($obj as $key => $value){
+    $x[$key] = $this->registry->keyring->ssl->privDenc($value,
+                                                       $_SESSION[$this->registry->libs->_getRealIPv4()]['privateKey'],
+                                                       $_SESSION[$this->registry->libs->_getRealIPv4()]['password']);
+   }
+  }
+  return $x;
  }
 
  /**

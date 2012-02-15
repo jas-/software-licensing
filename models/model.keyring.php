@@ -37,7 +37,7 @@ class keyring
   * @var ssl object
   * @abstract Handles current users ssl object
   */
- private $ssl;
+ public $ssl;
 
  /**
   *! @var instance object - class singleton object

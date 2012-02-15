@@ -73,8 +73,8 @@ class proxyView
  private function __decide($cmd)
  {
   $x = false;
-  $keyring = new keyring($this->registry,
-                         $this->registry->val->__do($_POST));
+  $this->registry->keyring = new keyring($this->registry,
+                                         $this->registry->val->__do($_POST));
   if (!empty($cmd)){
    $cmd = $this->registry->val->__do($cmd, 'string');
    switch($cmd){
@@ -83,7 +83,7 @@ class proxyView
      $x = $auth->__do($this->registry->val->__do($_POST));
      break;
     case 'key':
-     $x = $keyring->__public($this->registry->val->__do($_POST['email']));
+     $x = $this->registry->keyring->__public($this->registry->val->__do($_POST['email']));
      break;
     default:
      $x = false;
