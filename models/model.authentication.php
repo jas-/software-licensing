@@ -38,12 +38,6 @@ class authentication
  protected static $instance;
 
  /**
-  *! @var keys array
-  *  @abstract array containing private and public keys per email
-  */
- protected static $keys = array();
-
- /**
   *! @function __construct
   *  @abstract Initializes singleton for proxyView class
   *  @param registry array - Global array of class objects
@@ -51,7 +45,7 @@ class authentication
  private function __construct($registry)
  {
   $this->registry = $registry;
-  $this->__setup($registry);
+  return $this->__setup($registry);
  }
 
  public static function instance($registry)
@@ -62,6 +56,16 @@ class authentication
   }
   return self::$instance;
  }
+ 
+ /**
+  *! @function setup
+  *  @abstract Performs initial requirements
+  */
+ private function __setup($args)
+ {
+  echo '<pre>'; print_r($this->registry); echo '</pre>';
+  // get private key associated with encrypted data
+ }
 
  /**
   *! @function __do
@@ -70,13 +74,13 @@ class authentication
  public function __do($creds)
  {
   // decrypt supplied authentication credentials
-
+  
   // perform authentication using decrypted credentials
-
+  
   // push public key to client keyring
-
+  
   // switch to users private key (ssl initialization)
-
+  
   // generate authentication token
 
   // register token within users account
