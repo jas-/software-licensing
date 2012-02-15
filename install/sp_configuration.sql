@@ -10,15 +10,12 @@ BEGIN
 END//
 
 DROP PROCEDURE IF EXISTS Configuration_def_get//
-CREATE DEFINER='licensing'@'localhost' PROCEDURE Configuration_def_get(IN `skey` LONGTEXT)
+CREATE DEFINER='licensing'@'localhost' PROCEDURE Configuration_def_get(IN `challenge` LONGTEXT)
  DETERMINISTIC
  SQL SECURITY INVOKER
  COMMENT 'Retrieves configuration'
 BEGIN
- DECLARE publicKey LONGTEXT DEFAULT '';
- DECLARE privateKey LONGTEXT DEFAULT '';
- DECLARE password LONGTEXT DEFAULT '';
- SELECT `title`, `templates`, `cache`, `private`, `email` AS `emailAddress`, `timeout`, AES_DECRYPT(BINARY(UNHEX(privateKey)), SHA1(skey)) AS privateKey, AES_DECRYPT(BINARY(UNHEX(publicKey)), SHA1(skey)) AS publicKey, AES_DECRYPT(BINARY(UNHEX(sKey)), SHA1(skey)) AS sKey, `countryName`, `stateOrProvinceName`, `localityName`, `organizationName`, `organizationalUnitName`, `commonName` FROM `configuration`;
+ SELECT `title`, `templates`, `cache`, `private`, `email` AS `emailAddress`, `timeout`, AES_DECRYPT(BINARY(UNHEX(privateKey)), SHA1(challenge)) AS privateKey, AES_DECRYPT(BINARY(UNHEX(publicKey)), SHA1(challenge)) AS publicKey, AES_DECRYPT(BINARY(UNHEX(sKey)), SHA1(challenge)) AS pword, `countryName`, `stateOrProvinceName`, `localityName`, `organizationName`, `organizationalUnitName`, `commonName` FROM `configuration`;
 END//
 
 DROP PROCEDURE IF EXISTS Configuration_def_get_dn//

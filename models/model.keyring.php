@@ -115,6 +115,11 @@ class keyring
    $this->ssl = openssl::instance(array('config'=>$this->config,
                                         'dn'=>$this->dn));
   }
+
+  if (is_object($this->ssl)){
+   (!empty($args['email'])) ?
+    $this->__keyring($_POST['email']) : $this->__keyring();
+  }
  }
 
  /*
@@ -156,29 +161,39 @@ class keyring
  }
 
  /**
-  *! @function __public
-  *  @abstract Retrieves the public key for the specified account (defaults to
-  *            the current system key pair if email is empty)
+  *! @function __private
+  *  @abstract Creates session based on current user which contains necessary
+  *            keys and attributes for future communications
   */
- public function __public($email=false)
+ private function __keyring($email=false)
  {
-  $r = false;
+  $r = true;
   try{
-   if (!$email){
-    $sql = sprintf('CALL Configuration_def_get("%s")',
-                   $this->registry->db->sanitize($this->registry->libs->_hash($this->registry->opts['dbKey'],
-                                                                              $this->registry->libs->_salt($this->registry->opts['dbKey'],
-                                                                                                           2048))));
-   } else {
-    $sql = sprintf('CALL Configuration_keys_get("%s, %s")',
-                   $this->registry->db->sanitize($email),
-                   $this->registry->db->sanitize($this->registry->libs->_hash($this->registry->opts['dbKey'],
-                                                                              $this->registry->libs->_salt($this->registry->opts['dbKey'],
-                                                                                                           2048))));
+   if (!$this->__chkKeys($_SESSION[$this->registry->libs->_getRealIPv4()])){
+    if (!$email){
+     $sql = sprintf('CALL Configuration_def_get("%s")',
+                    $this->registry->db->sanitize($this->registry->libs->_hash($this->registry->opts['dbKey'],
+                                                                               $this->registry->libs->_salt($this->registry->opts['dbKey'],
+                                                                                                            2048))));
+    } else {
+     $sql = sprintf('CALL Configuration_keys_get("%s, %s")',
+                    $this->registry->db->sanitize($email),
+                    $this->registry->db->sanitize($this->registry->libs->_hash($this->registry->opts['dbKey'],
+                                                                               $this->registry->libs->_salt($this->registry->opts['dbKey'],
+                                                                                                            2048))));
+    }
+
+    $r = $this->registry->db->query($sql);
+    $r = ((!empty($r['publicKey']))&&(!empty($r['emailAddress']))&&
+          (!empty($r['privateKey']))&&(!empty($r['pword']))) ?
+           array('email'=>$r['emailAddress'],'privateKey'=>$r['privateKey'],
+                 'publicKey'=>$r['publicKey'],'password'=>$r['pword']) : false;
+
+    if ($r){
+     $this->__setKeys($r);
+     $r=true;
+    }
    }
-   $r = $this->registry->db->query($sql);
-   $r = ((!empty($r['publicKey']))&&(!empty($r['emailAddress']))) ?
-          array('email'=>$r['emailAddress'],'key'=>$r['publicKey']) : false;
   } catch(Exception $e){
    // error handler
   }
@@ -186,32 +201,13 @@ class keyring
  }
 
  /**
-  *! @function __keyring
-  *  @abstract Adds to current keys array
+  *! @function __public
+  *  @abstract Retrieves current public key and passes to XMLHttpRequest
   */
- private function __keyring($args)
+ public function __public($a=false)
  {
-  $r = false;
-  try{
-   if (!$args['email']){
-    $sql = sprintf('CALL Configuration_def_get("%s")',
-                   $this->registry->db->sanitize($this->registry->libs->_hash($this->registry->opts['dbKey'],
-                                                                              $this->registry->libs->_salt($this->registry->opts['dbKey'],
-                                                                                                           2048))));
-   } else {
-    $sql = sprintf('CALL Configuration_keys_get("%s, %s")',
-                   $this->registry->db->sanitize($args['email']),
-                   $this->registry->db->sanitize($this->registry->libs->_hash($this->registry->opts['dbKey'],
-                                                                              $this->registry->libs->_salt($this->registry->opts['dbKey'],
-                                                                                                           2048))));
-   }
-   $r = $this->registry->db->query($sql);
-   $r = ((!empty($r['publicKey']))&&(!empty($r['emailAddress']))&&(!empty($r['privateKey']))) ?
-          $this->__setKeys($r) : false;
-  } catch(Exception $e){
-   // error handler
-  }
-  return $r;
+  return array('email'=>$_SESSION[$this->registry->libs->_getRealIPv4()]['email'],
+               'key'=>$_SESSION[$this->registry->libs->_getRealIPv4()]['publicKey']);
  }
 
  /**
@@ -220,11 +216,32 @@ class keyring
   */
  private function __setKeys($a)
  {
-  if ((is_array($this->keys))&&
-      (count($this->keys)>=1)&&
-      (!in_array($a['privateKey'], $this->keys))){
-   array_push($this->keys, $a);
+  if ($this->__chkKeys($_SESSION[$this->registry->libs->_getRealIPv4()])){
+   $this->keys = $_SESSION[$this->registry->libs->_getRealIPv4()];
+  }else{
+   $this->keys = $a;
   }
+  array_push($this->keys, $a);
+  $_SESSION[$this->registry->libs->_getRealIPv4()] = $this->keys;
+ }
+
+ /**
+  *! @function __chkKeys
+  *  @abstract Verifies existing keyring structure
+  */
+ private function __chkKeys($a)
+ {
+  if ((is_array($a))&&
+      (count($a)>=1)&&
+      (!in_array('privateKey', $a))&&
+      (!in_array('publicKey', $a))&&
+      (!in_array('emailAddress', $a))&&
+      (!in_array('password', $a))){
+   $x=true;
+  }else{
+   $x=false;
+  }
+  return $x;
  }
 
  /**
