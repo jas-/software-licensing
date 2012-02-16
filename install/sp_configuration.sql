@@ -19,7 +19,7 @@ BEGIN
 END//
 
 DROP PROCEDURE IF EXISTS Configuration_def_get_dn//
-CREATE DEFINER='licensing'@'localhost' PROCEDURE Configuration_get_dn()
+CREATE DEFINER='licensing'@'localhost' PROCEDURE Configuration_def_get_dn()
  DETERMINISTIC
  SQL SECURITY INVOKER
  COMMENT 'Retrieves OpenSSL DN configuration'

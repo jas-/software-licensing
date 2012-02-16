@@ -83,7 +83,6 @@ class authentication
  {
   $obj = $this->__decrypt($creds);
 
-  
 
   // push public key to client keyring
 
