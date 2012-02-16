@@ -19,5 +19,3 @@ BEGIN
 END//
 
 DELIMITER ;
-
---SELECT COUNT(AES_DECRYPT(BINARY(UNHEX(email)), SHA1(sKey)), AES_DECRYPT(BINARY(UNHEX(password)), SHA1(sKey))) FROM `configuration_openssl_keys` WHERE `email`=HEX(AES_ENCRYPT(email, SHA1(sKey))) AND `password`=HEX(AES_ENCRYPT(password, SHA1(sKey)));

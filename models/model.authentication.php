@@ -96,6 +96,27 @@ class authentication
  }
 
  /**
+  *! @function __auth
+  *  @abstract Returns booleans on database lookup of decrypted credentials
+  */
+ private function __auth($creds)
+ {
+  if (is_array($creds)){
+   if ((!empty($creds['email']))&&(!empty($creds['password']))){
+    try{
+     $sql = sprintf('CALL ');
+    } catch(Exception $e){
+     // error handling
+    }
+   }else{
+    $x = false;
+   }
+  }else{
+   $x = false;
+  }
+ }
+
+ /**
   *! @function __redo
   *  @abstract Decodes and re-authenticates user
   */
