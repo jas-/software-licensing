@@ -83,7 +83,7 @@ class authentication
  {
   $obj = $this->__decrypt($creds);
 
-
+  $this->__auth($obj);
   // push public key to client keyring
 
   // switch to users private key (ssl initialization)
@@ -104,7 +104,13 @@ class authentication
   if (is_array($creds)){
    if ((!empty($creds['email']))&&(!empty($creds['password']))){
     try{
-     $sql = sprintf('CALL ');
+     $sql = sprintf('CALL Auth_CheckUser("%s", "%s", "%s")',
+                    $this->registry->db->sanitize($creds['email']),
+                    $this->registry->db->sanitize($creds['password']),
+                    $this->registry->db->sanitize($this->registry->libs->_hash($this->registry->opts['dbKey'],
+                                                                               $this->registry->libs->_salt($this->registry->opts['dbKey'],
+                                                                                                            2048))));
+     // execute
     } catch(Exception $e){
      // error handling
     }
