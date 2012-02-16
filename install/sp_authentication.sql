@@ -6,7 +6,7 @@ CREATE DEFINER='licensing'@'localhost' PROCEDURE Auth_CheckUser(IN `email` VARCH
  SQL SECURITY INVOKER
  COMMENT 'Performs authentication check'
 BEGIN
- SELECT COUNT(*) FROM `authentication` WHERE AES_DECRYPT(BINARY(UNHEX(email)), SHA1(challenge))=email AND AES_DECRYPT(BINARY(UNHEX(password)), SHA1(challenge))=pword;
+ SELECT COUNT(*) AS x FROM `authentication` WHERE AES_DECRYPT(BINARY(UNHEX(email)), SHA1(challenge))=email AND AES_DECRYPT(BINARY(UNHEX(password)), SHA1(challenge))=pword;
 END//
 
 DELIMITER ;

@@ -83,7 +83,11 @@ class authentication
  {
   $obj = $this->__decrypt($creds);
 
-  $this->__auth($obj);
+  $x = $this->__auth($obj);
+  if (is_array($x)){
+   return $x;
+  }
+
   // push public key to client keyring
 
   // switch to users private key (ssl initialization)
@@ -110,7 +114,12 @@ class authentication
                     $this->registry->db->sanitize($this->registry->libs->_hash($this->registry->opts['dbKey'],
                                                                                $this->registry->libs->_salt($this->registry->opts['dbKey'],
                                                                                                             2048))));
-     // execute
+     $r = $this->registry->db->query($sql);
+     if ($r['x']<=0){
+      $x = false;
+     }else{
+      $x = true;
+     }
     } catch(Exception $e){
      // error handling
     }
@@ -120,6 +129,7 @@ class authentication
   }else{
    $x = false;
   }
+  return (!$x) ? array('error'=>'User authentication failed') : $x;
  }
 
  /**
@@ -192,7 +202,7 @@ class authentication
  public function __wakeup() {
   trigger_error('Deserialization of singleton prohibited ...', E_USER_ERROR);
  }
- private function __destruct()
+ public function __destruct()
  {
   unset($this->instance);
   return true;
