@@ -280,6 +280,7 @@ class keyring
   */
  private function __installer()
  {
+  $this->ssl->genRand();
   $privateKey = $this->ssl->genPriv($this->registry->opts['dbKey']);
   $publicKey = $this->ssl->genPub();
   try{
