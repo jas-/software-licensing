@@ -38,6 +38,7 @@ class encryption
  private $privkey=NULL;
  private $pubkey=NULL;
  public $cipher=array();
+
  private function __construct($configuration)
  {
   if (function_exists('mcrypt_module_open')) {
@@ -48,6 +49,7 @@ class encryption
    exit;
   }
  }
+
  public static function instance($configuration)
  {
   if (!isset(self::$instance)) {
@@ -56,6 +58,7 @@ class encryption
   }
   return self::$instance;
  }
+
  private function decide($flag)
  {
   if (function_exists('mcrypt_module_open')) {
@@ -64,10 +67,16 @@ class encryption
    $this->flag = '0x002';
   }
  }
+
  public function main($configuration)
  {
   $this->flag = $this->type();
-  if ((isset($configuration['algorithm']))&&(isset($configuration['mode']))&&(isset($configuration['source']))&&(isset($configuration['key']))&&(isset($configuration['pub']))&&(isset($configuration['iv']))) {
+  if ((isset($configuration['algorithm']))&&
+      (isset($configuration['mode']))&&
+      (isset($configuration['source']))&&
+      (isset($configuration['key']))&&
+      (isset($configuration['pub']))&&
+      (isset($configuration['iv']))) {
    $this->algorithm = $algorithm;
    $this->mode = $mode;
    $this->source = $source;
@@ -95,6 +104,7 @@ class encryption
   $this->init($this->handle, $this->privkey, $this->iv);
   return $this->cipher;
  }
+
  private function configure($algorithm=NULL, $mode=NULL, $source=NULL)
  {
   if ((isset($algorithm))||($algorithm!==NULL)) {
@@ -113,57 +123,69 @@ class encryption
    $this->mode = $this->randMode();
   }
  }
+
  private function randAlgorithm()
  {
   $this->randomizer();
   return array_rand(array_flip(mcrypt_list_algorithms()), 1);
  }
+
  private function randSource()
  {
   $this->randomizer();
   $sources = array(MCRYPT_DEV_RANDOM, MCRYPT_DEV_URANDOM, MCRYPT_RAND);
   return array_rand(array_flip($sources), 1);
  }
+
  private function randMode()
  {
   $this->randomizer();
   $modes = array(MCRYPT_MODE_ECB, MCRYPT_MODE_STREAM);
   return array_rand(array_flip($modes), 1);
  }
+
  private function test($handle)
  {
   if (is_resource($handle)) {
    return mcrypt_enc_self_test($handle);
   }
  }
+
  private function open($cipher, $directory, $mode, $wdirectory)
  {
   return mcrypt_module_open($cipher, $directory, $mode, $wdirectory);
  }
+
  private function createiv($algo, $mode, $source)
  {
   return mcrypt_create_iv(mcrypt_get_iv_size($algo, $mode), $source);
  }
+
  private function compativ($iv)
  {
   return base64_encode($iv);
  }
+
  private function chkkey($algo, $mode, $key)
  {
   return substr(hash('sha256', $key, true), 0, mcrypt_get_key_size($algo, $mode));
  }
+
  private function init($handle, $key, $iv)
  {
   return mcrypt_generic_init($handle, $key, $iv);
  }
+
  public function enc($handle, $data)
  {
   return base64_encode(mcrypt_generic($this->handle, $data));
  }
+
  public function denc($algo, $key, $data, $mode, $iv)
  {
   return rtrim(mcrypt_decrypt($algo, $key, base64_decode($data), $mode, base64_decode($iv)));
  }
+
  public function convert($private, $function)
  {
   if ((isset($function))&&($function==='0x001')) {
@@ -172,10 +194,12 @@ class encryption
    return $this->bin($private);
   }
  }
+
  private function hex($key)
  {
   return bin2hex($key);
  }
+
  private function bin($key)
  {
   $data=NULL;
@@ -187,6 +211,7 @@ class encryption
   }
   return $data;
  }
+
  private function type()
  {
   if (function_exists('mhash')) {
@@ -200,14 +225,17 @@ class encryption
   }
   return $type;
  }
+
  private function randomizer()
  {
   return srand((double) microtime(time())*rand());
  }
+
  private function randomstr()
  {
   return preg_replace('/\$1\$/', crypt(crypt(time())/(60*60*24)), md5(crypt(crypt(time())/(60*60*24))));
  }
+
  private function base($array)
  {
   if (count($array)>0) {
@@ -217,6 +245,7 @@ class encryption
   }
   return $base;
  }
+
  private function shared($configuration)
  {
   $files=array(); $file=NULL; $dir=NULL;
@@ -241,6 +270,7 @@ class encryption
   }
   return $this->base($files);
  }
+
  private function altshared()
  {
   for ($x=0;$x<3;$x++) {
@@ -248,6 +278,7 @@ class encryption
   }
   return $files;
  }
+
  private function encode($base)
  {
   if (count($base)===3) {
@@ -270,6 +301,7 @@ class encryption
    return FALSE;
   }
  }
+
  private function privatekeys($keys)
  {
   $private=NULL;
@@ -282,10 +314,12 @@ class encryption
    return FALSE;
   }
  }
+
  private function publickeys($private)
  {
   return (isset($private)) ? md5($private) : FALSE;
  }
+
  private function __destruct()
  {
   if (isset($this->handle)) {
