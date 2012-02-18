@@ -111,8 +111,8 @@ class openssl
   */
  public function altRand($int = 2048)
  {
-  if (is_readable('/dev/urandom')){
-   $f=fopen('/dev/urandom', 'r');
+  if (is_readable('/dev/random')){
+   $f=fopen('/dev/random', 'r');
    if ($f){
     $urandom=fread($f, $int);
    } else {
