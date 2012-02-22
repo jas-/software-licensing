@@ -90,18 +90,7 @@ class authentication
     return $x;
    }else{
     $token = $this->__genToken($obj);
-    try{
-     $sql = sprintf('CALL Users_AddUpdateToken("%s", "%s", "%s")',
-                    $this->registry->db->sanitize($obj['email']),
-                    $this->registry->db->sanitize($token),
-                    $this->registry->db->sanitize($this->registry->libs->_hash($this->registry->opts['dbKey'],
-                                                                               $this->registry->libs->_salt($this->registry->opts['dbKey'],
-                                                                                                            2048))));
-     $r = $this->registry->db->sanitize($sql);
-    }
-    $x = ($r) ? array('success'=>'User was successfully authenticated') :
-                array('error'=>'An error occured when associating token with user');
-   }
+
   }
   return $x;
  }
@@ -209,7 +198,17 @@ class authentication
   */
  private function __register($obj)
  {
-
+  try{
+   $sql = sprintf('CALL Users_AddUpdateToken("%s", "%s", "%s")',
+                  $this->registry->db->sanitize($obj['email']),
+                  $this->registry->db->sanitize($token),
+                  $this->registry->db->sanitize($this->registry->libs->_hash($this->registry->opts['dbKey'],
+                                                                             $this->registry->libs->_salt($this->registry->opts['dbKey'],
+                                                                                                          2048))));
+   $r = $this->registry->db->sanitize($sql);
+  }
+  return ($r) ? array('success'=>'User was successfully authenticated') :
+                array('error'=>'An error occured when associating token with user');
  }
 
  public function __clone() {
