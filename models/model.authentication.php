@@ -81,22 +81,29 @@ class authentication
   */
  public function __do($creds)
  {
-  $obj = $this->__decrypt($creds);
-
-  $x = $this->__auth($obj);
-  if (is_array($x)){
-   return $x;
+  if (!empty($_SESSION[$this->registry->libs->_getRealIPv4()]['token'])){
+   $x = $this->__redo($_SESSION[$this->registry->libs->_getRealIPv4()]['token']);
+  }else{
+   $obj = $this->__decrypt($creds);
+   $x = $this->__auth($obj);
+   if (is_array($x)){
+    return $x;
+   }else{
+    $token = $this->__genToken($obj);
+    try{
+     $sql = sprintf('CALL Users_AddUpdateToken("%s", "%s", "%s")',
+                    $this->registry->db->sanitize($obj['email']),
+                    $this->registry->db->sanitize($token),
+                    $this->registry->db->sanitize($this->registry->libs->_hash($this->registry->opts['dbKey'],
+                                                                               $this->registry->libs->_salt($this->registry->opts['dbKey'],
+                                                                                                            2048))));
+     $r = $this->registry->db->sanitize($sql);
+    }
+    $x = ($r) ? array('success'=>'User was successfully authenticated') :
+                array('error'=>'An error occured when associating token with user');
+   }
   }
-
-  // push public key to client keyring
-
-  // switch to users private key (ssl initialization)
-
-  // generate authentication token
-
-  // register token within users account
-
-  // return boolean
+  return $x;
  }
 
  /**
@@ -194,6 +201,15 @@ class authentication
  {
   // users timestamp and additional unique identifiers to be used during
   // authentication and re-authentication processes
+ }
+
+ /**
+  *! @function __register
+  *  @abstract Registers current authentication token within users table
+  */
+ private function __register($obj)
+ {
+
  }
 
  public function __clone() {
