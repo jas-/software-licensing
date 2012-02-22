@@ -189,7 +189,18 @@ class authentication
   */
  private function __genToken($obj)
  {
-
+  if (count($obj)>=2){
+   // get access level and group
+   $token = sprintf("%s", "%s", "%s", "%s", "%s", "%s", "%d",
+                    $this->registry->val->__do($obj['email'], 'email'),
+                    $this->registry->val->__do($obj['level'], 'string'),
+                    $this->registry->val->__do($obj['group'], 'string'),
+                    $this->registry->val->__do(sha1($this->registry->libs->_getRealIPv4()), 'string'),
+                    $this->registry->val->__do(sha1(getenv('HTTP_USER_AGENT')), 'string'),
+                    $this->registry->val->__do(getenv('HTTP_REFERER'), 'string'));
+   $_SESSION[$this->registry->libs->_getRealIPv4()]['token'] = $token;
+   return $token;
+  }
  }
 
  /**
