@@ -166,7 +166,7 @@ class keyring
   *            keys and attributes for future communications
   */
  private function __keyring($email=false)
- {
+ { unset($_SESSION);
   $r = true;
   try{
    if (!$this->__chkKeys($_SESSION[$this->registry->libs->_getRealIPv4()])){

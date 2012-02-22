@@ -216,4 +216,25 @@ BEGIN
  SELECT `countryName`, `stateOrProvinceName`, `localityName`, `organizationalName`, `organizationalUnitName`, `commonName`, `emailAddress`, AES_DECRYPT(BINARY(UNHEX(privateKey)), SHA1(sKey)) AS privateKey, AES_DECRYPT(BINARY(UNHEX(publicKey)), SHA1(sKey)) AS publicKey FROM `configuration_openssl_keys` WHERE `emailAddress`=emailAddress;
 END//
 
+DROP PROCEDURE IF EXISTS CalcTime//
+CREATE DEFINER='username'@'localhost' PROCEDURE CalcTime(IN `task` VARCHAR(128), IN `sLat` VARCHAR(40), IN `sLon` VARCHAR(40), IN `sKey` LONGTEXT)
+ DETERMINISTIC
+ SQL SECURITY INVOKER
+ COMMENT 'Performs calculations on distances'
+BEGIN
+ SELECT ((ACOS(SIN(sLat) * PI() / 180) * SIN(AES_DECRYPT(BINARY(UNHEX(lat)), SHA1(sKey)) * PI() / 180) + COS(sLat) * PI() / 180) * COS(sLon - AES_DECRYPT(BINARY(UNHEX(lon)), SHA1(sKey)) * PI() / 180)) * 180 / PI() * 60 * 1.1515 AS distance FROM `locations` WHERE `task`=task;
+END//
+
 DELIMITER ;
+
+DROP TABLE IF EXISTS `locations`;
+CREATE TABLE IF NOT EXISTS `locations` (
+  `id` int(255) NOT NULL AUTO_INCREMENT,
+  `task` varchar(128) NOT NULL,
+  `lat` LONGTEXT NOT NULL,
+  `lon` LONGTEXT NOT NULL,
+  `time` varchar(40) NOT NULL,
+  PRIMARY KEY (`id`),
+  INDEX (`task`),
+  UNIQUE KEY (`task`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci AUTO_INCREMENT=0;
