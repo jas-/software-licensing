@@ -90,7 +90,8 @@ class authentication
     return $x;
    }else{
     $token = $this->__genToken($obj);
-
+    $x = $this->__register($obj);
+   }
   }
   return $x;
  }
@@ -188,8 +189,7 @@ class authentication
   */
  private function __genToken($obj)
  {
-  // users timestamp and additional unique identifiers to be used during
-  // authentication and re-authentication processes
+
  }
 
  /**
