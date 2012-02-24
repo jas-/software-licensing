@@ -217,6 +217,8 @@ class authentication
                                                                              $this->registry->libs->_salt($this->registry->opts['dbKey'],
                                                                                                           2048))));
    $r = $this->registry->db->sanitize($sql);
+  } catch(Exception $e){
+   // error handling
   }
   return ($r) ? array('success'=>'User was successfully authenticated') :
                 array('error'=>'An error occured when associating token with user');
