@@ -4,6 +4,11 @@ Description:
 Lightweight MVC PHP framework
 
 Features:
+ACL lists
+ - Supports defining access control lists by
+   IP; ranges, CIDR and individual addresses
+   supported
+
 PKI solution
  - Uses per application/user certificates
    for resource object permissions and sharing
@@ -22,3 +27,11 @@ AES storage
  - Additional applications may refer to this
    application to handle per object permissions
    and authentication data
+   
+PDO drivers
+ - Multiple driver support for MSSQL, MySQL,
+   SQLite, PGSQL & Oracle
+
+SP & SF support
+ - Utilizes stored functions and stored
+   procedures for all database transactions
