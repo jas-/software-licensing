@@ -93,5 +93,6 @@ class proxyController
   }
   new proxyView($this->registry);
  }
+
 }
 ?>
