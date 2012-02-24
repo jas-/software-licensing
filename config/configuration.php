@@ -16,7 +16,7 @@ $settings['opts']['timeout']  = 3600;
 $settings['opts']['template'] = 'views/default';
 $settings['opts']['caching']  = 'views/cache';
 
-/* Sessions specific settings */
+/* Session specific settings */
 $settings['sessions']['timeout'] = $settings['opts']['timeout'];
 $settings['sessions']['title']   = sha1($settings['opts']['title']);
 $settings['sessions']['cache']   = true;
