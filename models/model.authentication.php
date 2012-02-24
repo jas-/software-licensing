@@ -190,17 +190,39 @@ class authentication
  private function __genToken($obj)
  {
   if (count($obj)>=2){
-   // get access level and group
+   if (($a = $this->__getLevelGroup($obj['email']))===false){
+    return array('error'=>'Authenticated token generation failed, cannot continue');
+   }
    $token = sprintf("%s", "%s", "%s", "%s", "%s", "%s", "%d",
                     $this->registry->val->__do($obj['email'], 'email'),
-                    $this->registry->val->__do($obj['level'], 'string'),
-                    $this->registry->val->__do($obj['group'], 'string'),
+                    $this->registry->val->__do($a['level'], 'string'),
+                    $this->registry->val->__do($a['group'], 'string'),
                     $this->registry->val->__do(sha1($this->registry->libs->_getRealIPv4()), 'string'),
                     $this->registry->val->__do(sha1(getenv('HTTP_USER_AGENT')), 'string'),
                     $this->registry->val->__do(getenv('HTTP_REFERER'), 'string'));
    $_SESSION[$this->registry->libs->_getRealIPv4()]['token'] = $token;
    return $token;
   }
+ }
+
+ /**
+  *! @function __getLevelGroup
+  *  @abstract Retrieves access leval and group membership for authenticated
+  *            user account
+  */
+ private function __getLevelGroup($email)
+ {
+  try{
+   $sql = sprintf('CALL Auth_GetLevelGroup("%s", "%s")',
+                  $this->registry->val->__do($email, 'email'),
+                  $this->registry->db->sanitize($this->registry->libs->_hash($this->registry->opts['dbKey'],
+                                                                             $this->registry->libs->_salt($this->registry->opts['dbKey'],
+                                                                                                          2048))));
+  } catch(Exception $e){
+   // error handler
+  }
+  $r = $this->registry->db->query($sql);
+  return ($r) ? $r : false;
  }
 
  /**
