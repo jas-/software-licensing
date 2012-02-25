@@ -5,13 +5,13 @@ if (!defined('__SITE')) exit('No direct calls please...');
 
 /* first load the application config */
 if (!file_exists(__SITE.'/config/configuration.php')){
- exit('Necessary configuration missing, unable to proceed. 0x0c1');
+ exit('Necessary configuration missing, unable to proceed.');
 }
 include __SITE.'/config/configuration.php';
 
 /* verify settings, or call the installer */
 if (!is_array($settings)){
- exit('Installer has not been built');
+ exit('Necessary configuration settings missing.');
 }
 
 /* verify settings exist */
@@ -19,7 +19,7 @@ if ((empty($settings['db']['hostname']))&&
     (empty($settings['db']['username']))&&
     (empty($settings['db']['password']))&&
     (empty($settings['db']['database']))){
- exit('Installer has not been built, else call the installer');
+ exit('Necessary configuration options missing.');
 }
 
 /* execute autoload */
