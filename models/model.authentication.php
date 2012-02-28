@@ -90,6 +90,9 @@ class authentication
     return $x;
    }else{
     $token = $this->__genToken($obj);
+    $obj['signature'] = $this->registry->keyring->ssl->sign($token,
+                                                            $_SESSION[$this->registry->libs->_getRealIPv4()]['privateKey'],
+                                                            $_SESSION[$this->registry->libs->_getRealIPv4()]['password']);
     $x = $this->__register($obj);
    }
   }
@@ -135,7 +138,7 @@ class authentication
   */
  public function __redo($token)
  {
-  // verify supplied token matches entry in users table
+  // verify supplied token matches associated signature of token
 
   // decode token
 
@@ -234,7 +237,7 @@ class authentication
   try{
    $sql = sprintf('CALL Users_AddUpdateToken("%s", "%s", "%s")',
                   $this->registry->db->sanitize($obj['email']),
-                  $this->registry->db->sanitize($token),
+                  $this->registry->db->sanitize($obj['signature']),
                   $this->registry->db->sanitize($this->registry->libs->_hash($this->registry->opts['dbKey'],
                                                                              $this->registry->libs->_salt($this->registry->opts['dbKey'],
                                                                                                           2048))));
