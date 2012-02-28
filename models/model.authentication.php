@@ -138,11 +138,17 @@ class authentication
   */
  public function __redo($token)
  {
-  // verify supplied token matches associated signature of token
+  $a = $this->__decode($token);
 
-  // decode token
+  if (!$this->__hijack($a)){
+   return false;
+  }
 
-  // verify unique computer and timeout information
+  $s = $this->__getSignature($a[0]);
+
+  if (!$s){
+   return false;
+  }
 
   // perform new token generation and registration per user account
 
@@ -172,17 +178,25 @@ class authentication
   */
  private function __decode($token)
  {
-  // returns array of elements within authentication token
+  return (!empty($token)) ? preg_split('/:/', $token) : false;
  }
 
  /**
   *! @function __hijack
   *  @abstract Performs anti-session hijacking validations
   */
- private function __hijack($array)
+ private function __hijack($a)
  {
-  // performs validation of current session data to array of unique computer
-  // identifiers located within decoded authentication token array
+  if (!is_array($a)){
+   $x = ((strcmp($a[3], sha1($this->registry->libs->_getRealIPv4()))===0)&&
+         (strcmp($a[4], sha1(genenv('HTTP_USER_AGENT')))===0)&&
+         (filter_var($a[5], FILTER_VALIDATE_REGEXP,
+                     array('options'=>
+                           array('regexp'=>'/^http(s?)\:\/\/'.getenv('HTTP_REFERER').'/Di')))));
+  }else{
+   $x = false;
+  }
+  return $x;
  }
 
  /**
@@ -196,13 +210,14 @@ class authentication
    if (($a = $this->__getLevelGroup($obj['email']))===false){
     return array('error'=>'Authenticated token generation failed, cannot continue');
    }
-   $token = sprintf("%s", "%s", "%s", "%s", "%s", "%s", "%d",
+   $token = sprintf("%s:", "%s:", "%s:", "%s:", "%s:", "%s:", "%d",
                     $this->registry->val->__do($obj['email'], 'email'),
                     $this->registry->val->__do($a['level'], 'string'),
                     $this->registry->val->__do($a['group'], 'string'),
                     $this->registry->val->__do(sha1($this->registry->libs->_getRealIPv4()), 'string'),
                     $this->registry->val->__do(sha1(getenv('HTTP_USER_AGENT')), 'string'),
-                    $this->registry->val->__do(getenv('HTTP_REFERER'), 'string'));
+                    $this->registry->val->__do(getenv('HTTP_REFERER'), 'string'),
+                    time());
    $_SESSION[$this->registry->libs->_getRealIPv4()]['token'] = $token;
    return $token;
   }
@@ -241,12 +256,43 @@ class authentication
                   $this->registry->db->sanitize($this->registry->libs->_hash($this->registry->opts['dbKey'],
                                                                              $this->registry->libs->_salt($this->registry->opts['dbKey'],
                                                                                                           2048))));
-   $r = $this->registry->db->sanitize($sql);
+   $r = $this->registry->db->query($sql);
   } catch(Exception $e){
    // error handling
   }
   return ($r) ? array('success'=>'User was successfully authenticated') :
                 array('error'=>'An error occured when associating token with user');
+ }
+
+ /**
+  *! @function __getSignature
+  *  @abstract Retrieve currently authenticated users signature associated with token
+  */
+ private function __getSignature($email)
+ {
+  $r = false;
+  if (!empty($email)){
+   try{
+    $sql = sprintf('CALL Users_GetToken("%s", "%s")',
+                   $this->registry->db->sanitize($email),
+                   $this->registry->db->sanitize($this->registry->libs->_hash($this->registry->opts['dbKey'],
+                                                                             $this->registry->libs->_salt($this->registry->opts['dbKey'],
+                                                                                                          2048))));
+    $r = $this->registry->db->query($sql);
+   } catch(Exception $e){
+    // error handler
+   }
+  }
+  return ($r) ? $r : false;
+ }
+
+ /**
+  *! @function __timeout
+  *  @abstract Returns boolean of current time vs. allowed time
+  */
+ private function __timeout($a, $v)
+ {
+  return ($a < (time() - $v));
  }
 
  public function __clone() {
