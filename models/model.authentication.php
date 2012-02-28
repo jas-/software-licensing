@@ -144,11 +144,17 @@ class authentication
    return false;
   }
 
+  if (!$this->__timeout($a[6], $this->registry->opts['timeout'])){
+   return false;
+  }
+
   $s = $this->__getSignature($a[0]);
 
   if (!$s){
    return false;
   }
+
+  // verify token to signature
 
   // perform new token generation and registration per user account
 
