@@ -386,6 +386,38 @@ class openssl
  }
 
  /*!
+  * @function sign
+  * @abstract Sign specified data using private key
+  * @param $data string Data to sign
+  * @param $key string Private key
+  * @param $algo boolean Signature algorithm (default sha512)
+  * @return string The signature assocated with data
+  */
+ public function sign($data, $key, $pass=null, $algo="sha512")
+ {
+  $id = openssl_pkey_get_private($key, $pass);
+  openssl_sign($data, $signature, $id);
+  openssl_free_key($id);
+  return ($signature) ? base64_encode($signature) : false;
+ }
+
+ /*!
+  * @function verify
+  * @abstract verify signature on data
+  * @param $data string Data to verify
+  * @param $public string Users public key
+  * @param $algo boolean Signature algorithm (default sha512)
+  * @return string The signature assocated with data
+  */
+ public function verify($data, $key, $pass=null, $algo="sha512")
+ {
+  $id = openssl_get_publickey($key, $pass);
+  openssl_sign($data, $signature, $id);
+  openssl_free_key($id);
+  return ($signature) ? base64_encode($signature) : false;
+ }
+
+ /*!
   * @function convertBin
   * @abstract Private function to convert hex data to binary
   * @param $key string Hexadecimal data
