@@ -159,7 +159,11 @@ class authentication
    return false;
   }
 
-  // perform new token generation and registration per user account
+  // perform new token generation
+
+  // registry new token as session
+
+  // sign token and register with authenticated user account
 
   // return boolean
  }
