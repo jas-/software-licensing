@@ -154,7 +154,10 @@ class authentication
    return false;
   }
 
-  // verify token to signature
+  if (!$this->__checkSignature($_SESSION[$this->registry->libs->_getRealIPv4()]['token'],
+                               $s)){
+   return false;
+  }
 
   // perform new token generation and registration per user account
 
@@ -290,6 +293,22 @@ class authentication
    }
   }
   return ($r) ? $r : false;
+ }
+
+ /**
+  *! @function __checkSignature
+  *  @abstract Compares signature associated with authentication token
+  */
+ private function __checkSignature($token, $signature)
+ {
+  if ((empty($token))||(empty($signature))){
+   return false;
+  }
+  if (!$this->registry->ssl->verify($token, $signature,
+                                   $_SESSION[$this->registry->libs->_getRealIPv4()]['publicKey'])){
+   return false;
+  }
+  return true;
  }
 
  /**
