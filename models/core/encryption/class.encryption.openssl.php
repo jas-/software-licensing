@@ -396,7 +396,7 @@ class openssl
  public function sign($data, $key, $pass=null, $algo="sha512")
  {
   $id = openssl_pkey_get_private($key, $pass);
-  openssl_sign($data, $signature, $id);
+  openssl_sign($data, $signature, $id, $algo);
   openssl_free_key($id);
   return ($signature) ? base64_encode($signature) : false;
  }
@@ -409,12 +409,12 @@ class openssl
   * @param $algo boolean Signature algorithm (default sha512)
   * @return string The signature assocated with data
   */
- public function verify($data, $key, $pass=null, $algo="sha512")
+ public function verify($data, $sig, $key, $algo="sha512")
  {
-  $id = openssl_get_publickey($key, $pass);
-  openssl_sign($data, $signature, $id);
+  $id = openssl_pkey_get_public($key);
+  $r = openssl_verify($data, $sig, $id, $algo);
   openssl_free_key($id);
-  return ($signature) ? base64_encode($signature) : false;
+  return $r;
  }
 
  /*!
