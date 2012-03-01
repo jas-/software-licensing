@@ -115,6 +115,11 @@ class dashboardUsersView
   */
  private function __main()
  {
+  
+  $this->registry->tpl->assign('lat',
+                               '37.339085', null, null, null);
+  $this->registry->tpl->assign('lon',
+                               '-121.8914807', null, null, null);
   $this->registry->tpl->assign('main',
                                $this->registry->tpl->assign(null,
                                                             null,
