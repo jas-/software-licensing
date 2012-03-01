@@ -10,8 +10,33 @@ function initialize() {
  var marker = new google.maps.Marker({
   position: new google.maps.LatLng({$latitude},{$longitude}),
   map: map,
-  title:"User location"
+  title:"User location",
+  draggable: true
  });
+ var geocoder = new google.maps.Geocoder();
+ function geocodePosition(pos) {
+  geocoder.geocode({
+   latLng: pos
+  }, function(responses) {
+   if (responses && responses.length > 0) {
+    updateMarkerAddress(responses[0].formatted_address);
+   } else {
+    updateMarkerAddress('Cannot determine address at this location.');
+   }
+  });
+ }
+ function updateMarkerStatus(str) {
+  document.getElementById('markerStatus').innerHTML = str;
+ }
+ function updateMarkerPosition(latLng) {
+  document.getElementById('info').innerHTML = [
+   latLng.lat(),
+   latLng.lng()
+  ].join(', ');
+ }
+ function updateMarkerAddress(str) {
+  document.getElementById('address').innerHTML = str;
+ }
  google.maps.event.addListener(marker, 'dragstart', function() {
   updateMarkerAddress('Dragging...');
  });
@@ -36,5 +61,13 @@ window.onload = loadScript;
  <h2>Location</h2>
  <p>The location is used for certificate authentication</p>
  <div id="map" style="width:95%; height:400px"></div>
+ <div id="infoPanel">
+  <b>Marker status:</b>
+  <div id="markerStatus"><i>Click and drag the marker.</i></div>
+  <b>Current position:</b>
+  <div id="info"></div>
+  <b>Closest matching address:</b>
+  <div id="address"></div>
+ </div>
 </div>
 <!-- location template end -->
