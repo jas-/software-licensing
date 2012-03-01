@@ -74,7 +74,7 @@ CREATE TABLE IF NOT EXISTS `authentication` (
   FOREIGN KEY (`level`)
    REFERENCES `authentication_levels` (`level`)
     ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=0;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci AUTO_INCREMENT=0;
 
 -- Create a table for default application settings
 --  Primary key: id
@@ -210,7 +210,7 @@ CREATE TABLE IF NOT EXISTS `resources` (
   `owner` varchar(128) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `resource` (`resource`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=0;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci AUTO_INCREMENT=0;
 
 DROP TABLE IF EXISTS `resources_groups`;
 CREATE TABLE IF NOT EXISTS `resources_groups` (
@@ -225,7 +225,7 @@ CREATE TABLE IF NOT EXISTS `resources_groups` (
   FOREIGN KEY (`resource`)
    REFERENCES `resources` (`resource`)
     ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=0;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci AUTO_INCREMENT=0;
 
 DROP TABLE IF EXISTS `resources_users`;
 CREATE TABLE IF NOT EXISTS `resources_users` (
@@ -240,7 +240,7 @@ CREATE TABLE IF NOT EXISTS `resources_users` (
   FOREIGN KEY (`resource`)
    REFERENCES `resources` (`resource`)
     ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=0;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci AUTO_INCREMENT=0;
 
 -- Re-enable the foreign key checks
 SET foreign_key_checks = 1;
