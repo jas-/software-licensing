@@ -9,24 +9,6 @@
   });
  });
 </script>
-<script>
-function initialize() {
-  var myOptions = {
-    zoom: 3,
-    center: new google.maps.LatLng({$latitude},{$longitude}),
-    mapTypeId: google.maps.MapTypeId.HYBRID
-  }
-  var map = new google.maps.Map(document.getElementById('map'), myOptions);
-}
-
-function loadScript() {
-  var script = document.createElement("script");
-  script.type = "text/javascript";
-  script.src = "https://maps.googleapis.com/maps/api/js?key=AIzaSyDnhBqXMD17Y5OS_Li5zwyLIAL2HuGyRoc&sensor=false&callback=initialize";
-  document.body.appendChild(script);
-}
-window.onload = loadScript;
-</script>
 <div id="full" class="margins main">
  <div id="form" class="rounder gradient">
   <h2>User management</h2>
@@ -53,8 +35,6 @@ window.onload = loadScript;
    <input type="submit" value="Add User" id="submit-button" name="add" />
    <input type="submit" value="Edit User" id="submit-button" name="edit" />
    <input type="submit" value="Delete User" id="submit-button" name="del" />
-   <br/><br/><hr style="width: 95%"/><br/>
-   <div id="map" style="width:95%; height:400px"></div>
   </form>
  </div>
 </div>
