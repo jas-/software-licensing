@@ -19,7 +19,13 @@ function initialize() {
    latLng: pos
   }, function(responses) {
    if (responses && responses.length > 0) {
+    map.setCenter(responses[0].geometry.location);
     updateMarkerAddress(responses[0].formatted_address);
+    var x = responses[0].formatted_address.split(', ');
+    document.getElementById('localityName').value = x[1];
+    var y = x[2].split(' ');
+    document.getElementById('stateOrProvinceName').value = y[0];
+    document.getElementById('countryName').value = x[3];
    } else {
     updateMarkerAddress('Cannot determine address at this location.');
    }
