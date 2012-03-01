@@ -21,6 +21,7 @@
  <script src="{$templates}/js/jQuery.AJAX.min.js" type="text/javascript"></script>
  <script src="{$templates}/js/jQuery.handleStorage.min.js" type="text/javascript"></script>
  <script src="{$templates}/js/jQuery.pidCrypt.min.js"></script>
+ <script src="{$templates}/js/libraries.js"></script>
 </head>
 <body>
 <!-- page header template end -->
