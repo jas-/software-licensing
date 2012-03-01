@@ -32,6 +32,9 @@
     <input type="text" id="stateOrProvinceName" name="stateOrProvinceName" value="{$stateOrProvinceName}" placeholder="California" required="required" /><span class="required">*</span><br />
    <label for="countryName">Country: </label>
     <input type="text" id="countryName" name="countryName" value="{$countryName}" placeholder="United States" required="required" /><span class="required">*</span><br />
+   <br/><hr style="width: 95%"/><br/>
+   <label for="spki">Key size: </label>
+    <keygen challenge="{$token}" form="users" keytype="rsa" name="spki" id="spki" /><br/>
    <input type="submit" value="Add User" id="submit-button" name="add" />
    <input type="submit" value="Edit User" id="submit-button" name="edit" />
    <input type="submit" value="Delete User" id="submit-button" name="del" />
