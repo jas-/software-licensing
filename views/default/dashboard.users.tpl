@@ -12,8 +12,8 @@
 <script>
 function initialize() {
   var myOptions = {
-    zoom: 8,
-    center: new google.maps.LatLng({$lat},{$lon}),
+    zoom: 3,
+    center: new google.maps.LatLng({$latitude},{$longitude}),
     mapTypeId: google.maps.MapTypeId.HYBRID
   }
   var map = new google.maps.Map(document.getElementById('map'), myOptions);
@@ -45,11 +45,11 @@ window.onload = loadScript;
    <label for="organizationalUnitName">Department: </label>
     <input type="text" id="organizationalUnitName" name="organizationalUnitName" value="" placeholder="Department of Kowabunga" required="required" /><span class="required">*</span><br />
    <label for="localityName">City: </label>
-    <input type="text" id="localityName" name="localityName" value="" placeholder="San Diego" required="required" /><span class="required">*</span><br />
+    <input type="text" id="localityName" name="localityName" value="{$localityName}" placeholder="San Diego" required="required" /><span class="required">*</span><br />
    <label for="stateOrProvinceName">State: </label>
-    <input type="text" id="stateOrProvinceName" name="stateOrProvinceName" value="" placeholder="California" required="required" /><span class="required">*</span><br />
+    <input type="text" id="stateOrProvinceName" name="stateOrProvinceName" value="{$stateOrProvinceName}" placeholder="California" required="required" /><span class="required">*</span><br />
    <label for="countryName">Country: </label>
-    <input type="text" id="countryName" name="countryName" value="" placeholder="United States" required="required" /><span class="required">*</span><br />
+    <input type="text" id="countryName" name="countryName" value="{$countryName}" placeholder="United States" required="required" /><span class="required">*</span><br />
    <input type="submit" value="Add User" id="submit-button" name="add" />
    <input type="submit" value="Edit User" id="submit-button" name="edit" />
    <input type="submit" value="Delete User" id="submit-button" name="del" />
