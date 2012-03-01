@@ -50,6 +50,10 @@ body,html{
  font-size:0.9em;
 }
 
+.small{
+ font-size:0.7em;
+}
+
 #full{
  width:95%;
 }
