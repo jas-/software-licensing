@@ -51,7 +51,7 @@ body,html{
 }
 
 #full{
- width:100%;
+ width:95%;
 }
 
 #constrain{
@@ -107,39 +107,39 @@ body,html{
  width: 1%;
 }
 
-#authenticate{
+#form{
  position:relative;
  border: 0.1em solid;
  padding-left:10px;
  padding-bottom:10px;
 }
 
-#authenticate h2{
+#form h2{
  padding-left:15px;
  font-size:1.2em;
 }
 
-#authenticate p{
+#form p{
  font-size:0.8em;
 }
 
-#authenticate a{
+#form a{
  color:#000;
  font-size:0.8em;
  text-decoration:none;
 }
 
-#authenticate a:active,
+#form a:active,
               a:hover,
               a:focus{
  text-decoration:underline;
 }
 
-#authenticate span{
+#form span{
  color:#A00;
 }
 
-#authenticate label{
+#form label{
  float:left;
  font-size:0.9em;
  width:20%;
@@ -150,9 +150,9 @@ body,html{
  font-weight:bold;
 }
 
-#authenticate input,
-#authenticate select,
-#authenticate textarea{
+#form input,
+#form select,
+#form textarea{
  margin-top:0.3em;
 }
 
