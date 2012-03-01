@@ -232,6 +232,12 @@ class libraries {
   */
  public function parsegeo($data)
  {
+  $settings['latitude']            = (!empty($data['geoplugin_latitude'])) ?
+                                             $data['geoplugin_latitude'] :
+                                             '46.0730555556';
+  $settings['longitude']           = (!empty($data['geoplugin_longitude'])) ?
+                                             $data['geoplugin_longitude'] :
+                                             '-100.546666667';
   $settings['localityName']        = (!empty($data['geoplugin_city'])) ?
                                              $data['geoplugin_city'] :
                                              false;
