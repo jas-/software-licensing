@@ -130,8 +130,8 @@ body,html{
 }
 
 #form a:active,
-              a:hover,
-              a:focus{
+      a:hover,
+      a:focus{
  text-decoration:underline;
 }
 
