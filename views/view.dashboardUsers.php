@@ -115,11 +115,12 @@ class dashboardUsersView
   */
  private function __main()
  {
-  
-  $this->registry->tpl->assign('lat',
-                               '37.339085', null, null, null);
-  $this->registry->tpl->assign('lon',
-                               '-121.8914807', null, null, null);
+  $geo = $this->registry->libs->parsegeo($this->registry->libs->geolocation($this->registry->libs->_getRealIPv4()));
+  $this->registry->tpl->assign('latitude', '37.339085', null, null, null);
+  $this->registry->tpl->assign('longitude', '-121.8914807', null, null, null);
+  $this->registry->tpl->assign('localityName', $geo['localityName'], null, null, null);
+  $this->registry->tpl->assign('stateOrProvinceName', $geo['stateOrProvinceName'], null, null, null);
+  $this->registry->tpl->assign('countryName', $geo['countryName'], null, null, null);
   $this->registry->tpl->assign('main',
                                $this->registry->tpl->assign(null,
                                                             null,
