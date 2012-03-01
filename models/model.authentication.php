@@ -136,7 +136,7 @@ class authentication
   *! @function __redo
   *  @abstract Decodes and re-authenticates user
   */
- public function __redo($token)
+ private function __redo($token)
  {
   $a = $this->__decode($token);
 
@@ -159,13 +159,16 @@ class authentication
    return false;
   }
 
-  // perform new token generation
+  $obj['email'] = $a[0];
 
-  // registry new token as session
+  $token = $this->__genToken($obj);
 
-  // sign token and register with authenticated user account
+  $obj['signature'] = $this->registry->keyring->ssl->sign($token,
+                                                          $_SESSION[$this->registry->libs->_getRealIPv4()]['privateKey'],
+                                                          $_SESSION[$this->registry->libs->_getRealIPv4()]['password']);
+  $x = $this->__register($obj);
 
-  // return boolean
+  return ((empty($x['error']))&&(!empty($x['success'])) ? true : false;
  }
 
  /**
