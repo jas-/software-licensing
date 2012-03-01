@@ -67,7 +67,7 @@ window.onload = loadScript;
  <h2>Location</h2>
  <p>The location is used for certificate authentication</p>
  <div id="map" style="width:95%; height:400px"></div>
- <div id="infoPanel">
+ <div id="infoPanel" class="small">
   <b>Marker status:</b>
   <div id="markerStatus"><i>Click and drag the marker.</i></div>
   <b>Current position:</b>
