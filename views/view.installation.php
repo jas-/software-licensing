@@ -106,7 +106,8 @@ class installationView
   */
  private function _footer()
  {
-  $this->registry->tpl->display('footer.tpl', true, null, $this->registry->libs->_getRealIPv4());
+  $this->registry->tpl->display('footer.tpl', true, null,
+                                $this->registry->libs->_getRealIPv4());
  }
 
  /**
@@ -115,7 +116,13 @@ class installationView
   */
  private function __main()
  {
-  $this->registry->tpl->assign('main', $this->registry->tpl->assign(null, null, 'install.tpl', true, $this->registry->libs->_getRealIPv4()), null, null);
+  $this->registry->tpl->assign('main',
+                               $this->registry->tpl->assign(null,
+                                                            null,
+                                                            'install.tpl',
+                                                            true,
+                                                            $this->registry->libs->_getRealIPv4()),
+                               null, null);
  }
 
  /**
@@ -124,7 +131,13 @@ class installationView
   */
  private function _login()
  {
-  $this->registry->tpl->assign('login', $this->registry->tpl->assign(null, null, 'login.tpl', true, $this->registry->libs->_getRealIPv4()), null, null);
+  $this->registry->tpl->assign('login',
+                               $this->registry->tpl->assign(null,
+                                                            null,
+                                                            'login.tpl',
+                                                            true,
+                                                            $this->registry->libs->_getRealIPv4()),
+                               null, null);
  }
 
  /**
@@ -133,7 +146,13 @@ class installationView
   */
  private function _menu()
  {
-  $this->registry->tpl->assign('menu', $this->registry->tpl->assign(null, null, 'menu.tpl', true, $this->registry->libs->_getRealIPv4()), null, null);
+  $this->registry->tpl->assign('menu',
+                               $this->registry->tpl->assign(null,
+                                                            null,
+                                                            'menu.tpl',
+                                                            true,
+                                                            $this->registry->libs->_getRealIPv4()),
+                               null, null);
  }
 
  /**
