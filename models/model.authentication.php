@@ -168,7 +168,7 @@ class authentication
                                                           $_SESSION[$this->registry->libs->_getRealIPv4()]['password']);
   $x = $this->__register($obj);
 
-  return ((empty($x['error']))&&(!empty($x['success'])) ? true : false;
+  return ((empty($x['error']))&&(!empty($x['success']))) ? true : false;
  }
 
  /**
