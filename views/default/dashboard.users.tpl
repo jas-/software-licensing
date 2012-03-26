@@ -2,6 +2,31 @@
 <script type="text/javascript">
  var $j = jQuery.noConflict();
  $j(document).ready(function(){
+  function _message(obj){
+   var details = '';
+   if (obj!=''){
+    obj = (typeof obj=='object') ? JSON.parse(obj) : obj;
+    $j.each(obj, function(k, v){
+     if (k=='error'){
+      $j('#message').html('<div class="error">'+v+'</div>').fadeIn(1000);
+     }
+     if (k=='warning'){
+      $j('#message').html('<div class="warning">'+v+'</div>').fadeIn(1000);
+     }
+     if (k=='info'){
+      $j('#message').html('<div class="info">'+v+'</div>').fadeIn(1000);
+     }
+     if (k=='success'){
+      $j('#message').html('<div class="success">'+v+'</div>').fadeIn(1000);
+     }
+    });
+   } else {
+    $j('#message').html('<div class="warning">Empty response for request</div>').fadeIn(1000);
+   }
+  }
+  function _load(){
+   // load a spinner or something
+  }
   $j('#users').pidCrypt({
    appID:'{$token}',
    callback:function(){ _message(this); },
@@ -12,7 +37,7 @@
 <div id="full" class="margins main">
  <div id="form" class="rounder gradient">
   <h2>User management</h2>
-  <p>Adding, editing and deleting users as easy as 1,2,3</p>
+  <p></p>
   <div id="message"></div>
   <form id="users" name="userManagement" method="post" action="?nxs=proxy/users">
    <label for="email">Email: </label>
