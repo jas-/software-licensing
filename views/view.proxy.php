@@ -85,8 +85,12 @@ class proxyView
     case 'key':
      $x = $this->registry->keyring->__public($this->registry->val->__do($_POST['email']));
      break;
+    case 'users':
+     $users = users::instance($this->registry);
+     $x = $users->__do($this->registry->val->__do($_POST));
+     break;
     default:
-     $x = false;
+     $x = array('error'=>'Invalid command recieved, unable to process');
      break;
    }
   }
