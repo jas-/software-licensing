@@ -27,6 +27,9 @@
   function _load(){
    // load a spinner or something
   }
+  $j('#submit-button').on('click','submit', function(){
+   $('#do').val($j(this).attr('name'));
+  });
   $j('#users').pidCrypt({
    appID:'{$token}',
    callback:function(){ _message(this); },
@@ -36,7 +39,7 @@
 </script>
 <div id="full" class="margins main">
  <div id="form" class="rounder gradient">
-  <h2>User management</h2>
+  <h2>Manage accounts</h2>
   <p></p>
   <div id="message"></div>
   <form id="users" name="userManagement" method="post" action="?nxs=proxy/users">
@@ -59,7 +62,8 @@
     <input type="text" id="countryName" name="countryName" value="{$countryName}" placeholder="United States" required="required" /><span class="required">*</span><br />
    <br/><hr style="width: 95%"/><br/>
    <label for="spki">Key size: </label>
-    <keygen challenge="{$token}" form="users" keytype="rsa" name="spki" id="spki" /><br/>
+    <keygen challenge="{$token}" form="users" keytype="rsa" name="spki" id="spki"></keygen><br/>
+   <input type="hidden" id="do" name="do">
    <input type="submit" value="Add User" id="submit-button" name="add" />
    <input type="submit" value="Edit User" id="submit-button" name="edit" />
    <input type="submit" value="Delete User" id="submit-button" name="del" />
