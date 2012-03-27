@@ -27,8 +27,8 @@
   function _load(){
    // load a spinner or something
   }
-  $j('#submit-button').on('click','submit', function(){
-   $('#do').val($j(this).attr('name'));
+  $j('#submit-button').on('click', function(){
+   $j('#do').val($j(this).val().toLowerCase());
   });
   $j('#users').pidCrypt({
    appID:'{$token}',
@@ -64,9 +64,9 @@
    <label for="spki">Key size: </label>
     <keygen challenge="{$token}" form="users" keytype="rsa" name="spki" id="spki"></keygen><br/>
    <input type="hidden" id="do" name="do">
-   <input type="submit" value="Add User" id="submit-button" name="add" />
-   <input type="submit" value="Edit User" id="submit-button" name="edit" />
-   <input type="submit" value="Delete User" id="submit-button" name="del" />
+   <input type="submit" value="Add" id="submit-button" />
+   <input type="submit" value="Edit" id="submit-button" />
+   <input type="submit" value="Delete" id="submit-button" />
   </form>
  </div>
 </div>
