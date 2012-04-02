@@ -43,8 +43,8 @@
   <p></p>
   <div id="message"></div>
   <form id="users" name="userManagement" method="post" action="?nxs=proxy/users">
-   <label for="email">Email: </label>
-    <input type="email" id="email" name="email" value="" placeholder="johndoe@example.com" required="required" /><span class="required">*</span><br />
+   <label for="email">Username: </label>
+    <input type="text" id="email" name="email" value="" placeholder="johndoe@example.com" required="required" /><span class="required">*</span><br />
    <label for="password">Password: </label>
     <input type="password" id="password" name="password" value="" placeholder="********" required="required" /><span class="required">*</span><br />
    <label for="confirm">Confirm: </label>
@@ -60,13 +60,11 @@
     <input type="text" id="stateOrProvinceName" name="stateOrProvinceName" value="{$stateOrProvinceName}" placeholder="California" required="required" /><span class="required">*</span><br />
    <label for="countryName">Country: </label>
     <input type="text" id="countryName" name="countryName" value="{$countryName}" placeholder="United States" required="required" /><span class="required">*</span><br />
-   <br/><hr style="width: 95%"/><br/>
-   <label for="spki">Key size: </label>
-    <keygen challenge="{$token}" form="users" keytype="rsa" name="spki" id="spki"></keygen><br/>
-   <input type="hidden" id="do" name="do">
-   <input type="submit" value="Add" id="submit-button" />
-   <input type="submit" value="Edit" id="submit-button" />
-   <input type="submit" value="Delete" id="submit-button" />
+   <label></label>
+    <input type="hidden" id="do" name="do">
+    <input type="submit" value="Add" id="submit-button" />
+    <input type="submit" value="Edit" id="submit-button" />
+    <input type="submit" value="Delete" id="submit-button" />
   </form>
  </div>
 </div>
