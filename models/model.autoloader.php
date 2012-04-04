@@ -21,67 +21,67 @@ if (!defined('__SITE')) exit('No direct calls please...');
 
 class autoloader {
 
- public static $loader;
- public static $path;
- private $files = array();
+	public static $loader;
+	public static $path;
+	private $files = array();
 
- public static function instance($path)
- {
-  if (self::$loader == NULL)
-   self::$loader = new self($path);
-  return self::$loader;
- }
+	public static function instance($path)
+	{
+		if (self::$loader == NULL)
+			self::$loader = new self($path);
+		return self::$loader;
+	}
 
- public function __construct($path)
- {
-  static::$path = (!empty($path)) ? $path : $_SERVER['DOCUMENT_ROOT'];
-  $this->find(static::$path);
-  $this->load(static::$path);
- }
+	public function __construct($path)
+	{
+		static::$path = (!empty($path)) ? $path : $_SERVER['DOCUMENT_ROOT'];
+		$this->find(static::$path);
+		$this->load(static::$path);
+	}
 
- private function load($vpath)
- {
-  if (is_array($this->files)){
-   foreach($this->files as $key => $value){
-    if (file_exists($value)){
-     require_once($value);
-    }
-   }
-  }
- }
+	private function load($vpath)
+	{
+		if (is_array($this->files)){
+			foreach($this->files as $key => $value){
+				if (file_exists($value)){
+					require_once($value);
+				}
+			}
+		}
+	}
 
- public function find($path)
- {
-  $dir = ''; $file = ''; $files = array();
-  if (is_dir($path)){
-   if ($dir = opendir($path)){
-    while (($file = readdir($dir))!==false){
-     if ($this->exclude($file)===true){
-      if ($this->dir($path.'/'.$file)===true){
-       $this->find($path.'/'.$file);
-      } else {
-       array_push($this->files, $path.'/'.$file);
-      }
-     }
-    }
-   }
-  }
- }
+	public function find($path)
+	{
+		$dir = ''; $file = ''; $files = array();
+		if (is_dir($path)){
+			if ($dir = opendir($path)){
+				while (($file = readdir($dir))!==false){
+					if ($this->exclude($file)===true){
+						if ($this->dir($path.'/'.$file)===true){
+							$this->find($path.'/'.$file);
+						} else {
+							array_push($this->files, $path.'/'.$file);
+						}
+					}
+				}
+			}
+		}
+	}
 
- private function file($file)
- {
-  return (is_file($file)) ? true : false;
- }
+	private function file($file)
+	{
+		return (is_file($file)) ? true : false;
+	}
 
- private function dir($dir)
- {
-  return (is_dir($dir)) ? true : false;
- }
+	private function dir($dir)
+	{
+		return (is_dir($dir)) ? true : false;
+	}
 
- private function exclude($dir)
- {
-  return (($dir!=='.')&&($dir!=='..')) ? true : false;
- }
+	private function exclude($dir)
+	{
+		return (($dir!=='.')&&($dir!=='..')) ? true : false;
+	}
 
 }
 ?>

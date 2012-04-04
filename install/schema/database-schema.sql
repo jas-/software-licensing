@@ -106,8 +106,8 @@ CREATE TABLE IF NOT EXISTS `configuration` (
 DROP TABLE IF EXISTS `configuration_access`;
 CREATE TABLE IF NOT EXISTS `configuration_access` (
   `id` int(255) NOT NULL AUTO_INCREMENT,
-  `allow` varchar(30) NOT NULL,
-  `deny` varchar(30) NOT NULL,
+  `allow` LONGTEXT NOT NULL,
+  `deny` LONGTEXT NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci AUTO_INCREMENT=0;
 
