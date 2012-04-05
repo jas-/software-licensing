@@ -26,32 +26,32 @@ if (!defined('__SITE')) exit('No direct calls please...');
 class indexController
 {
 
- /**
-  * @var registry object
-  * @abstract Global class handler
-  */
- private $registry;
+	/**
+	 * @var registry object
+	 * @abstract Global class handler
+	 */
+	private $registry;
 
- /**
-  *! @function __construct
-  *  @abstract Class loader
-  *  @param registry array - Global array of class objects
-  */
- public function __construct($registry)
- {
-  $this->registry = $registry;
- }
+	/**
+	 *! @function __construct
+	 *  @abstract Class loader
+	 *  @param registry array - Global array of class objects
+	 */
+	public function __construct($registry)
+	{
+		$this->registry = $registry;
+	}
 
- /**
-  *! @function index
-  *  @abstract Calls default view
-  */
- public function index()
- {
-  if (file_exists('views/view.index.php')){
-   require 'views/view.index.php';
-  }
-  indexView::instance($this->registry);
- }
+	/**
+	 *! @function index
+	 *  @abstract Calls default view
+	 */
+	public function index()
+	{
+		if (file_exists('views/view.index.php')){
+			require 'views/view.index.php';
+		}
+		indexView::instance($this->registry);
+	}
 }
 ?>

@@ -21,48 +21,48 @@ if (!defined('__SITE')) exit('No direct calls please...');
  */
 class oauthlib
 {
- protected static $instance;
- private $handle;
- private $options=array();
- private function __construct($configuration)
- {
-  if ((extension_loaded('oauth'))||(!class_exists('OAuth'))) {
-   $this->main($configuration);
-  } else {
-   echo 'The oauth exensions are not available.';
-   unset($instance);
-   exit;
-  }
- }
- public static function instance($configuration)
- {
-  if (!isset(self::$instance)) {
-   $c = __CLASS__;
-   self::$instance = new self($configuration);
-  }
-  return self::$instance;
- }
- private function main($configuration)
- { echo '<pre>'; print_r(func_get_args()); echo '</pre>';
-  if (extension_loaded('oauth')) {
-   $this->handle = $this->init($configuration);
-   if ((!isset($_SESSION['oauth']))&&($_SESSION['oauth']!==1)) {
-    print_r(var_dump($this->handle->getAccessToken($configuration['provider'])));
-   }
-  } else {
-   $this->handle = 'The oAuth extension is not installed. Aborting.';
-  }
- }
- private function init($configuration)
- {
-  return new OAuth($configuration['key'], $configuration['secret'], $configuration['sign'], $configuration['type']);
- }
- private function __destruct()
- {
-  if (isset($this->handle)) {
-   unset($this->handle);
-  }
-  return;
- }
+	protected static $instance;
+	private $handle;
+	private $options=array();
+	private function __construct($configuration)
+	{
+		if ((extension_loaded('oauth'))||(!class_exists('OAuth'))) {
+			$this->main($configuration);
+		} else {
+			echo 'The oauth exensions are not available.';
+			unset($instance);
+			exit;
+		}
+	}
+	public static function instance($configuration)
+	{
+		if (!isset(self::$instance)) {
+			$c = __CLASS__;
+			self::$instance = new self($configuration);
+		}
+		return self::$instance;
+	}
+	private function main($configuration)
+	{ echo '<pre>'; print_r(func_get_args()); echo '</pre>';
+		if (extension_loaded('oauth')) {
+			$this->handle = $this->init($configuration);
+			if ((!isset($_SESSION['oauth']))&&($_SESSION['oauth']!==1)) {
+				print_r(var_dump($this->handle->getAccessToken($configuration['provider'])));
+			}
+		} else {
+			$this->handle = 'The oAuth extension is not installed. Aborting.';
+		}
+	}
+	private function init($configuration)
+	{
+		return new OAuth($configuration['key'], $configuration['secret'], $configuration['sign'], $configuration['type']);
+	}
+	private function __destruct()
+	{
+		if (isset($this->handle)) {
+			unset($this->handle);
+		}
+		return;
+	}
 }
 ?>

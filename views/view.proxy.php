@@ -27,75 +27,75 @@ if (!defined('__SITE')) exit('No direct calls please...');
 class proxyView
 {
 
- /**
-  * @var registry object
-  * @abstract Global class handler
-  */
- private $registry;
+	/**
+	 * @var registry object
+	 * @abstract Global class handler
+	 */
+	private $registry;
 
- /**
-  *! @var instance object - class singleton object
-  */
- protected static $instance;
+	/**
+	 *! @var instance object - class singleton object
+	 */
+	protected static $instance;
 
- /**
-  *! @function __construct
-  *  @abstract Initializes singleton for proxyView class
-  *  @param registry array - Global array of class objects
-  */
- public function __construct($registry)
- {
-  $this->registry = $registry;
-  $do = (!empty($_POST['key'])) ? 'key' : $this->registry->router->action;
-  exit($this->registry->libs->JSONencode($this->__decide($do)));
- }
+	/**
+	 *! @function __construct
+	 *  @abstract Initializes singleton for proxyView class
+	 *  @param registry array - Global array of class objects
+	 */
+	public function __construct($registry)
+	{
+		$this->registry = $registry;
+		$do = (!empty($_POST['key'])) ? 'key' : $this->registry->router->action;
+		exit($this->registry->libs->JSONencode($this->__decide($do)));
+	}
 
- /**
-  *! @function instance
-  *  @abstract Creates non-deserializing, non-cloneable instance object
-  *  @param configuration array - server, username, password, database
-  *  @return Singleton - Singleton object
-  */
- public static function instance($configuration)
- {
-  if (!isset(self::$instance)) {
-   $c = __CLASS__;
-   self::$instance = new self($configuration);
-  }
-  return self::$instance;
- }
+	/**
+	 *! @function instance
+	 *  @abstract Creates non-deserializing, non-cloneable instance object
+	 *  @param configuration array - server, username, password, database
+	 *  @return Singleton - Singleton object
+	 */
+	public static function instance($configuration)
+	{
+		if (!isset(self::$instance)) {
+			$c = __CLASS__;
+			self::$instance = new self($configuration);
+		}
+		return self::$instance;
+	}
 
- /**
-  *! @function __decide
-  *  @abstract Switch/Case to decide what to do
-  *  @param args array - Array of arguments
-  */
- private function __decide($cmd)
- {
-  $x = false;
-  $this->registry->keyring = new keyring($this->registry,
-                                         $this->registry->val->__do($_POST));
-  if (!empty($cmd)){
-   $cmd = $this->registry->val->__do($cmd, 'string');
-   switch($cmd){
-    case 'authenticate':
-     $auth = authentication::instance($this->registry);
-     $x = $auth->__do($this->registry->val->__do($_POST));
-     break;
-    case 'key':
-     $x = $this->registry->keyring->__public($this->registry->val->__do($_POST['email']));
-     break;
-    case 'users':
-     $users = users::instance($this->registry);
-     $x = $users->__do($this->registry->val->__do($_POST));
-     break;
-    default:
-     $x = array('error'=>'Invalid command recieved, unable to process');
-     break;
-   }
-  }
-  return $x;
- }
+	/**
+	 *! @function __decide
+	 *  @abstract Switch/Case to decide what to do
+	 *  @param args array - Array of arguments
+	 */
+	private function __decide($cmd)
+	{
+		$x = false;
+		$this->registry->keyring = new keyring($this->registry,
+				$this->registry->val->__do($_POST));
+		if (!empty($cmd)){
+			$cmd = $this->registry->val->__do($cmd, 'string');
+			switch($cmd){
+				case 'authenticate':
+					$auth = authentication::instance($this->registry);
+					$x = $auth->__do($this->registry->val->__do($_POST));
+					break;
+				case 'key':
+					$x = $this->registry->keyring->__public($this->registry->val->__do($_POST['email']));
+					break;
+				case 'users':
+					$users = users::instance($this->registry);
+					$x = $users->__do($this->registry->val->__do($_POST));
+					break;
+				default:
+					$x = array('error'=>'Invalid command recieved, unable to process');
+					break;
+			}
+		}
+		return $x;
+	}
 }
 
 ?>

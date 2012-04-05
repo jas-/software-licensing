@@ -22,54 +22,54 @@ if (!defined('__SITE')) exit('No direct calls please...');
 
 class kerberos
 {
- protected static $instance;
- private $handle;
- private $options=array();
- private function __construct($configuration)
- {
-  if ((extension_loaded('kadm5'))&&(function_exists('kadm5_init_with_password'))) {
-   $this->main($configuration);
-  } else {
-   echo 'The kadm5 extensions are not available';
-   unset($instance);
-   exit;
-  }
- }
- public static function instance($configuration)
- {
-  if (!isset(self::$instance)) {
-   $c = __CLASS__;
-   self::$instance = new self($configuration);
-  }
-  return self::$instance;
- }
- private function main($configuration)
- {
-  if (function_exists('kadm5_init_with_password')) {
-   $this->init($configuration);
-  } else {
-   $this->handle = 'The KADM5 Pear extension is not installed. Aborting.';
-  }
- }
- private function setoptions($configuration)
- {
-  $this->options[KADM5_PRINC_EXPIRE_TIME] = (!empty($configuration['timeout'])) ? $configuration['timeout'] : 0;
-  $this->options[KADM5_POLICY] = (!empty($configuration['policy'])) ? $configuration['policy'] : 'default';
- }
- private function init($configuration)
- {
-  $this->handle = kadm5_init_with_password($configuration['servers'], $configuration['realm'], $configuration['principal'], $configuration['password']);
- }
- public function authenticate($username, $password, $realm)
- {
-  return kadm5_create_principal($this->handle, $username.'@'.$realm, $password, $this->options);
- }
- private function __destruct()
- {
-  if (isset($this->handle)) {
-   kadm5_destroy($this->handle);
-  }
-  return;
- }
+	protected static $instance;
+	private $handle;
+	private $options=array();
+	private function __construct($configuration)
+	{
+		if ((extension_loaded('kadm5'))&&(function_exists('kadm5_init_with_password'))) {
+			$this->main($configuration);
+		} else {
+			echo 'The kadm5 extensions are not available';
+			unset($instance);
+			exit;
+		}
+	}
+	public static function instance($configuration)
+	{
+		if (!isset(self::$instance)) {
+			$c = __CLASS__;
+			self::$instance = new self($configuration);
+		}
+		return self::$instance;
+	}
+	private function main($configuration)
+	{
+		if (function_exists('kadm5_init_with_password')) {
+			$this->init($configuration);
+		} else {
+			$this->handle = 'The KADM5 Pear extension is not installed. Aborting.';
+		}
+	}
+	private function setoptions($configuration)
+	{
+		$this->options[KADM5_PRINC_EXPIRE_TIME] = (!empty($configuration['timeout'])) ? $configuration['timeout'] : 0;
+		$this->options[KADM5_POLICY] = (!empty($configuration['policy'])) ? $configuration['policy'] : 'default';
+	}
+	private function init($configuration)
+	{
+		$this->handle = kadm5_init_with_password($configuration['servers'], $configuration['realm'], $configuration['principal'], $configuration['password']);
+	}
+	public function authenticate($username, $password, $realm)
+	{
+		return kadm5_create_principal($this->handle, $username.'@'.$realm, $password, $this->options);
+	}
+	private function __destruct()
+	{
+		if (isset($this->handle)) {
+			kadm5_destroy($this->handle);
+		}
+		return;
+	}
 }
 ?>

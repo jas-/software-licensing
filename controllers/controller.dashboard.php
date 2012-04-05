@@ -26,50 +26,50 @@ if (!defined('__SITE')) exit('No direct calls please...');
 class dashboardController
 {
 
- /**
-  * @var registry object
-  * @abstract Global class handler
-  */
- private $registry;
+	/**
+	 * @var registry object
+	 * @abstract Global class handler
+	 */
+	private $registry;
 
- /**
-  *! @function __construct
-  *  @abstract Class loader
-  *  @param registry array - Global array of class objects
-  */
- public function __construct($registry)
- {
-  $this->registry = $registry;
- }
+	/**
+	 *! @function __construct
+	 *  @abstract Class loader
+	 *  @param registry array - Global array of class objects
+	 */
+	public function __construct($registry)
+	{
+		$this->registry = $registry;
+	}
 
- /**
-  *! @function __auth
-  *  @abstract Handles authentication
-  */
- private function __auth()
- {
+	/**
+	 *! @function __auth
+	 *  @abstract Handles authentication
+	 */
+	private function __auth()
+	{
 
- }
+	}
 
- /**
-  *! @function __query
-  *  @abstract Builds authentication query
-  */
- private function __query()
- {
+	/**
+	 *! @function __query
+	 *  @abstract Builds authentication query
+	 */
+	private function __query()
+	{
 
- }
+	}
 
- /**
-  *! @function index
-  *  @abstract Calls default view
-  */
- public function index()
- {
-  if (file_exists('views/view.dashboard.php')){
-   require 'views/view.dashboard.php';
-  }
-  dashboardView::instance($this->registry);
- }
+	/**
+	 *! @function index
+	 *  @abstract Calls default view
+	 */
+	public function index()
+	{
+		if (file_exists('views/view.dashboard.php')){
+			require 'views/view.dashboard.php';
+		}
+		dashboardView::instance($this->registry);
+	}
 }
 ?>

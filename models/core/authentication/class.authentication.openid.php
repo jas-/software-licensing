@@ -22,43 +22,43 @@ if (!defined('__SITE')) exit('No direct calls please...');
 
 class openid
 {
- protected static $instance;
- private $handle;
- private $bound;
- private function __construct($configuration, $username, $password)
- {
-  $this->main($configuration, $username, $password);
- }
- public static function instance($configuration, $username=NULL, $password=NULL)
- {
-  if (!isset(self::$instance)) {
-   $c = __CLASS__;
-   self::$instance = new self($configuration, $username, $password);
-  }
-  return self::$instance;
- }
- private function main($configuration, $username, $password)
- {
+	protected static $instance;
+	private $handle;
+	private $bound;
+	private function __construct($configuration, $username, $password)
+	{
+		$this->main($configuration, $username, $password);
+	}
+	public static function instance($configuration, $username=NULL, $password=NULL)
+	{
+		if (!isset(self::$instance)) {
+			$c = __CLASS__;
+			self::$instance = new self($configuration, $username, $password);
+		}
+		return self::$instance;
+	}
+	private function main($configuration, $username, $password)
+	{
 
- }
- private function connect($configuration)
- {
+	}
+	private function connect($configuration)
+	{
 
- }
- private function setoptions($handle, $configuration)
- {
+	}
+	private function setoptions($handle, $configuration)
+	{
 
- }
- public function authenticate($configuration, $username, $password)
- {
+	}
+	public function authenticate($configuration, $username, $password)
+	{
 
- }
- private function __destruct()
- {
-  if (isset($this->handle)) {
-   unset($this->handle);
-  }
-  return;
- }
+	}
+	private function __destruct()
+	{
+		if (isset($this->handle)) {
+			unset($this->handle);
+		}
+		return;
+	}
 }
 ?>

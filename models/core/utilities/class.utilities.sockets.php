@@ -26,39 +26,39 @@ if (!defined('__SITE')) exit('No direct calls please...');
 class sockets
 {
 
- /**
-  * @var instance object
-  * @abstract This class handler
-  */
- protected static $instance;
+	/**
+	 * @var instance object
+	 * @abstract This class handler
+	 */
+	protected static $instance;
 
- /**
-  *! @function __construct
-  *  @abstract Class initialization.
-  *  @param $configuration array Array of database sepecific options
-  */
- private function __construct($configuration)
- {
-  return;
- }
+	/**
+	 *! @function __construct
+	 *  @abstract Class initialization.
+	 *  @param $configuration array Array of database sepecific options
+	 */
+	private function __construct($configuration)
+	{
+		return;
+	}
 
- /**
-  *! @function instance
-  *  @abstract Class initialization. Singleton object
-  *  @param $configuration array Array of database sepecific options
-  */
- public static function instance($configuration)
- {
-  if (!isset(self::$instance)) {
-   $c = __CLASS__;
-   self::$instance = new self($configuration);
-  }
-  return self::$instance;
- }
+	/**
+	 *! @function instance
+	 *  @abstract Class initialization. Singleton object
+	 *  @param $configuration array Array of database sepecific options
+	 */
+	public static function instance($configuration)
+	{
+		if (!isset(self::$instance)) {
+			$c = __CLASS__;
+			self::$instance = new self($configuration);
+		}
+		return self::$instance;
+	}
 
- private function __destruct()
- {
-  return;
- }
+	private function __destruct()
+	{
+		return;
+	}
 }
 ?>
