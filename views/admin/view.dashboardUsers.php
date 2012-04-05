@@ -121,13 +121,7 @@ class dashboardUsersView
 		$this->registry->tpl->assign('localityName', $geo['localityName'], null, null, null);
 		$this->registry->tpl->assign('stateOrProvinceName', $geo['stateOrProvinceName'], null, null, null);
 		$this->registry->tpl->assign('countryName', $geo['countryName'], null, null, null);
-		$this->registry->tpl->assign('main',
-				$this->registry->tpl->assign(null,
-					null,
-					'dashboard.users.tpl',
-					true,
-					$this->registry->libs->_getRealIPv4()),
-				null, null);
+		$this->registry->tpl->assign('main', $this->registry->tpl->assign(null, null, 'dashboard.users.tpl', true, $this->registry->libs->_getRealIPv4()), null, null);
 	}
 
 	/**
@@ -138,13 +132,7 @@ class dashboardUsersView
 	{
 		$this->registry->tpl->assign('latitude', $geo['latitude'], null, null, null);
 		$this->registry->tpl->assign('longitude', $geo['longitude'], null, null, null);
-		$this->registry->tpl->assign('login',
-				$this->registry->tpl->assign(null,
-					null,
-					'location.tpl',
-					true,
-					$this->registry->libs->_getRealIPv4()),
-				null, null);
+		$this->registry->tpl->assign('login', $this->registry->tpl->assign(null, null, 'location.tpl', true, $this->registry->libs->_getRealIPv4()), null, null);
 	}
 
 	/**
@@ -153,13 +141,7 @@ class dashboardUsersView
 	 */
 	private function _menu()
 	{
-		$this->registry->tpl->assign('menu',
-				$this->registry->tpl->assign(null,
-					null,
-					'menu.tpl',
-					true,
-					$this->registry->libs->_getRealIPv4()),
-				null, null);
+		$this->registry->tpl->assign('menu', $this->registry->tpl->assign(null, null, 'menu.tpl', true, $this->registry->libs->_getRealIPv4()), null, null);
 	}
 
 	/**
