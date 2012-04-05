@@ -106,9 +106,11 @@ CREATE TABLE IF NOT EXISTS `configuration` (
 DROP TABLE IF EXISTS `configuration_access`;
 CREATE TABLE IF NOT EXISTS `configuration_access` (
   `id` int(255) NOT NULL AUTO_INCREMENT,
-  `allow` LONGTEXT NOT NULL,
-  `deny` LONGTEXT NOT NULL,
-  PRIMARY KEY (`id`)
+  `allow` VARCHAR(255) DEFAULT NULL,
+  `deny` VARCHAR(255) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `allow` (`allow`),
+  UNIQUE KEY `deny` (`deny`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci AUTO_INCREMENT=0;
 
 -- Create a table for default OpenSSL extension options
