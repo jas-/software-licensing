@@ -66,8 +66,8 @@ class installationController
 	 */
 	public function index()
 	{
-		if (file_exists('views/view.installation.php')){
-			require 'views/view.installation.php';
+		if (file_exists('views/admin/view.installation.php')){
+			require 'views/admin/view.installation.php';
 		}
 		installationView::instance($this->registry);
 	}

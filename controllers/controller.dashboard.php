@@ -3,7 +3,7 @@
 if (!defined('__SITE')) exit('No direct calls please...');
 
 /**
- * Handle dashboard 
+ * Handle dashboard
  *
  *
  * LICENSE: This source file is subject to version 3.01 of the GPL license
@@ -66,8 +66,8 @@ class dashboardController
 	 */
 	public function index()
 	{
-		if (file_exists('views/view.dashboard.php')){
-			require 'views/view.dashboard.php';
+		if (file_exists('views/admin/view.dashboard.php')){
+			require 'views/admin/view.dashboard.php';
 		}
 		dashboardView::instance($this->registry);
 	}

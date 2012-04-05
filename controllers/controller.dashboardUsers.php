@@ -65,8 +65,8 @@ class dashboardUsersController
 	 */
 	public function index()
 	{
-		if (file_exists('views/view.dashboardUsers.php')){
-			require 'views/view.dashboardUsers.php';
+		if (file_exists('views/admin/view.dashboardUsers.php')){
+			require 'views/admin/view.dashboardUsers.php';
 		}
 		dashboardUsersView::instance($this->registry);
 	}
