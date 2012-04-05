@@ -90,9 +90,7 @@ class authentication
 				return $x;
 			}else{
 				$token = $this->__genToken($obj);
-				$obj['signature'] = $this->registry->keyring->ssl->sign($token,
-						$_SESSION[$this->registry->libs->_getRealIPv4()]['privateKey'],
-						$_SESSION[$this->registry->libs->_getRealIPv4()]['password']);
+				$obj['signature'] = $this->registry->keyring->ssl->sign($token, $_SESSION[$this->registry->libs->_getRealIPv4()]['privateKey'], $_SESSION[$this->registry->libs->_getRealIPv4()]['password']);
 				$x = $this->__register($obj);
 			}
 		}

@@ -87,7 +87,10 @@ new logging($registry);
 if (!class_exists('access')){
  exit('Error initializing access class, unable to proceed. 0x0c8');
 }
-if (!new access($registry)){
+
+/* perform check against ACL to visitor */
+$access = new access($registry);
+if (!$access->_do()){
  exit('Error due to access restrictions');
 }
 
