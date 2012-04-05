@@ -49,6 +49,7 @@ class dashboardUsersController
 	{
 		$this->registry->keyring = new keyring($this->registry, $this->registry->val->__do($_POST));
 		$auth = authentication::instance($this->registry);
+		return true; // nuke this when user management is done
 		return ($auth->__redo($token)) ? true : false;
 	}
 
@@ -64,7 +65,10 @@ class dashboardUsersController
 			}
 			dashboardUsersView::instance($this->registry);
 		} else {
-			// force redirect w/ error on authentication
+			if (file_exists('views/view.index.php')){
+				require 'views/view.index.php';
+			}
+			indexView::instance($this->registry);
 		}
 	}
 }
