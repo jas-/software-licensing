@@ -37,14 +37,19 @@ BEGIN
  DELETE FROM `configuration_access` WHERE `id`=id LIMIT 1;
 END//
 
-DELIMITER //
 DROP PROCEDURE IF EXISTS Configuration_access_get//
 CREATE DEFINER='licensing'@'localhost' PROCEDURE Configuration_access_get(IN `type` VARCHAR(30), IN `skey` LONGTEXT)
  DETERMINISTIC
  SQL SECURITY INVOKER
  COMMENT 'Returns list of access controls'
 BEGIN
- SELECT AES_DECRYPT(BINARY(UNHEX(type)), SHA1(sKey)) AS type FROM `configuration_access` WHERE type != "";
+ IF (STRCMP(type, 'allow') = 0)
+ THEN
+  SELECT AES_DECRYPT(BINARY(UNHEX(allow)), SHA1(sKey)) AS allow FROM `configuration_access` WHERE `allow` IS NOT NULL;
+ ELSE
+  SELECT AES_DECRYPT(BINARY(UNHEX(deny)), SHA1(sKey)) AS deny FROM `configuration_access` WHERE `deny` IS NOT NULL;
+ END IF;
 END//
 
 DELIMITER ;
+
