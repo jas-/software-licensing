@@ -99,7 +99,7 @@ class dbSession
 		ini_set('use_cookies', $configuration['cookie']);
 		if ($configuration['cookie']){
 			session_set_cookie_params(
-    $configuration['timeout'],
+                $configuration['timeout'],
 				$this->_path(),
 				$this->_domain(),
 				$configuration['secure'],

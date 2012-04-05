@@ -4,7 +4,7 @@ define('__SITE', realpath(dirname(__FILE__)));
 
 /* load our class initialization object */
 if (!file_exists(__SITE.'/controllers/controller.initialization.php')){
- exit('Necessary controller missing, unable to proceed. 0x0c0');
+	exit('Necessary controller missing, unable to proceed. 0x0c0');
 }
 include __SITE.'/controllers/controller.initialization.php';
 
