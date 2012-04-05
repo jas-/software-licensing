@@ -102,7 +102,9 @@ class access {
 	 */
 	private function __query($type)
 	{
-		return sprintf('SELECT `'.$type.'` FROM `configuration_access` WHERE `'.$type.'` != ""');
+		return sprintf('CALL Configuration_access_get("%s", "%s")',
+						$this->registry->db->sanitize($type),
+						$this->registry->db->sanitize($this->registry->libs->_hash($this->registry->opts['dbKey'], $this->registry->libs->_salt($this->registry->opts['dbKey'], 2048))));
 	}
 
 	/**
