@@ -90,16 +90,11 @@ class dashboardUsersView
 	 */
 	private function _header()
 	{
-		$this->registry->tpl->assign('title',
-				$this->registry->opts['title'], null, null, null);
-		$this->registry->tpl->assign('timeout',
-				$this->registry->opts['timeout'], null, null, null);
-		$this->registry->tpl->assign('templates',
-				$this->registry->tpl->strTemplateDir, null, null, null);
-		$this->registry->tpl->assign('token',
-				$_SESSION['csrf'], null, null, null);
-		$this->registry->tpl->display('header.tpl', true, null,
-				$this->registry->libs->_getRealIPv4());
+		$this->registry->tpl->assign('title', $this->registry->opts['title'], null, null, null);
+		$this->registry->tpl->assign('timeout', $this->registry->opts['timeout'], null, null, null);
+		$this->registry->tpl->assign('templates', $this->registry->tpl->strTemplateDir, null, null, null);
+		$this->registry->tpl->assign('token', $_SESSION['csrf'], null, null, null);
+		$this->registry->tpl->display('header.tpl', true, null, $this->registry->libs->_getRealIPv4());
 	}
 
 	/**
@@ -108,8 +103,7 @@ class dashboardUsersView
 	 */
 	private function _footer()
 	{
-		$this->registry->tpl->display('footer.tpl', true, null,
-				$this->registry->libs->_getRealIPv4());
+		$this->registry->tpl->display('footer.tpl', true, null, $this->registry->libs->_getRealIPv4());
 	}
 
 	/**
