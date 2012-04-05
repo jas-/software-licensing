@@ -46,8 +46,8 @@ class proxyController
 			$this->registry->libs->_serialize($_POST) : md5($_SESSION['token']);
 
 		if ((!$this->__vRequest(getenv('HTTP_X_REQUESTED_WITH')))||
-				(!$this->__vCSRF(getenv('HTTP_X_ALT_REFERER'), $_SESSION['csrf']))||
-				(!$this->__vCheckSum(getenv('HTTP_CONTENT_MD5'), $post))){
+			(!$this->__vCSRF(getenv('HTTP_X_ALT_REFERER'), $_SESSION['csrf']))||
+			(!$this->__vCheckSum(getenv('HTTP_CONTENT_MD5'), $post))){
 			return;
 		} else {
 			exit($this->registry->libs->JSONencode(array('error'=>'Invalid request made')));
@@ -78,8 +78,7 @@ class proxyController
 	 */
 	private function __vCheckSum($header, $array)
 	{
-		return (strcmp(base64_decode($header),
-					md5($this->registry->libs->_serialize($array)))!==0) ? false : true;
+		return (strcmp(base64_decode($header), md5($this->registry->libs->_serialize($array)))!==0) ? false : true;
 	}
 
 	/**

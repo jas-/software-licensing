@@ -52,15 +52,6 @@ class dashboardController
 	}
 
 	/**
-	 *! @function __query
-	 *  @abstract Builds authentication query
-	 */
-	private function __query()
-	{
-
-	}
-
-	/**
 	 *! @function index
 	 *  @abstract Calls default view
 	 */

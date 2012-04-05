@@ -45,18 +45,11 @@ class dashboardUsersController
 	 *! @function __auth
 	 *  @abstract Handles authentication
 	 */
-	private function __auth()
+	private function __auth($token)
 	{
-
-	}
-
-	/**
-	 *! @function __query
-	 *  @abstract Builds authentication query
-	 */
-	private function __query()
-	{
-
+		$this->registry->keyring = new keyring($this->registry, $this->registry->val->__do($_POST));
+		$auth = authentication::instance($this->registry);
+		return ($auth->__redo($token)) ? true : false;
 	}
 
 	/**
@@ -65,10 +58,14 @@ class dashboardUsersController
 	 */
 	public function index()
 	{
-		if (file_exists('views/admin/view.dashboardUsers.php')){
-			require 'views/admin/view.dashboardUsers.php';
+		if ($this->__auth($_SESSION['token'])) {
+			if (file_exists('views/admin/view.dashboardUsers.php')){
+				require 'views/admin/view.dashboardUsers.php';
+			}
+			dashboardUsersView::instance($this->registry);
+		} else {
+			// force redirect w/ error on authentication
 		}
-		dashboardUsersView::instance($this->registry);
 	}
 }
 ?>

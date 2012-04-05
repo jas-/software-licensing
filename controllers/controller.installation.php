@@ -43,24 +43,6 @@ class installationController
 	}
 
 	/**
-	 *! @function __auth
-	 *  @abstract Handles authentication
-	 */
-	private function __auth()
-	{
-
-	}
-
-	/**
-	 *! @function __query
-	 *  @abstract Builds authentication query
-	 */
-	private function __query()
-	{
-
-	}
-
-	/**
 	 *! @function index
 	 *  @abstract Calls default view
 	 */

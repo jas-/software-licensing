@@ -66,9 +66,9 @@ class authentication
 	private function __setup($args)
 	{
 		if ((!empty($_SESSION[$this->registry->libs->_getRealIPv4()]['email']))&&
-				(!empty($_SESSION[$this->registry->libs->_getRealIPv4()]['privateKey']))&&
-				(!empty($_SESSION[$this->registry->libs->_getRealIPv4()]['publicKey']))&&
-				(!empty($_SESSION[$this->registry->libs->_getRealIPv4()]['password']))){
+			(!empty($_SESSION[$this->registry->libs->_getRealIPv4()]['privateKey']))&&
+			(!empty($_SESSION[$this->registry->libs->_getRealIPv4()]['publicKey']))&&
+			(!empty($_SESSION[$this->registry->libs->_getRealIPv4()]['password']))){
 			return true;
 		}else{
 			return false;
@@ -130,9 +130,9 @@ class authentication
 
 	/**
 	 *! @function __redo
-	 *  @abstract Decodes and re-authenticates user
+	 *  @abstract Decodes token and re-authenticates user
 	 */
-	private function __redo($token)
+	public function __redo($token)
 	{
 		$a = $this->__decode($token);
 
@@ -161,7 +161,7 @@ class authentication
 		$obj['signature'] = $this->registry->keyring->ssl->sign($token, $_SESSION[$this->registry->libs->_getRealIPv4()]['privateKey'], $_SESSION[$this->registry->libs->_getRealIPv4()]['password']);
 		$x = $this->__register($obj);
 
-		return ((empty($x['error']))&&(!empty($x['success']))) ? true : false;
+		//return ((empty($x['error']))&&(!empty($x['success']))) ? true : false;
 	}
 
 	/**
@@ -305,18 +305,5 @@ class authentication
 		return ($a < (time() - $v));
 	}
 
-	public function __clone() {
-		trigger_error('Cloning prohibited', E_USER_ERROR);
-	}
-
-	public function __wakeup() {
-		trigger_error('Deserialization of singleton prohibited ...', E_USER_ERROR);
-	}
-
-	public function __destruct()
-	{
-		unset($this->instance);
-		return true;
-	}
 }
 ?>

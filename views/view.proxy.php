@@ -74,7 +74,7 @@ class proxyView
 	{
 		$x = false;
 		$this->registry->keyring = new keyring($this->registry,
-				$this->registry->val->__do($_POST));
+		$this->registry->val->__do($_POST));
 		if (!empty($cmd)){
 			$cmd = $this->registry->val->__do($cmd, 'string');
 			switch($cmd){
