@@ -54,6 +54,15 @@ class dashboardUsersController
 	}
 
 	/**
+	 *! @function __perms
+	 *  @abstract Handles permissions examination on resources
+	 */
+	private function __perms($token)
+	{
+
+	}
+
+	/**
 	 *! @function index
 	 *  @abstract Calls default view
 	 */
