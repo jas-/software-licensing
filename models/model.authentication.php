@@ -297,6 +297,30 @@ class authentication
 	}
 
 	/**
+	 *! @function __level
+	 *  @abstract Decodes authentication token and returns access level
+	 */
+	public function __level($token)
+	{
+		if ($l = $this->__decode($token) !== false) {
+			return $l[1];
+		}
+		return false;
+	}
+
+	/**
+	 *! @function __group
+	 *  @abstract Decodes authentication token and returns group membership
+	 */
+	public function __group($token)
+	{
+		if ($l = $this->__decode($token) !== false) {
+			return $l[2];
+		}
+		return false;
+	}
+
+	/**
 	 *! @function __timeout
 	 *  @abstract Returns boolean of current time vs. allowed time
 	 */
