@@ -221,7 +221,6 @@ CREATE TABLE IF NOT EXISTS `resources_groups` (
   `ggroup` varchar(128) NOT NULL,
   `read` tinyint(1) NOT NULL,
   `write` tinyint(1) NOT NULL,
-  `owner` varchar(128) NOT NULL,
   PRIMARY KEY (`id`),
   INDEX (`resource`),
   FOREIGN KEY (`resource`)
@@ -236,7 +235,6 @@ CREATE TABLE IF NOT EXISTS `resources_users` (
   `uuser` varchar(128) NOT NULL,
   `read` tinyint(1) NOT NULL,
   `write` tinyint(1) NOT NULL,
-  `owner` varchar(128) NOT NULL,
   PRIMARY KEY (`id`),
   INDEX (`resource`),
   FOREIGN KEY (`resource`)
