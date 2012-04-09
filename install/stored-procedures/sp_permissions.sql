@@ -55,4 +55,22 @@ BEGIN
  DELETE FROM `resources_users` WHERE `resource`=SHA1(name) AND AES_DECRYPT(BINARY(UNHEX(uuser)), SHA1(sKey))=usr LIMIT 1;
 END//
 
+DROP PROCEDURE IF EXISTS Perms_SearchUser//
+CREATE DEFINER='licensing'@'localhost' PROCEDURE Perms_SearchUser(IN `name` VARCHAR(128), IN `usr` VARCHAR(128), IN `sKey` LONGTEXT)
+ DETERMINISTIC
+ SQL SECURITY INVOKER
+ COMMENT 'Finds read/write permissions per object per user'
+BEGIN
+ SELECT `read`,`write` FROM `resources_users` WHERE `resource`=SHA1(name) AND AES_DECRYPT(BINARY(UNHEX(uuser)), SHA1(sKey))=usr;
+END//
+
+DROP PROCEDURE IF EXISTS Perms_SearchGroup//
+CREATE DEFINER='licensing'@'localhost' PROCEDURE Perms_SearchGroup(IN `name` VARCHAR(128), IN `grp` VARCHAR(128), IN `sKey` LONGTEXT)
+ DETERMINISTIC
+ SQL SECURITY INVOKER
+ COMMENT 'Finds read/write permissions per object per group'
+BEGIN
+ SELECT `read`,`write` FROM `resources_groups` WHERE `resource`=SHA1(name) AND AES_DECRYPT(BINARY(UNHEX(ggroup)), SHA1(sKey))=grp;
+END//
+
 DELIMITER ;
