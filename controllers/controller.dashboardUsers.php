@@ -69,13 +69,22 @@ class dashboardUsersController
 	public function index()
 	{
 		if ($this->__auth($_SESSION['token'])) {
-			// user level?
-			// group admin level?
-			// super admin level?
-			if (file_exists('views/admin/view.dashboardUsers.php')){
-				require 'views/admin/view.dashboardUsers.php';
+			$auth = authentication::instance($this->registry);
+
+			$l = $auth->__level($_SESSION['token']);
+			$g = $auth->__group($_SESSION['token']);
+
+			if ((strcmp($l, "admin")===0) && (strcmp($g, "admin")===0)) {
+				if (file_exists('views/admin/view.dashboardUsers.php')) {
+					require 'views/admin/view.dashboardUsers.php';
+				}
+				dashboardUsersView::instance($this->registry);
+			} else {
+				if (file_exists('views/admin/view.dashboardGroup.php')) {
+					require 'views/admin/view.dashboardGroup.php';
+				}
+				// load group user account view object
 			}
-			dashboardUsersView::instance($this->registry);
 		} else {
 			if (file_exists('views/view.index.php')){
 				require 'views/view.index.php';
