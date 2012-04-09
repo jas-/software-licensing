@@ -33,7 +33,7 @@ $settings['sessions']['proto']   = true;
  * which will first decrypt each database table then generate
  * a new random site key and re-encrypt and store the
  * database contents. If you change this manually you will
- * loose everything in the database.
+ * loose everything in the database. You have been warned.
  */
 $settings['sessions']['db-key']   = '*1lPM-bgC0L(%=ofR=eY%%M[J_)jV-aA(xa!HOS}J,*gzi}nOGqY4^Ihqy*=k+^(t|ZdFO(l6iq]U|y-@tb<HRzmfeR6Ri{HcsSMW)jUpJ`@\P{`3Z-uh=[p<~hn4x[Z';
 
