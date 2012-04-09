@@ -69,6 +69,9 @@ class dashboardUsersController
 	public function index()
 	{
 		if ($this->__auth($_SESSION['token'])) {
+			// user level?
+			// group admin level?
+			// super admin level?
 			if (file_exists('views/admin/view.dashboardUsers.php')){
 				require 'views/admin/view.dashboardUsers.php';
 			}
