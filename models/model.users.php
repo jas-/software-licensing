@@ -84,6 +84,7 @@ class users
 		$d = $this->__decrypt($obj);
 
 		$auth = authentication::instance($this->registry);
+
 		$u = $this->__permsUser($auth->__user($_SESSION['token']));
         $g = $this->__permsGroup($auth->__group($_SESSION['token']));
 
