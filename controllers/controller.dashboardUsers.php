@@ -74,16 +74,27 @@ class dashboardUsersController
 			$l = $auth->__level($_SESSION['token']);
 			$g = $auth->__group($_SESSION['token']);
 
-			if ((strcmp($l, "admin")===0) && (strcmp($g, "admin")===0)) {
-				if (file_exists('views/admin/view.dashboardUsers.php')) {
-					require 'views/admin/view.dashboardUsers.php';
-				}
-				dashboardUsersView::instance($this->registry);
-			} else {
-				if (file_exists('views/admin/view.dashboardGroup.php')) {
-					require 'views/admin/view.dashboardGroup.php';
-				}
-				// load group user account view object
+			switch($l, $g) {
+				/* super user, admin access level and admin group membership */
+				case (($l === "admin") && ($g === "admin")):
+					if (file_exists('views/admin/view.dashboardUsers.php')) {
+						require 'views/admin/view.dashboardUsers.php';
+					}
+					dashboardUsersView::instance($this->registry);
+					continue;
+				/* group super user, admin access level and non-admin group membership */
+				case (($l === "admin") && ($g !== "admin")):
+					if (file_exists('views/admin/view.dashboardUsers.php')) {
+						require 'views/admin/view.dashboardUsers.php';
+					}
+					dashboardUsersView::instance($this->registry);
+					continue;
+				/* normal user, non-admin access level  and non-admin group membership */
+				case (($l !== "admin") && $g !== "admin")):
+					if (file_exists('views/admin/view.dashboardUsers.php')) {
+						require 'views/admin/view.dashboardUsers.php';
+					}
+					dashboardUsersView::instance($this->registry);
 			}
 		} else {
 			if (file_exists('views/view.index.php')){
