@@ -90,25 +90,37 @@ class dashboardController
 				switch($l) {
 					/* super user, admin access level and admin group membership */
 					case (($l === "admin") && ($g === "admin")):
-						$this->__load('views/admin/view.dashboard.php', 'dashboardView');
+						$p = 'views/admin/view.dashboard.php';
+						$c = 'dashboardView';
+						break;
 					/* group super user, admin access level and non-admin group membership */
 					case (($l === "admin") && ($g !== "admin")):
-						$this->__load('views/admin/view.dashboard.php', 'dashboardView');
+						$p = 'views/admin/view.dashboard.php';
+						$c = 'dashboardView';
+						break;
 					/* normal user, non-admin access level  and non-admin group membership */
 					case (($l !== "admin") && ($g !== "admin")):
-						$this->__load('views/admin/view.dashboard.php', 'dashboardView');
+						$p = 'views/admin/view.dashboard.php';
+						$c = 'dashboardView';
+						break;
 					/* provide disallowed view */
 					default:
-						$this->__load('views/admin/view.dashboardDisallowed.php', 'dashboardDisallowed');
+						$p = 'views/admin/view.dashboardDisallowed.php';
+						$c = 'dashboardDisallowed';
+						break;
 				}
 			} else {
 				/* problem with supplied user & group default to deny */
-				$this->__load('views/admin/view.dashboardDisallowed.php', 'dashboardDisallowed');
+				$p = 'views/admin/view.dashboardDisallowed.php';
+				$c = 'dashboardDisallowed';
 			}
 		} else {
 			/* problem with authentication default to deny */
-			$this->__load('views/admin/view.dashboardDisallowed.php', 'dashboardDisallowed');
+			$p = 'views/admin/view.dashboardDisallowed.php';
+			$c = 'dashboardDisallowed';
 		}
+		$this->__load($p, $c);
+
 	}
 }
 ?>
