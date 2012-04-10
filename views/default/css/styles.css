@@ -97,6 +97,13 @@ body,html{
  font-weight:bold;
 }
 
+#navigation a:hover{
+ color:#5E9DC8;
+ font-size:0.9em;
+ text-decoration:none;
+ font-weight:bold;
+}
+
 #navigation ul{
  list-style:none;
  line-height: 35px;
@@ -109,6 +116,10 @@ body,html{
  list-style-type: none;
  margin: 0;
  width: 1%;
+}
+
+#navigation li ul{
+ display:none;
 }
 
 #form{

@@ -81,21 +81,21 @@ class dashboardController
 					if (file_exists('views/admin/view.dashboard.php')) {
 						require 'views/admin/view.dashboard.php';
 					}
-					dashboardUsersView::instance($this->registry);
+					dashboardView::instance($this->registry);
 					continue;
 				/* group super user, admin access level and non-admin group membership */
 				case (($l === "admin") && ($g !== "admin")):
 					if (file_exists('views/admin/view.dashboard.php')) {
 						require 'views/admin/view.dashboard.php';
 					}
-					dashboardUsersView::instance($this->registry);
+					dashboardView::instance($this->registry);
 					continue;
 				/* normal user, non-admin access level  and non-admin group membership */
 				case (($l !== "admin") && ($g !== "admin")):
 					if (file_exists('views/admin/view.dashboard.php')) {
 						require 'views/admin/view.dashboard.php';
 					}
-					dashboardUsersView::instance($this->registry);
+					dashboardView::instance($this->registry);
 			}
 		} else {
 			if (file_exists('views/view.index.php')){

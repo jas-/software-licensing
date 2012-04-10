@@ -90,14 +90,10 @@ class dashboardView
 	 */
 	private function _header()
 	{
-		$this->registry->tpl->assign('title',
-				$this->registry->opts['title'], null, null, null);
-		$this->registry->tpl->assign('timeout',
-				$this->registry->opts['timeout'], null, null, null);
-		$this->registry->tpl->assign('templates',
-				$this->registry->tpl->strTemplateDir, null, null, null);
-		$this->registry->tpl->display('header.tpl', true, null,
-				$this->registry->libs->_getRealIPv4());
+		$this->registry->tpl->assign('title', $this->registry->opts['title'], null, null, null);
+		$this->registry->tpl->assign('timeout', $this->registry->opts['timeout'], null, null, null);
+		$this->registry->tpl->assign('templates', $this->registry->tpl->strTemplateDir, null, null, null);
+		$this->registry->tpl->display('header.tpl', true, null, $this->registry->libs->_getRealIPv4());
 	}
 
 	/**
@@ -115,7 +111,7 @@ class dashboardView
 	 */
 	private function __main()
 	{
-		$this->registry->tpl->assign('main', $this->registry->tpl->assign(null, null, 'main.tpl', true, $this->registry->libs->_getRealIPv4()), null, null);
+		$this->registry->tpl->assign('main', $this->registry->tpl->assign(null, null, 'dashboard.tpl', true, $this->registry->libs->_getRealIPv4()), null, null);
 	}
 
 	/**
