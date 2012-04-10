@@ -297,6 +297,18 @@ class authentication
 	}
 
 	/**
+	 *! @function __user
+	 *  @abstract Decodes authentication token and returns authenticated username
+	 */
+	public function __user($token)
+	{
+		if ($l = $this->__decode($token) !== false) {
+			return $l[0];
+		}
+		return false;
+	}
+
+	/**
 	 *! @function __level
 	 *  @abstract Decodes authentication token and returns access level
 	 */

@@ -83,6 +83,10 @@ class users
 	{
 		$d = $this->__decrypt($obj);
 
+		$auth = authentication::instance($this->registry);
+		$u = $auth->__user($_SESSION['token']);
+        $g = $auth->__group($_SESSION['token']);
+
 		if (!empty($d['do'])){
 			switch($d['do']){
 				case 'add':
@@ -96,6 +100,25 @@ class users
 			}
 		}
 	}
+
+    /**
+     *! @function __permsRead
+     *  @abstract Retrieves objects with read permissions
+     */
+    private function __permsRead($u, $g)
+    {
+
+    }
+
+    /**
+     *! @function __permsWrite
+     *  @abstract Retrieves objects with write permissions
+     */
+    private function __permsRead($u, $g)
+    {
+
+    }
+
 
 	/**
 	 *! @function __decrypt

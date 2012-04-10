@@ -1,8 +1,8 @@
 <!-- main body template start -->
 <div id="full" class="margins main">
- <div id="form" class="rounder gradient">
-  <h2>Application management</h2>
-  <p></p>
- </div>
+ <h3>Dashboard</h3>
+ <p>
+  Here any authenticated messages and tools will be presented.
+ </p>
 </div>
 <!-- main body template end -->
