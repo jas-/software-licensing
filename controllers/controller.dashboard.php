@@ -78,22 +78,22 @@ class dashboardController
 			switch($l) {
 				/* super user, admin access level and admin group membership */
 				case (($l === "admin") && ($g === "admin")):
-					if (file_exists('views/admin/view.dashboardUsers.php')) {
-						require 'views/admin/view.dashboardUsers.php';
+					if (file_exists('views/admin/view.dashboard.php')) {
+						require 'views/admin/view.dashboard.php';
 					}
 					dashboardUsersView::instance($this->registry);
 					continue;
 				/* group super user, admin access level and non-admin group membership */
 				case (($l === "admin") && ($g !== "admin")):
-					if (file_exists('views/admin/view.dashboardUsers.php')) {
-						require 'views/admin/view.dashboardUsers.php';
+					if (file_exists('views/admin/view.dashboard.php')) {
+						require 'views/admin/view.dashboard.php';
 					}
 					dashboardUsersView::instance($this->registry);
 					continue;
 				/* normal user, non-admin access level  and non-admin group membership */
 				case (($l !== "admin") && ($g !== "admin")):
-					if (file_exists('views/admin/view.dashboardUsers.php')) {
-						require 'views/admin/view.dashboardUsers.php';
+					if (file_exists('views/admin/view.dashboard.php')) {
+						require 'views/admin/view.dashboard.php';
 					}
 					dashboardUsersView::instance($this->registry);
 			}
