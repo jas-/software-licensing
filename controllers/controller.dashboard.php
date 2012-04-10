@@ -22,7 +22,7 @@ if (!defined('__SITE')) exit('No direct calls please...');
  *! @class dashboardController
  *  @abstract Handles the dashboard
  */
-class dashboardUsersController
+class dashboardController
 {
 
 	/**
