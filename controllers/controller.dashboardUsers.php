@@ -63,6 +63,18 @@ class dashboardUsersController
 	}
 
 	/**
+	 *! @function __load
+	 *  @abstract Handles loading of associated view classes
+	 */
+	private function __load($file, $class)
+	{
+		if (file_exists($file)) {
+			require $file;
+		}
+		$class::instance($this->registry);
+	}
+
+	/**
 	 *! @function index
 	 *  @abstract Calls default view
 	 */
@@ -74,33 +86,28 @@ class dashboardUsersController
 			$l = $auth->__level($_SESSION['token']);
 			$g = $auth->__group($_SESSION['token']);
 
-			switch($l) {
-				/* super user, admin access level and admin group membership */
-				case (($l === "admin") && ($g === "admin")):
-					if (file_exists('views/admin/view.dashboardUsers.php')) {
-						require 'views/admin/view.dashboardUsers.php';
-					}
-					dashboardUsersView::instance($this->registry);
-					continue;
-				/* group super user, admin access level and non-admin group membership */
-				case (($l === "admin") && ($g !== "admin")):
-					if (file_exists('views/admin/view.dashboardUsers.php')) {
-						require 'views/admin/view.dashboardUsers.php';
-					}
-					dashboardUsersView::instance($this->registry);
-					continue;
-				/* normal user, non-admin access level  and non-admin group membership */
-				case (($l !== "admin") && ($g !== "admin")):
-					if (file_exists('views/admin/view.dashboardUsers.php')) {
-						require 'views/admin/view.dashboardUsers.php';
-					}
-					dashboardUsersView::instance($this->registry);
+			if (($l) && ($g)) {
+				switch($l) {
+					/* super user, admin access level and admin group membership */
+					case (($l === "admin") && ($g === "admin")):
+						$this->__load('views/admin/view.dashboardUsers.php', 'dashboardUsersView');
+					/* group super user, admin access level and non-admin group membership */
+					case (($l === "admin") && ($g !== "admin")):
+						$this->__load('views/admin/view.dashboardUsers.php', 'dashboardUsersView');
+					/* normal user, non-admin access level  and non-admin group membership */
+					case (($l !== "admin") && ($g !== "admin")):
+						$this->__load('views/admin/view.dashboardUsers.php', 'dashboardUsersView');
+					/* provide disallowed view */
+					default:
+						$this->__load('views/admin/view.dashboardDisallowed.php', 'dashboardDisallowed');
+				}
+			} else {
+				/* problem with supplied user & group default to deny */
+				$this->__load('views/admin/view.dashboardDisallowed.php', 'dashboardDisallowed');
 			}
 		} else {
-			if (file_exists('views/view.index.php')){
-				require 'views/view.index.php';
-			}
-			indexView::instance($this->registry);
+			/* problem with authentication default to deny */
+			$this->__load('views/admin/view.dashboardDisallowed.php', 'dashboardDisallowed');
 		}
 	}
 }
