@@ -113,7 +113,7 @@ class users
 		} catch(Exception $e){
 			// error handler
 		}
-        if (($r) && (is_array($r))) ? $r : false;
+        return (($r) && (is_array($r))) ? $r : false;
     }
 
     /**
@@ -128,7 +128,7 @@ class users
 		} catch(Exception $e){
 			// error handler
 		}
-        if (($r) && (is_array($r))) ? $r : false;
+        return (($r) && (is_array($r))) ? $r : false;
     }
 
 	/**
