@@ -46,7 +46,19 @@ class dashboardController
 	 *! @function __auth
 	 *  @abstract Handles authentication
 	 */
-	private function __auth()
+	private function __auth($token)
+	{
+		$this->registry->keyring = new keyring($this->registry, $this->registry->val->__do($_POST));
+		$auth = authentication::instance($this->registry);
+		return true; // nuke this when user management is done
+		return ($auth->__redo($token)) ? true : false;
+	}
+
+	/**
+	 *! @function __perms
+	 *  @abstract Handles permissions examination on resources
+	 */
+	private function __perms($token)
 	{
 
 	}
@@ -57,10 +69,40 @@ class dashboardController
 	 */
 	public function index()
 	{
-		if (file_exists('views/admin/view.dashboard.php')){
-			require 'views/admin/view.dashboard.php';
+		if ($this->__auth($_SESSION['token'])) {
+			$auth = authentication::instance($this->registry);
+
+			$l = $auth->__level($_SESSION['token']);
+			$g = $auth->__group($_SESSION['token']);
+
+			switch($l) {
+				/* super user, admin access level and admin group membership */
+				case (($l === "admin") && ($g === "admin")):
+					if (file_exists('views/admin/view.dashboardUsers.php')) {
+						require 'views/admin/view.dashboardUsers.php';
+					}
+					dashboardUsersView::instance($this->registry);
+					continue;
+				/* group super user, admin access level and non-admin group membership */
+				case (($l === "admin") && ($g !== "admin")):
+					if (file_exists('views/admin/view.dashboardUsers.php')) {
+						require 'views/admin/view.dashboardUsers.php';
+					}
+					dashboardUsersView::instance($this->registry);
+					continue;
+				/* normal user, non-admin access level  and non-admin group membership */
+				case (($l !== "admin") && ($g !== "admin")):
+					if (file_exists('views/admin/view.dashboardUsers.php')) {
+						require 'views/admin/view.dashboardUsers.php';
+					}
+					dashboardUsersView::instance($this->registry);
+			}
+		} else {
+			if (file_exists('views/view.index.php')){
+				require 'views/view.index.php';
+			}
+			indexView::instance($this->registry);
 		}
-		dashboardView::instance($this->registry);
 	}
 }
 ?>
