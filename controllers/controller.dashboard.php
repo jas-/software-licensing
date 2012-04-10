@@ -3,8 +3,7 @@
 if (!defined('__SITE')) exit('No direct calls please...');
 
 /**
- * Handle dashboard
- *
+ * Handle dashboard for user management area
  *
  * LICENSE: This source file is subject to version 3.01 of the GPL license
  * that is available through the world-wide-web at the following URI:
@@ -12,7 +11,7 @@ if (!defined('__SITE')) exit('No direct calls please...');
  * the GPL License and are unable to obtain it through the web, please
  *
  * @category   views
- * @discussion Handles the dashboard
+ * @discussion Handles the dashboard for user management area
  * @author     jason.gerfen@gmail.com
  * @copyright  2008-2012 Jason Gerfen
  * @license    http://www.gnu.org/licenses/gpl.html  GPL License 3
@@ -23,7 +22,7 @@ if (!defined('__SITE')) exit('No direct calls please...');
  *! @class dashboardController
  *  @abstract Handles the dashboard
  */
-class dashboardController
+class dashboardUsersController
 {
 
 	/**
@@ -64,6 +63,18 @@ class dashboardController
 	}
 
 	/**
+	 *! @function __load
+	 *  @abstract Handles loading of associated view classes
+	 */
+	private function __load($file, $class)
+	{
+		if (file_exists($file)) {
+			require $file;
+		}
+		$class::instance($this->registry);
+	}
+
+	/**
 	 *! @function index
 	 *  @abstract Calls default view
 	 */
@@ -75,33 +86,28 @@ class dashboardController
 			$l = $auth->__level($_SESSION['token']);
 			$g = $auth->__group($_SESSION['token']);
 
-			switch($l) {
-				/* super user, admin access level and admin group membership */
-				case (($l === "admin") && ($g === "admin")):
-					if (file_exists('views/admin/view.dashboard.php')) {
-						require 'views/admin/view.dashboard.php';
-					}
-					dashboardView::instance($this->registry);
-					continue;
-				/* group super user, admin access level and non-admin group membership */
-				case (($l === "admin") && ($g !== "admin")):
-					if (file_exists('views/admin/view.dashboard.php')) {
-						require 'views/admin/view.dashboard.php';
-					}
-					dashboardView::instance($this->registry);
-					continue;
-				/* normal user, non-admin access level  and non-admin group membership */
-				case (($l !== "admin") && ($g !== "admin")):
-					if (file_exists('views/admin/view.dashboard.php')) {
-						require 'views/admin/view.dashboard.php';
-					}
-					dashboardView::instance($this->registry);
+			if (($l) && ($g)) {
+				switch($l) {
+					/* super user, admin access level and admin group membership */
+					case (($l === "admin") && ($g === "admin")):
+						$this->__load('views/admin/view.dashboard.php', 'dashboardView');
+					/* group super user, admin access level and non-admin group membership */
+					case (($l === "admin") && ($g !== "admin")):
+						$this->__load('views/admin/view.dashboard.php', 'dashboardView');
+					/* normal user, non-admin access level  and non-admin group membership */
+					case (($l !== "admin") && ($g !== "admin")):
+						$this->__load('views/admin/view.dashboard.php', 'dashboardView');
+					/* provide disallowed view */
+					default:
+						$this->__load('views/admin/view.dashboardDisallowed.php', 'dashboardDisallowed');
+				}
+			} else {
+				/* problem with supplied user & group default to deny */
+				$this->__load('views/admin/view.dashboardDisallowed.php', 'dashboardDisallowed');
 			}
 		} else {
-			if (file_exists('views/view.index.php')){
-				require 'views/view.index.php';
-			}
-			indexView::instance($this->registry);
+			/* problem with authentication default to deny */
+			$this->__load('views/admin/view.dashboardDisallowed.php', 'dashboardDisallowed');
 		}
 	}
 }
