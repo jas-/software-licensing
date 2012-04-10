@@ -102,23 +102,34 @@ class users
 	}
 
     /**
-     *! @function __permsRead
-     *  @abstract Retrieves objects with read permissions
+     *! @function __permsUser
+     *  @abstract Retrieves object permissions by users
      */
-    private function __permsRead($u, $g)
+    private function __permsUser($u)
     {
-
+		try{
+			$sql = sprintf('CALL Perms_SearchUser("%s", "%s")', $this->registry->db->sanitize($u), $this->registry->db->sanitize($this->registry->libs->_hash($this->registry->opts['dbKey'], $this->registry->libs->_salt($this->registry->opts['dbKey'], 2048))));
+			$r = $this->registry->db->query($sql);
+		} catch(Exception $e){
+			// error handler
+		}
+        if (($r) && (is_array($r))) ? $r : false;
     }
 
     /**
-     *! @function __permsWrite
-     *  @abstract Retrieves objects with write permissions
+     *! @function __permsGroup
+     *  @abstract Retrieves object permissions by group
      */
-    private function __permsRead($u, $g)
+    private function __permsGroup($g)
     {
-
+		try{
+			$sql = sprintf('CALL Perms_SearchGroup("%s", "%s")', $this->registry->db->sanitize($g), $this->registry->db->sanitize($this->registry->libs->_hash($this->registry->opts['dbKey'], $this->registry->libs->_salt($this->registry->opts['dbKey'], 2048))));
+			$r = $this->registry->db->query($sql);
+		} catch(Exception $e){
+			// error handler
+		}
+        if (($r) && (is_array($r))) ? $r : false;
     }
-
 
 	/**
 	 *! @function __decrypt
