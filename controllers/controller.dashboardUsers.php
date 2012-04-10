@@ -74,7 +74,7 @@ class dashboardUsersController
 			$l = $auth->__level($_SESSION['token']);
 			$g = $auth->__group($_SESSION['token']);
 
-			switch($l, $g) {
+			switch($l) {
 				/* super user, admin access level and admin group membership */
 				case (($l === "admin") && ($g === "admin")):
 					if (file_exists('views/admin/view.dashboardUsers.php')) {
@@ -90,7 +90,7 @@ class dashboardUsersController
 					dashboardUsersView::instance($this->registry);
 					continue;
 				/* normal user, non-admin access level  and non-admin group membership */
-				case (($l !== "admin") && $g !== "admin")):
+				case (($l !== "admin") && ($g !== "admin")):
 					if (file_exists('views/admin/view.dashboardUsers.php')) {
 						require 'views/admin/view.dashboardUsers.php';
 					}
