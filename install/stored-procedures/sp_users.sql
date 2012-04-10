@@ -15,7 +15,7 @@ CREATE DEFINER='licensing'@'localhost' PROCEDURE Users_verify(IN `email` VARCHAR
  SQL SECURITY INVOKER
  COMMENT 'Verifies user account for authentication'
 BEGIN
- SELECT COUNT(*) FROM `configuration_openssl_keys` WHERE `email`=HEX(AES_ENCRYPT(email, SHA1(sKey))) AND `password`=HEX(AES_ENCRYPT(password, SHA1(sKey)));
+ SELECT COUNT(*) FROM `authentication` WHERE `email`=HEX(AES_ENCRYPT(email, SHA1(sKey))) AND `password`=HEX(AES_ENCRYPT(password, SHA1(sKey)));
 END//
 
 DROP PROCEDURE IF EXISTS Users_AddUpdateToken//
