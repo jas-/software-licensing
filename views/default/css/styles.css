@@ -54,6 +54,14 @@ body,html{
  font-size:0.7em;
 }
 
+a{
+ color:#000;
+}
+
+a:hover{
+ color:#5E9DC8;
+}
+
 #full{
  width:95%;
 }
@@ -91,14 +99,12 @@ body,html{
 }
 
 #navigation a{
- color:#000;
  font-size:0.9em;
  text-decoration:none;
  font-weight:bold;
 }
 
 #navigation a:hover{
- color:#5E9DC8;
  font-size:0.9em;
  text-decoration:none;
  font-weight:bold;
@@ -120,6 +126,14 @@ body,html{
 
 #navigation li ul{
  display:none;
+}
+
+#sub-navigation a:hover{
+ color:#5E9DC8;
+}
+
+#sub-navigation ul{
+ list-style:none;
 }
 
 #form{
@@ -148,6 +162,7 @@ body,html{
       a:hover,
       a:focus{
  text-decoration:underline;
+ color:#5E9DC8;
 }
 
 #form span{

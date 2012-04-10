@@ -1,8 +1,10 @@
 <!-- main body template start -->
-<div id="full" class="margins main">
- <div id="form" class="rounder gradient">
-  <h2>Dashboard</h2>
-  <p></p>
+<div id="form" class="rounder gradient">
+ <div id="sub-navigation">
+  <ul>
+   <li><a href="?nxs=installation" title="">Installation</a></li>
+   <li><a href="?nxs=dashboardUsers" title="">Mangage users</a></li>
+  </ul>
  </div>
 </div>
 <!-- main body template end -->
