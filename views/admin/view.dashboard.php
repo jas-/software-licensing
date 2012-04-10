@@ -120,7 +120,7 @@ class dashboardView
 	 */
 	private function _login()
 	{
-		$this->registry->tpl->assign('login', $this->registry->tpl->assign(null, null, 'login.tpl', true, $this->registry->libs->_getRealIPv4()), null, null);
+		$this->registry->tpl->assign('login', $this->registry->tpl->assign(null, null, 'd-menu.tpl', true, $this->registry->libs->_getRealIPv4()), null, null);
 	}
 
 	/**
