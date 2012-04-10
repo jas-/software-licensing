@@ -98,12 +98,12 @@ class dashboardUsersController
 						$p = 'views/admin/view.dashboardUsers.php';
 						$c = 'dashboardUsersView';
 						break;
-					/* normal user, non-admin access level  and non-admin group membership */
+					/* normal user, non-admin access level and non-admin group membership */
 					case (($l !== "admin") && ($g !== "admin")):
 						$p = 'views/admin/view.dashboardUsers.php';
 						$c = 'dashboardUsersView';
 						break;
-					/* provide disallowed view */
+					/* provide disallowed view default */
 					default:
 						$p = 'views/admin/view.dashboardDisallowed.php';
 						$c = 'dashboardDisallowed';
@@ -119,8 +119,10 @@ class dashboardUsersController
 			$p = 'views/admin/view.dashboardDisallowed.php';
 			$c = 'dashboardDisallowed';
 		}
+		/* remove these once user management complete */
+		$p = 'views/admin/view.dashboardUsers.php';
+		$c = 'dashboardUsersView';
 		$this->__load($p, $c);
-
 	}
 }
 ?>
