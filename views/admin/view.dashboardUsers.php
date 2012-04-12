@@ -77,6 +77,7 @@ class dashboardUsersView
 	private function _main()
 	{
 		$geo = $this->registry->libs->parsegeo($this->registry->libs->geolocation($this->registry->libs->_getRealIPv4()));
+
 		$this->__main();
 		$this->_menu($geo);
 		$this->_location($geo);
@@ -112,10 +113,14 @@ class dashboardUsersView
 	 */
 	private function __main($geo)
 	{
+		$level = $this->registry->libs->_genOptionsList($this->registry->libs->__sql2Array('CALL Levels_GetList()', $this->registry->db), 'level');
+		$group = $this->registry->libs->_genOptionsList($this->registry->libs->__sql2Array('CALL Groups_GetList()', $this->registry->db), 'group');
+
 		$this->registry->tpl->assign('localityName', $geo['localityName'], null, null, null);
 		$this->registry->tpl->assign('stateOrProvinceName', $geo['stateOrProvinceName'], null, null, null);
 		$this->registry->tpl->assign('countryName', $geo['countryName'], null, null, null);
-		// assign option lists for group & access level
+		$this->registry->tpl->assign('level', $level, null, null, null);
+		$this->registry->tpl->assign('group', $group, null, null, null);
 		$this->registry->tpl->assign('main', $this->registry->tpl->assign(null, null, 'dashboard.users.tpl', true, $this->registry->libs->_getRealIPv4()), null, null);
 	}
 

@@ -286,15 +286,29 @@ class libraries {
 	 * @function _genOptionsList
 	 * @abstract Generic method of creating an select/option list from array
 	 */
-	function _genOptionsList($array)
+	public function _genOptionsList($array, $i)
 	{
 		$l = false;
 		if ((is_array($array)) && (count($array) > 0)) {
 			foreach($array as $key => $value) {
-				$l .= '<option id="" value="">'.$value.'</option>';
+				$l .= '<option id="" value="'.$value[$i].'">'.$value[$i].'</option>';
 			}
 		}
 		return $l;
+	}
+
+	/**
+	 * @function __sql2Array
+	 * @abstract Generates sql from args and returns results as associative array
+	 */
+	public function __sql2Array($sql, $conn)
+	{
+		try {
+			$r = $conn->query($sql, true);
+		} catch(Exception $e){
+			// error handler
+		}
+        return (($r) && (is_array($r))) ? $r : false;
 	}
 
 	public function __clone() {
