@@ -50,6 +50,18 @@
    <label for="confirm">Confirm: </label>
     <input type="password" id="confirm" name="confirm" value="" placeholder="********" required="required" /><span class="required">*</span><br />
    <br/><hr style="width: 95%"/><br/>
+   <label for="level">Access level: </label>
+    <select id="level" name="level" required="required">
+     {$level}
+     <option value="admin">Administrator</option>
+     <option value="user">User</option>
+     <option value="view">View</option>
+    </select><span class="required">*</span><br />
+   <label for="group">Group: </label>
+    <select id="group" name="group" required="required">
+     {$group}
+    </select><span class="required">*</span><br />
+   <br/><hr style="width: 95%"/><br/>
    <label for="organizationalName">Organization: </label>
     <input type="text" id="organizationalName" name="organizationalName" value="" placeholder="Surfs Up LLC" required="required" /><span class="required">*</span><br />
    <label for="organizationalUnitName">Department: </label>
