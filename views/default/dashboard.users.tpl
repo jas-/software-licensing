@@ -53,9 +53,6 @@
    <label for="level">Access level: </label>
     <select id="level" name="level" required="required">
      {$level}
-     <option value="admin">Administrator</option>
-     <option value="user">User</option>
-     <option value="view">View</option>
     </select><span class="required">*</span><br />
    <label for="group">Group: </label>
     <select id="group" name="group" required="required">

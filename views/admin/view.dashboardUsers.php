@@ -115,6 +115,7 @@ class dashboardUsersView
 		$this->registry->tpl->assign('localityName', $geo['localityName'], null, null, null);
 		$this->registry->tpl->assign('stateOrProvinceName', $geo['stateOrProvinceName'], null, null, null);
 		$this->registry->tpl->assign('countryName', $geo['countryName'], null, null, null);
+		// assign option lists for group & access level
 		$this->registry->tpl->assign('main', $this->registry->tpl->assign(null, null, 'dashboard.users.tpl', true, $this->registry->libs->_getRealIPv4()), null, null);
 	}
 

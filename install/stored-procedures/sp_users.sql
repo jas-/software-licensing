@@ -45,4 +45,22 @@ BEGIN
  SELECT `level`,`group` FROM `authentication` WHERE AES_DECRYPT(BINARY(UNHEX(email)), SHA1(sKey))=email;
 END//
 
+DROP PROCEDURE IF EXISTS Groups_GetList//
+CREATE DEFINER='licensing'@'localhost' PROCEDURE Groups_GetList()
+ DETERMINISTIC
+ SQL SECURITY INVOKER
+ COMMENT 'Returns list of currently configured groups'
+BEGIN
+ SELECT `group` FROM `authentication_groups`;
+END//
+
+DROP PROCEDURE IF EXISTS Levels_GetList//
+CREATE DEFINER='licensing'@'localhost' PROCEDURE Levels_GetList()
+ DETERMINISTIC
+ SQL SECURITY INVOKER
+ COMMENT 'Returns list of currently configured access levels'
+BEGIN
+ SELECT `level` FROM `authentication_levels`;
+END//
+
 DELIMITER ;

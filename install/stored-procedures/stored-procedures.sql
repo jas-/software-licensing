@@ -225,6 +225,8 @@ BEGIN
  SELECT ((ACOS(SIN(sLat) * PI() / 180) * SIN(AES_DECRYPT(BINARY(UNHEX(lat)), SHA1(sKey)) * PI() / 180) + COS(sLat) * PI() / 180) * COS(sLon - AES_DECRYPT(BINARY(UNHEX(lon)), SHA1(sKey)) * PI() / 180)) * 180 / PI() * 60 * 1.1515 AS distance FROM `locations` WHERE `task`=task;
 END//
 
+
+
 DELIMITER ;
 
 DROP TABLE IF EXISTS `locations`;
