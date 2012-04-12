@@ -64,8 +64,9 @@ if (!class_exists('dbSession')){
 $registry->sessions = new dbSession($settings['sessions'], $registry);
 
 /* generate or use CSRF token */
-$_SESSION['csrf'] = (!empty($_SESSION['csrf'])) ?
-                      $_SESSION['csrf'] : $registry->libs->uuid();
+if (empty($_SESSION['csrf'])) {
+ $_SESSION['csrf'] = $registry->libs->uuid();
+}
 
 /* always reset the session_id */
 $registry->sessions->regen(true);
