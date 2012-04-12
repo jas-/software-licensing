@@ -91,6 +91,7 @@ class users
 		if (!empty($d['do'])){
 			switch($d['do']){
 				case 'add':
+					echo '<pre>'; print_r($d); echo '</pre>';
 					break;
 				case 'edit':
 					break;
@@ -101,6 +102,43 @@ class users
 			}
 		}
 	}
+
+    /**
+     *! @function __addUser
+     *  @abstract Creates new user account and assigns default permissions on
+     *            the newly created account for the currently authenticated
+     *            user based on access level and group. Also initiates the
+     *            users key creation and key ring additions.
+     */
+    private function __addUser($details)
+    {
+		// perform validation of all submitted data
+		// perform sanitation of all submitted data
+		// compare password submission
+		// obtain current group membership
+		// save new account
+		// generate new keyring data
+		// save keyring data
+		// create default permissions on new object
+		// create default permissions on new keyring entry
+    }
+
+    /**
+     *! @function __val
+     *  @abstract Perform validation on submitted data
+     */
+    private function __val($details)
+    {
+		if ((empty($details['email'])) || (empty($details['password'])) ||
+		    (empty($details['confirm'])) || (empty($details['level'])) ||
+			(empty($details['group'])) || (empty($details['organizationalName'])) ||
+			(empty($details['organizationalUnitName'])) || (empty($details['localityName'])) ||
+			(empty($details['stateOrProvinceName'])) || (empty($details['countryName']))) {
+				
+			} else {
+				
+			}
+    }
 
     /**
      *! @function __permsUser
