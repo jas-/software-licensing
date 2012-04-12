@@ -98,13 +98,7 @@ class dbSession
 		ini_set('cache_expire', $configuration['timeout']);
 		ini_set('use_cookies', $configuration['cookie']);
 		if ($configuration['cookie']){
-			session_set_cookie_params(
-					$configuration['timeout'],
-					$this->_path(),
-					$this->_domain(),
-					$configuration['secure'],
-					$configuration['proto']
-					);
+			session_set_cookie_params($configuration['timeout'], $this->_path(), $this->_domain(), $configuration['secure'], $configuration['proto']);
 		}
 	}
 	private function open($configuration)
@@ -118,9 +112,7 @@ class dbSession
 	{
 		if (isset($id)){
 			try{
-				$sql = $query = sprintf('CALL Session_Search("%s", "%s")',
-						$this->dbconn->sanitize($id),
-						$this->dbconn->sanitize($this->dbKey));
+				$sql = $query = sprintf('CALL Session_Search("%s", "%s")', $this->dbconn->sanitize($id), $this->dbconn->sanitize($this->dbKey));
 				$result = $this->dbconn->query($sql);
 			} catch(Exception $e){
 				// error handling
@@ -135,12 +127,12 @@ class dbSession
 			$x = (isset($_SERVER['HTTP_REFERER'])) ? $_SERVER['HTTP_REFERER'] : $this->_path();
 			try{
 				$sql = sprintf('CALL Session_Add("%s", "%s", "%d", "%s", "%s", "%s", "%s")',
-						$this->dbconn->sanitize($id), $this->sanitizein($data),
-						$this->dbconn->sanitize((int)time()),
-						$this->dbconn->sanitize(sha1($_SERVER['HTTP_USER_AGENT'])),
-						$this->dbconn->sanitize(sha1($this->registry->libs->_getRealIPv4())),
-						$this->dbconn->sanitize($x),
-						$this->dbconn->sanitize($this->dbKey));
+								$this->dbconn->sanitize($id), $this->sanitizein($data),
+								$this->dbconn->sanitize((int)time()),
+								$this->dbconn->sanitize(sha1($_SERVER['HTTP_USER_AGENT'])),
+								$this->dbconn->sanitize(sha1($this->registry->libs->_getRealIPv4())),
+								$this->dbconn->sanitize($x),
+								$this->dbconn->sanitize($this->dbKey));
 				$r = $this->dbconn->query($sql);
 			} catch(Exception $e){
 				// error handling
