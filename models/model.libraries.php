@@ -75,9 +75,9 @@ class libraries {
 	 */
 	function uuid() {
 		return sprintf('%04x%04x-%04x-%04x-%04x-%04x%04x%04x', mt_rand(0, 0xffff),
-				mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0x0fff) | 0x4000,
-				mt_rand(0, 0x3fff) | 0x8000, mt_rand(0, 0xffff),
-				mt_rand(0, 0xffff), mt_rand(0, 0xffff));
+						mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0x0fff) | 0x4000,
+						mt_rand(0, 0x3fff) | 0x8000, mt_rand(0, 0xffff),
+						mt_rand(0, 0xffff), mt_rand(0, 0xffff));
 	}
 
 	/**
@@ -87,18 +87,18 @@ class libraries {
 	function _getRealIPv4()
 	{
 		return (getenv('HTTP_CLIENT_IP') && $this->_ip(getenv('HTTP_CLIENT_IP'))) ?
-			getenv('HTTP_CLIENT_IP') :
-			(getenv('HTTP_X_FORWARDED_FOR') && $this->_forwarded(getenv('HTTP_X_FORWARDED_FOR'))) ?
-			$this->_forwarded(getenv('HTTP_X_FORWARDED_FOR')) :
-			(getenv('HTTP_X_FORWARDED') && $this->_ip(getenv('HTTP_X_FORWARDED'))) ?
-			getenv('HTTP_X_FORWARDED') :
-			(getenv('HTTP_X_FORWARDED_HOST') && $this->_ip(getenv('HTTP_FORWARDED_HOST'))) ?
-			getenv('HTTP_X_FORWARDED_HOST') :
-			(getenv('HTTP_X_FORWARDED_SERVER') && $this->_ip(getenv('HTTP_X_FORWARDED_SERVER'))) ?
-			getenv('HTTP_X_FORWARDED_SERVER') :
-			(getenv('HTTP_X_CLUSTER_CLIENT_IP') && $this->_ip(getenv('HTTP_X_CLIUSTER_CLIENT_IP'))) ?
-			getenv('HTTP_X_CLUSTER_CLIENT_IP') :
-			getenv('REMOTE_ADDR');
+					getenv('HTTP_CLIENT_IP') :
+					(getenv('HTTP_X_FORWARDED_FOR') && $this->_forwarded(getenv('HTTP_X_FORWARDED_FOR'))) ?
+						$this->_forwarded(getenv('HTTP_X_FORWARDED_FOR')) :
+						(getenv('HTTP_X_FORWARDED') && $this->_ip(getenv('HTTP_X_FORWARDED'))) ?
+							getenv('HTTP_X_FORWARDED') :
+							(getenv('HTTP_X_FORWARDED_HOST') && $this->_ip(getenv('HTTP_FORWARDED_HOST'))) ?
+								getenv('HTTP_X_FORWARDED_HOST') :
+								(getenv('HTTP_X_FORWARDED_SERVER') && $this->_ip(getenv('HTTP_X_FORWARDED_SERVER'))) ?
+									getenv('HTTP_X_FORWARDED_SERVER') :
+									(getenv('HTTP_X_CLUSTER_CLIENT_IP') && $this->_ip(getenv('HTTP_X_CLIUSTER_CLIENT_IP'))) ?
+										getenv('HTTP_X_CLUSTER_CLIENT_IP') :
+										getenv('REMOTE_ADDR');
 	}
 
 	/**
@@ -109,13 +109,13 @@ class libraries {
 	{
 		if (!empty($ip) && ip2long($ip)!=-1 && ip2long($ip)!=false){
 			$nr = array(array('0.0.0.0','2.255.255.255'),
-					array('10.0.0.0','10.255.255.255'),
-					array('127.0.0.0','127.255.255.255'),
-					array('169.254.0.0','169.254.255.255'),
-					array('172.16.0.0','172.31.255.255'),
-					array('192.0.2.0','192.0.2.255'),
-					array('192.168.0.0','192.168.255.255'),
-					array('255.255.255.0','255.255.255.255'));
+						array('10.0.0.0','10.255.255.255'),
+						array('127.0.0.0','127.255.255.255'),
+						array('169.254.0.0','169.254.255.255'),
+						array('172.16.0.0','172.31.255.255'),
+						array('192.0.2.0','192.0.2.255'),
+						array('192.168.0.0','192.168.255.255'),
+						array('255.255.255.0','255.255.255.255'));
 			foreach($nr as $r){
 				$min = ip2long($r[0]);
 				$max = ip2long($r[1]);
@@ -206,49 +206,39 @@ class libraries {
 		if(is_array($value)) return self::arr2json($val);
 		if(is_string($value)) return '"'.addslashes($value).'"';
 		if(is_bool($value)) return 'Boolean('.(int) $value.')';
-				if(is_null($value)) return '""';
-				return $value;
-				}
+		if(is_null($value)) return '""';
+		return $value;
+	}
 
-				/*!
-				 * @function geolocation
-				 * @abstract Public function to retrieve GEO location data
-				 * @param $ip String IPv4 string
-				 * @return object The results of the GEO object
-				 */
-				public function geolocation($ip)
-				{
-				$opts = array('http'=>array('method'=>'GET','header'=>'Accept-language: en\r\n'));
-				$context = stream_context_create($opts);
-				$ex = unserialize(file_get_contents('http://www.geoplugin.net/php.gp?ip='.$ip, false, $context));
-				return $ex;
-				}
+	/*!
+	 * @function geolocation
+	 * @abstract Public function to retrieve GEO location data
+	 * @param $ip String IPv4 string
+	 * @return object The results of the GEO object
+	 */
+	public function geolocation($ip)
+	{
+		$opts = array('http'=>array('method'=>'GET','header'=>'Accept-language: en\r\n'));
+		$context = stream_context_create($opts);
+		$ex = unserialize(file_get_contents('http://www.geoplugin.net/php.gp?ip='.$ip, false, $context));
+		return $ex;
+	}
 
-				/*!
-				 * @function parsegeo
-				 * @abstract Public function to parse GEO data
-				 * @param $data Object Parses and returns the GEO data as an array
-				 * @return Array The CN data returned from the GEO lookup
-				 */
-		public function parsegeo($data)
-		{
-			$settings['latitude']            = (!empty($data['geoplugin_latitude'])) ?
-				$data['geoplugin_latitude'] :
-				'46.0730555556';
-			$settings['longitude']           = (!empty($data['geoplugin_longitude'])) ?
-				$data['geoplugin_longitude'] :
-				'-100.546666667';
-			$settings['localityName']        = (!empty($data['geoplugin_city'])) ?
-				$data['geoplugin_city'] :
-				false;
-			$settings['stateOrProvinceName'] = (!empty($data['geoplugin_region'])) ?
-				$data['geoplugin_region'] :
-				false;
-			$settings['countryName']         = (!empty($data['geoplugin_countryCode'])) ?
-				$data['geoplugin_countryCode'] :
-				false;
-			return $settings;
-		}
+	/*!
+	 * @function parsegeo
+	 * @abstract Public function to parse GEO data
+	 * @param $data Object Parses and returns the GEO data as an array
+	 * @return Array The CN data returned from the GEO lookup
+	 */
+	public function parsegeo($data)
+	{
+		$settings['latitude'] = (!empty($data['geoplugin_latitude'])) ? $data['geoplugin_latitude'] : '46.0730555556';
+		$settings['longitude'] = (!empty($data['geoplugin_longitude'])) ? $data['geoplugin_longitude'] : '-100.546666667';
+		$settings['localityName'] = (!empty($data['geoplugin_city'])) ? $data['geoplugin_city'] : false;
+		$settings['stateOrProvinceName'] = (!empty($data['geoplugin_region'])) ? $data['geoplugin_region'] : false;
+		$settings['countryName'] = (!empty($data['geoplugin_countryCode'])) ? $data['geoplugin_countryCode'] : false;
+		return $settings;
+	}
 
 		/**
 		 * @function _salt
@@ -257,27 +247,21 @@ class libraries {
 		public function _salt($string, $len=null)
 		{
 			return (!empty($len)) ?
-				hash('sha512', str_pad($string, (strlen($string) + $len),
-							substr(hash('sha512', $string),
-								@round((float)strlen($string)/3, 0,
-									PHP_ROUND_HALF_UP),
-								($len - strlen($string))),
-							STR_PAD_BOTH)) :
-				hash('sha512', substr($string,
-							@round((float)strlen($string)/3, 0,
-								PHP_ROUND_HALF_UP), 16));
+				hash('sha512', str_pad($string, (strlen($string) + $len), substr(hash('sha512', $string), @round((float)strlen($string)/3, 0, PHP_ROUND_HALF_UP), ($len - strlen($string))), STR_PAD_BOTH)) :
+				hash('sha512', substr($string, @round((float)strlen($string)/3, 0, PHP_ROUND_HALF_UP), 16));
 		}
+
 		/**
 		 * @function _hash
-		 * @abstract Mimic bcrypt
+		 * @abstract Mimic bcrypt hasing functionality
 		 */
 		public function _hash($string, $salt=null)
 		{
 			return (CRYPT_BLOWFISH===1) ?
 				(!empty($salt)) ?
-				crypt($string, "\$2a\$07\$".substr($salt, 0, CRYPT_SALT_LENGTH)) :
-				crypt($string, $this->_salt("\$2a\$07\$".substr($string, 0, CRYPT_SALT_LENGTH))) :
-				false;
+					crypt($string, "\$2a\$07\$".substr($salt, 0, CRYPT_SALT_LENGTH)) :
+					crypt($string, $this->_salt("\$2a\$07\$".substr($string, 0, CRYPT_SALT_LENGTH))) :
+						false;
 		}
 
 		/**
