@@ -51,11 +51,11 @@
     <input type="password" id="confirm" name="confirm" value="" placeholder="********" required="required" /><span class="required">*</span><br />
    <br/><hr style="width: 95%"/><br/>
    <label for="level">Access level: </label>
-    <select id="level" name="level" required="required">
+    <select id="level" name="level" required="required" style="width: 30%">
      {$level}
     </select><span class="required">*</span><br />
    <label for="group">Group: </label>
-    <select id="group" name="group" required="required">
+    <select id="group" name="group" required="required" style="width: 30%">
      {$group}
     </select><span class="required">*</span><br />
    <br/><hr style="width: 95%"/><br/>
