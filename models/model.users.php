@@ -69,9 +69,9 @@ class users
 	private function __setup($args)
 	{
 		if ((!empty($_SESSION[$this->registry->libs->_getRealIPv4()]['email']))&&
-				(!empty($_SESSION[$this->registry->libs->_getRealIPv4()]['privateKey']))&&
-				(!empty($_SESSION[$this->registry->libs->_getRealIPv4()]['publicKey']))&&
-				(!empty($_SESSION[$this->registry->libs->_getRealIPv4()]['password']))){
+			(!empty($_SESSION[$this->registry->libs->_getRealIPv4()]['privateKey']))&&
+			(!empty($_SESSION[$this->registry->libs->_getRealIPv4()]['publicKey']))&&
+			(!empty($_SESSION[$this->registry->libs->_getRealIPv4()]['password']))){
 			return true;
 		}else{
 			return false;
@@ -94,7 +94,7 @@ class users
 		if (!empty($d['do'])){
 			switch($d['do']){
 				case 'add':
-					echo '<pre>'; print_r($d); echo '</pre>';
+                    $this->__addUser($d);
 					break;
 				case 'edit':
 					break;
@@ -115,9 +115,15 @@ class users
      */
     private function __addUser($details)
     {
-		// perform validation of all submitted data
-		// perform sanitation of all submitted data
-		// compare password submission
+		if (!$this->__valEmpty($details)) {
+            return array('Error'=>'Form data missing');
+        }
+
+        if (!$this->__valFormat($details)) {
+            return array('Error'=>'Form data invalid');
+        }
+
+   		// compare password submission
 		// obtain current group membership
 		// save new account
 		// generate new keyring data
@@ -127,20 +133,35 @@ class users
     }
 
     /**
-     *! @function __val
+     *! @function __valEmpty
+     *  @abstract Perform check on empty variables
+     */
+    private function __valEmpty($details)
+    {
+		return ((empty($details['email'])) || (empty($details['password'])) ||
+                (empty($details['confirm'])) || (empty($details['level'])) ||
+                (empty($details['group'])) || (empty($details['organizationalName'])) ||
+                (empty($details['organizationalUnitName'])) || (empty($details['localityName'])) ||
+                (empty($details['stateOrProvinceName'])) || (empty($details['countryName'])));
+    }
+
+    /**
+     *! @function __valFormat
      *  @abstract Perform validation on submitted data
      */
-    private function __val($details)
+    private function __valFormat($details)
     {
-		if ((empty($details['email'])) || (empty($details['password'])) ||
-		    (empty($details['confirm'])) || (empty($details['level'])) ||
-			(empty($details['group'])) || (empty($details['organizationalName'])) ||
-			(empty($details['organizationalUnitName'])) || (empty($details['localityName'])) ||
-			(empty($details['stateOrProvinceName'])) || (empty($details['countryName']))) {
-
-			} else {
-
-			}
+		return ((($this->registry->val->type($details['email'], 'alpha')) ||
+                 ($this->registry->val->type($details['email'], 'email'))) ||
+                ($this->registry->val->type($details['password'], 'special')) ||
+                ($this->registry->val->type($details['confirm'], 'special')) ||
+                ($this->registry->val->type($details['level'], 'alpha')) ||
+                ($this->registry->val->type($details['group'], 'alpha')) ||
+                ($this->registry->val->type($details['organizationalName'], 'paragraph')) ||
+                ($this->registry->val->type($details['organizationalUnitName'], 'paragraph')) ||
+                ($this->registry->val->type($details['localityName'], 'alpha')) ||
+                ($this->registry->val->type($details['stateOrProvinceName'], 'string')) ||
+                ($this->registry->val->type($details['countryName'], 'string')));
     }
 
     /**

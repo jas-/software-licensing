@@ -50,7 +50,7 @@ class proxyController
 			(!$this->__vCheckSum(getenv('HTTP_CONTENT_MD5'), $post))){
 			return;
 		} else {
-			exit($this->registry->libs->JSONencode(array('error'=>'Invalid request made')));
+			exit($this->registry->libs->JSONencode(array('Error'=>'Invalid request made')));
 		}
 	}
 

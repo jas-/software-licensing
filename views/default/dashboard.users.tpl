@@ -24,8 +24,8 @@
     $j('#message').html('<div class="warning">Empty response for request</div>').fadeIn(1000);
    }
   }
-  function _load(){
-   // load a spinner or something
+  function _load(path){
+   // load a spinner, take path as arg
   }
   $j('#submit-button').on('click', function(){
    $j('#do').val($j(this).val().toLowerCase());
