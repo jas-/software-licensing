@@ -1,5 +1,8 @@
 <?php
 
+/* define the namespace */
+//namespace models\users;
+
 /* prevent direct access */
 if (!defined('__SITE')) exit('No direct calls please...');
 
@@ -134,9 +137,9 @@ class users
 			(empty($details['group'])) || (empty($details['organizationalName'])) ||
 			(empty($details['organizationalUnitName'])) || (empty($details['localityName'])) ||
 			(empty($details['stateOrProvinceName'])) || (empty($details['countryName']))) {
-				
+
 			} else {
-				
+
 			}
     }
 

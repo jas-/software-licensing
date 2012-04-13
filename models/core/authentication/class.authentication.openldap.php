@@ -1,7 +1,7 @@
 <?php
 
 /* define the namespace */
-namespace core\authentication\openldap;
+//namespace core\authentication\openldap;
 
 /* prevent direct access */
 if (!defined('__SITE')) exit('No direct calls please...');

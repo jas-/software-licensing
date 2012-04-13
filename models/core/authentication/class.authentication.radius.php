@@ -1,7 +1,7 @@
 <?php
 
 /* define the namespace */
-namespace core\authentication\radius;
+//namespace core\authentication\radius;
 
 /* prevent direct access */
 if (!defined('__SITE')) exit('No direct calls please...');

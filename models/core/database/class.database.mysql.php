@@ -1,7 +1,7 @@
 <?php
 
 /* define the namespace */
-namespace core\database\mysql;
+//namespace core\database\mysql;
 
 /* prevent direct access */
 if (!defined('__SITE')) exit('No direct calls please...');

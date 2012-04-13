@@ -1,5 +1,8 @@
 <?php
 
+/* define the namespace */
+//namespace models\autoloader;
+
 /* prevent direct access */
 if (!defined('__SITE')) exit('No direct calls please...');
 
@@ -45,6 +48,7 @@ class autoloader {
 			foreach($this->files as $key => $value){
 				if (file_exists($value)){
 					require_once($value);
+					//echo preg_replace('/\/+/', '\\', preg_replace('/\.php/', '', $value)).'<br/>';
 				}
 			}
 		}

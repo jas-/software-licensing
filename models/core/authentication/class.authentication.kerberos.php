@@ -1,7 +1,7 @@
 <?php
 
 /* define the namespace */
-namespace core\authentication\kerberos;
+//namespace core\authentication\kerberos;
 
 /* prevent direct access */
 if (!defined('__SITE')) exit('No direct calls please...');

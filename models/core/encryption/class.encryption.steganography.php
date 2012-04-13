@@ -1,7 +1,7 @@
 <?php
 
 /* define the namespace */
-namespace core\encryption\steganography;
+//namespace core\encryption\steganography;
 
 /* prevent direct access */
 if (!defined('__SITE')) exit('No direct calls please...');

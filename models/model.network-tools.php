@@ -1,5 +1,8 @@
 <?PHP
 
+/* define the namespace */
+//namespace models\network;
+
 /* prevent direct access */
 if (!defined('__SITE')) exit('No direct calls please...');
 

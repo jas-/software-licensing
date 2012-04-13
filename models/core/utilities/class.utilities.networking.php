@@ -1,5 +1,8 @@
 <?php
 
+/* define the namespace */
+//namespace core\utilities\networking;
+
 /* prevent direct access */
 if (!defined('__SITE')) exit('No direct calls please...');
 

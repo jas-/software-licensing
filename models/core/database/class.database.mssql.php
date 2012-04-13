@@ -1,7 +1,7 @@
 <?PHP
 
 /* define the namespace */
-namespace core\database\mssql;
+//namespace core\database\mssql;
 
 /* prevent direct access */
 if (!defined('__SITE')) exit('No direct calls please...');

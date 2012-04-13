@@ -1,5 +1,8 @@
 <?php
 
+/* define the namespace */
+//namespace core\sessions\database;
+
 /* prevent direct access */
 if (!defined('__SITE')) exit('No direct calls please...');
 

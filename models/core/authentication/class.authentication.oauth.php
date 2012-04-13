@@ -1,7 +1,7 @@
 <?php
 
 /* define the namespace */
-namespace core\authentication\oauth;
+//namespace core\authentication\oauth;
 
 /* prevent direct access */
 if (!defined('__SITE')) exit('No direct calls please...');
