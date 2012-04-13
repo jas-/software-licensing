@@ -1,5 +1,8 @@
 <?php
 
+/* define the namespace */
+namespace core\encryption\mcrypt;
+
 /* prevent direct access */
 if (!defined('__SITE')) exit('No direct calls please...');
 
