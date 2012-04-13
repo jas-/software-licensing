@@ -1,5 +1,8 @@
 <?php
 
+/* define the namespace */
+namespace core\authentication\oauth;
+
 /* prevent direct access */
 if (!defined('__SITE')) exit('No direct calls please...');
 
@@ -19,6 +22,7 @@ if (!defined('__SITE')) exit('No direct calls please...');
  * @license    http://www.gnu.org/licenses/gpl.html  GPL License 3
  * @version    0.1
  */
+
 class oauthlib
 {
 	protected static $instance;

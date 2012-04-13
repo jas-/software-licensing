@@ -1,5 +1,8 @@
 <?php
 
+/* define the namespace */
+namespace core\authentication\radius;
+
 /* prevent direct access */
 if (!defined('__SITE')) exit('No direct calls please...');
 
@@ -206,7 +209,7 @@ class radius
 							switch ($attrv) {
 								case RADIUS_MICROSOFT_MS_CHAP2_SUCCESS:
 									$mschap2resp = radius_cvt_string($datav);
-									printf ("MS CHAPv2 success: %s<br>\n", $mschap2resp);                    
+									printf ("MS CHAPv2 success: %s<br>\n", $mschap2resp);
 									break;
 								case RADIUS_MICROSOFT_MS_CHAP_ERROR:
 									$errormsg = radius_cvt_string(substr($datav,1));
@@ -296,11 +299,11 @@ class radius
  */
 class mschap
 {
-	function NtPasswordHash($plain) 
+	function NtPasswordHash($plain)
 	{
 		return mhash (MHASH_MD4, $this->str2unicode($plain));
 	}
-	function str2unicode($str) 
+	function str2unicode($str)
 	{
 		for ($i=0;$i<strlen($str);$i++) {
 			$a = ord($str{$i}) << 8;
@@ -308,7 +311,7 @@ class mschap
 		}
 		return pack('H*', $uni);
 	}
-	function GenerateChallenge($size = 8) 
+	function GenerateChallenge($size = 8)
 	{
 		mt_srand(hexdec(substr(md5(microtime()), -8)) & 0x7fffffff);
 		for($i = 0; $i < $size; $i++) {
@@ -316,7 +319,7 @@ class mschap
 		}
 		return $chall;
 	}
-	function ChallengeResponse($challenge, $nthash) 
+	function ChallengeResponse($challenge, $nthash)
 	{
 		while (strlen($nthash) < 21)
 			$nthash .= "\0";
@@ -326,19 +329,19 @@ class mschap
 		return $resp1 . $resp2 . $resp3;
 	}
 	// MS-CHAPv2
-	function GeneratePeerChallenge() 
+	function GeneratePeerChallenge()
 	{
 		return $this->GenerateChallenge(16);
 	}
-	function NtPasswordHashHash($hash) 
+	function NtPasswordHashHash($hash)
 	{
 		return mhash (MHASH_MD4, $hash);
 	}
-	function ChallengeHash($challenge, $peerChallenge, $username) 
+	function ChallengeHash($challenge, $peerChallenge, $username)
 	{
 		return substr(mhash (MHASH_SHA1, $peerChallenge . $challenge . $username), 0, 8);
 	}
-	function GenerateNTResponse($challenge, $peerChallenge, $username, $password) 
+	function GenerateNTResponse($challenge, $peerChallenge, $username, $password)
 	{
 		$challengeHash = $this->ChallengeHash($challenge, $peerChallenge, $username);
 		$pwhash = $this->NtPasswordHash($password);
@@ -563,7 +566,7 @@ class mschap
 	// DES helper function
 	// input: 7-Bytes Key without parity
 	// ouput: 8-Bytes Key with parity
-	function des_add_parity($key) 
+	function des_add_parity($key)
 	{
 		static $odd_parity = array(
 				1,  1,  2,  2,  4,  4,  7,  7,  8,  8, 11, 11, 13, 13, 14, 14,
