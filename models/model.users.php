@@ -84,6 +84,8 @@ class users
 	 */
 	public function __do($obj)
 	{
+        $x = false;
+
 		$d = $this->__decrypt($obj);
 
 		$auth = authentication::instance($this->registry);
@@ -94,7 +96,7 @@ class users
 		if (!empty($d['do'])){
 			switch($d['do']){
 				case 'add':
-                    $this->__addUser($d);
+                    $x = $this->registry->libs->JSONEncode($this->__addUser($d));
 					break;
 				case 'edit':
 					break;
@@ -104,6 +106,7 @@ class users
 					break;
 			}
 		}
+        return $x;
 	}
 
     /**

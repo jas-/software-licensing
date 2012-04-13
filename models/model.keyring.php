@@ -115,13 +115,11 @@ class keyring
 		$this->dn = ($this->__vdn($d)) ? $d : $this->dn;
 
 		if (class_exists('openssl')){
-			$this->ssl = openssl::instance(array('config'=>$this->config,
-						'dn'=>$this->dn));
+			$this->ssl = openssl::instance(array('config'=>$this->config, 'dn'=>$this->dn));
 		}
 
 		if (is_object($this->ssl)){
-			(!empty($args['email'])) ?
-				$this->__keyring($_POST['email']) : $this->__keyring();
+			(!empty($args['email'])) ? $this->__keyring($_POST['email']) : $this->__keyring();
 		}
 	}
 
