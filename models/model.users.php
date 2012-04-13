@@ -118,12 +118,12 @@ class users
      */
     private function __addUser($details)
     {
-		if (!$this->__valEmpty($details)) {
-            return array('Error'=>'Form data missing');
+		if ($this->__valEmpty($details)) {
+            return array('error'=>'Form data missing');
         }
 
-        if (!$this->__valFormat($details)) {
-            return array('Error'=>'Form data invalid');
+        if ($this->__valFormat($details)) {
+            return array('error'=>'Form data invalid');
         }
 
    		// compare password submission

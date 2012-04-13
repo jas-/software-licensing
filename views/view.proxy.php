@@ -90,7 +90,7 @@ class proxyView
 					$x = $users->__do($this->registry->val->__do($_POST));
 					break;
 				default:
-					$x = array('Error'=>'Invalid command recieved, unable to process');
+					$x = array('error'=>'Invalid command recieved, unable to process');
 					break;
 			}
 		}
