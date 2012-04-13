@@ -96,6 +96,7 @@ class users
 		if (!empty($d['do'])){
 			switch($d['do']){
 				case 'add':
+                    echo '<pre>'; print_r($d); echo '</pre>';
                     $x = $this->registry->libs->JSONEncode($this->__addUser($d));
 					break;
 				case 'edit':
@@ -160,8 +161,8 @@ class users
                 ($this->registry->val->type($details['confirm'], 'special')) ||
                 ($this->registry->val->type($details['level'], 'alpha')) ||
                 ($this->registry->val->type($details['group'], 'alpha')) ||
-                ($this->registry->val->type($details['organizationalName'], 'paragraph')) ||
-                ($this->registry->val->type($details['organizationalUnitName'], 'paragraph')) ||
+                ($this->registry->val->type($details['organizationalName'], 'special')) ||
+                ($this->registry->val->type($details['organizationalUnitName'], 'special')) ||
                 ($this->registry->val->type($details['localityName'], 'alpha')) ||
                 ($this->registry->val->type($details['stateOrProvinceName'], 'string')) ||
                 ($this->registry->val->type($details['countryName'], 'string')));
