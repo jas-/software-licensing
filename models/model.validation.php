@@ -166,9 +166,8 @@ public function type($v, $t)
 	if (!empty($v)) {
 		switch($t) {
 			case 'special':
-				return (filter_var($v, FILTER_VALIDATE_REGEXP, array('options'=>array('regexp'=>'/^[a-z0-9-_~!@#$%^&*()_+{}|\;:"\'<>?]{1,128}$/Di')))) ? true : false;
-			case 'paragraph':
-				return (filter_var($v, FILTER_VALIDATE_REGEXP, array('options'=>array('regexp'=>'/^[a-z0-9 -_~!@#$%^&*()_+{}|\;:"\'<>?]{1,128}$/Di')))) ? true : false;
+				//return (!filter_var($v, FILTER_VALIDATE_REGEXP, array('options'=>array('regexp'=>'/^[\S+\d+\s+-_~!@#$%^&*()_+{}|\;:"\'<>?]{1,128}$/Di')))) ? false : true;
+				return (filter_var($v, FILTER_VALIDATE_REGEXP, array('options'=>array('regexp'=>'/^\d+\w+\s+\D+\W+\S+{1,128}$/Di')))) ? true : false;
 			case 'integer':
 				return (filter_var($value, FILTER_VALIDATE_REGEXP, array('options'=>array('regexp'=>'/^[0-9]{1,128}$/Di')))) ? true : false;
 			case 'string':
