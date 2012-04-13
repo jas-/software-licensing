@@ -127,7 +127,11 @@ class users
             return array('error'=>'Form data invalid');
         }
 
-   		// compare password submission
+   		if ($this->__valPW($details['password'], $details['confirm'])) {
+            return array('error'=>'Passords did not match');
+        }
+
+        // determine password complexity requirements
 		// obtain current group membership
 		// save new account
 		// generate new keyring data
@@ -166,6 +170,15 @@ class users
                 ($this->registry->val->type($details['localityName'], 'alpha')) ||
                 ($this->registry->val->type($details['stateOrProvinceName'], 'string')) ||
                 ($this->registry->val->type($details['countryName'], 'string')));
+    }
+
+    /**
+     *! @function __valPW
+     *  @abstract Perform comparison on password
+     */
+    private function __valPW($pw, $cpw)
+    {
+        return (strcmp($pw, $cpw)===0);
     }
 
     /**
