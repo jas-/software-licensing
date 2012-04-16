@@ -96,7 +96,6 @@ class users
 		if (!empty($d['do'])){
 			switch($d['do']){
 				case 'add':
-                    echo '<pre>'; print_r($d); echo '</pre>';
                     $x = $this->registry->libs->JSONEncode($this->__addUser($d));
 					break;
 				case 'edit':
@@ -127,11 +126,11 @@ class users
             return array('error'=>'Form data invalid');
         }
 
-   		if ($this->__valPW($details['password'], $details['confirm'])) {
+   		if (!$this->__valPW($details['password'], $details['confirm'])) {
             return array('error'=>'Passwords did not match');
         }
 
-        if (!$registry->val->_isComplex($details['password'])) {
+        if (!$this->registry->val->_isComplex($details['password'])) {
             return array('error'=>'Password does not meet complexity requirements');
         }
 
@@ -181,7 +180,7 @@ class users
      */
     private function __valPW($pw, $cpw)
     {
-        return (strcmp($pw, $cpw)===0);
+        return (strcmp(sha1($pw), sha1($cpw))===0) ? true : false;
     }
 
     /**
