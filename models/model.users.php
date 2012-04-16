@@ -128,10 +128,13 @@ class users
         }
 
    		if ($this->__valPW($details['password'], $details['confirm'])) {
-            return array('error'=>'Passords did not match');
+            return array('error'=>'Passwords did not match');
         }
 
-        // determine password complexity requirements
+        if (!$registry->val->_isComplex($details['password'])) {
+            return array('error'=>'Password does not meet complexity requirements');
+        }
+
 		// obtain current group membership
 		// save new account
 		// generate new keyring data

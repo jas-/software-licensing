@@ -22,7 +22,6 @@ if (!defined('__SITE')) exit('No direct calls please...');
  * @license    http://www.gnu.org/licenses/gpl.html  GPL License 3
  * @version    0.1
  */
-
 class validation {
 	protected static $instance;
 	private function __construct()
@@ -203,6 +202,12 @@ class validation {
 	{
 		return ((is_int($integer))&&(preg_match('/[0-9]/', $integer))) ? true : false;
 	}
+
+	public function _isComplex($string)
+	{
+		return (filter_var($string, FILTER_VALIDATE_REGEX, array('options'=>array('regexp'=>'/^\w+{,4}\D+{,2}\W+{,2}\S+{,2}$/Di'))));
+	}
+
 	public function __clone() {
 		trigger_error('Cloning prohibited', E_USER_ERROR);
 	}
