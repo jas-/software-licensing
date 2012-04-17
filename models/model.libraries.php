@@ -275,14 +275,14 @@ class libraries {
 	 */
 	function _serialize($array)
 	{
-		if (count($array)>0){
+		if (count($array) > 0) {
 			$x = '';
-			foreach($array as $key => $value){
+			foreach($array as $key => $value) {
 				$x .= $key.'='.$value.'&';
 			}
 			$x = substr($x, 0, -1);
 		}
-		return (strlen($x)>0) ? $x : false;
+		return (strlen($x) > 0) ? $x : false;
 	}
 
 	/**

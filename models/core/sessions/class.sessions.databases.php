@@ -62,7 +62,7 @@ class dbSession
 	 *  @param $configuration array Array of database sepecific options
 	 *  @param $opts array Array of session specific options
 	 */
-	private function __construct($configuration, $opts)
+	public function __construct($configuration, $opts)
 	{
 		if ((class_exists('dbConn'))||(is_object($opts))) {
 			$this->dbKey = $configuration['db-key'];
