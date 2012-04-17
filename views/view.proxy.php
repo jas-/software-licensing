@@ -73,9 +73,9 @@ class proxyView
 	private function __decide($cmd)
 	{
 		$x = false;
-		print_r($_SESSION);
+
 		$this->registry->keyring = new keyring($this->registry, $this->registry->val->__do($_POST));
-		print_r($_SESSION);
+
 		if (!empty($cmd)){
 			$cmd = $this->registry->val->__do($cmd, 'string');
 			switch($cmd){
