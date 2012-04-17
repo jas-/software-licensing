@@ -253,17 +253,16 @@ class authentication
 	 */
 	private function __register($obj)
 	{
-		try{
+		try {
 			$sql = sprintf('CALL Users_AddUpdateToken("%s", "%s", "%s")',
 							$this->registry->db->sanitize($obj['email']),
 							$this->registry->db->sanitize($obj['signature']),
 							$this->registry->db->sanitize($this->registry->libs->_hash($this->registry->opts['dbKey'], $this->registry->libs->_salt($this->registry->opts['dbKey'], 2048))));
 			$r = $this->registry->db->query($sql);
-		} catch(Exception $e){
+		} catch(Exception $e) {
 			// error handling
 		}
-		return ($r) ? array('success'=>'User was successfully authenticated') :
-			array('error'=>'An error occured when associating token with user');
+		return ($r) ? array('success'=>'User was successfully authenticated') : array('error'=>'An error occured when associating token with user');
 	}
 
 	/**
@@ -273,11 +272,11 @@ class authentication
 	private function __getSignature($email)
 	{
 		$r = false;
-		if (!empty($email)){
-			try{
+		if (!empty($email)) {
+			try {
 				$sql = sprintf('CALL Users_GetToken("%s", "%s")', $this->registry->db->sanitize($email), $this->registry->db->sanitize($this->registry->libs->_hash($this->registry->opts['dbKey'], $this->registry->libs->_salt($this->registry->opts['dbKey'], 2048))));
 				$r = $this->registry->db->query($sql);
-			} catch(Exception $e){
+			} catch(Exception $e) {
 				// error handler
 			}
 		}
@@ -290,10 +289,10 @@ class authentication
 	 */
 	private function __checkSignature($token, $signature)
 	{
-		if ((empty($token))||(empty($signature))){
+		if ((empty($token))||(empty($signature))) {
 			return false;
 		}
-		if (!$this->registry->ssl->verify($token, $signature, $_SESSION[$this->registry->libs->_getRealIPv4()]['publicKey'])){
+		if (!$this->registry->ssl->verify($token, $signature, $_SESSION[$this->registry->libs->_getRealIPv4()]['publicKey'])) {
 			return false;
 		}
 		return true;

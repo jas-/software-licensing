@@ -48,7 +48,7 @@ class users
 	private function __construct($registry)
 	{
 		$this->registry = $registry;
-		if (!$this->__setup($registry)){
+		if (!$this->__setup($registry)) {
 			exit(array('Error'=>'Necessary keys are missing, cannot continue'));
 		}
 	}
@@ -71,7 +71,7 @@ class users
 		if ((!empty($_SESSION[$this->registry->libs->_getRealIPv4()]['email']))&&
 			(!empty($_SESSION[$this->registry->libs->_getRealIPv4()]['privateKey']))&&
 			(!empty($_SESSION[$this->registry->libs->_getRealIPv4()]['publicKey']))&&
-			(!empty($_SESSION[$this->registry->libs->_getRealIPv4()]['password']))){
+			(!empty($_SESSION[$this->registry->libs->_getRealIPv4()]['password']))) {
 			return true;
 		}else{
 			return false;
@@ -93,8 +93,8 @@ class users
 		$u = $this->__permsUser($auth->__user($_SESSION['token']));
         $g = $this->__permsGroup($auth->__group($_SESSION['token']));
 
-		if (!empty($d['do'])){
-			switch($d['do']){
+		if (!empty($d['do'])) {
+			switch($d['do']) {
 				case 'add':
                     $x = $this->registry->libs->JSONEncode($this->__addUser($d));
 					break;
@@ -133,7 +133,7 @@ class users
         if (!$this->registry->val->_isComplex($details['password'])) {
             return array('error'=>'Password does not meet complexity requirements');
         }
-
+echo '<pre>'; print_r($_SESSION); echo '</pre>';
 		// obtain current group membership
 		// save new account
 		// generate new keyring data
@@ -180,7 +180,7 @@ class users
      */
     private function __valPW($pw, $cpw)
     {
-        return (strcmp(sha1($pw), sha1($cpw))===0) ? true : false;
+        return (strcmp(sha1($pw), sha1($cpw)) === 0) ? true : false;
     }
 
     /**
@@ -189,10 +189,10 @@ class users
      */
     private function __permsUser($u)
     {
-		try{
+		try {
 			$sql = sprintf('CALL Perms_SearchUser("%s", "%s")', $this->registry->db->sanitize($u), $this->registry->db->sanitize($this->registry->libs->_hash($this->registry->opts['dbKey'], $this->registry->libs->_salt($this->registry->opts['dbKey'], 2048))));
 			$r = $this->registry->db->query($sql);
-		} catch(Exception $e){
+		} catch(Exception $e) {
 			// error handler
 		}
         return (($r) && (is_array($r))) ? $r : false;
@@ -204,10 +204,10 @@ class users
      */
     private function __permsGroup($g)
     {
-		try{
+		try {
 			$sql = sprintf('CALL Perms_SearchGroup("%s", "%s")', $this->registry->db->sanitize($g), $this->registry->db->sanitize($this->registry->libs->_hash($this->registry->opts['dbKey'], $this->registry->libs->_salt($this->registry->opts['dbKey'], 2048))));
 			$r = $this->registry->db->query($sql);
-		} catch(Exception $e){
+		} catch(Exception $e) {
 			// error handler
 		}
         return (($r) && (is_array($r))) ? $r : false;
@@ -219,9 +219,9 @@ class users
 	 */
 	private function __decrypt($obj)
 	{
-		if (count($obj)>0){
+		if (count($obj)>0) {
 			$x = array();
-			foreach($obj as $key => $value){
+			foreach($obj as $key => $value) {
 				$x[$key] = $this->registry->keyring->ssl->privDenc($value, $_SESSION[$this->registry->libs->_getRealIPv4()]['privateKey'], $_SESSION[$this->registry->libs->_getRealIPv4()]['password']);
 			}
 		}

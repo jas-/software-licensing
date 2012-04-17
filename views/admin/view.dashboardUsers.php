@@ -78,7 +78,7 @@ class dashboardUsersView
 	{
 		$geo = $this->registry->libs->parsegeo($this->registry->libs->geolocation($this->registry->libs->_getRealIPv4()));
 
-		$this->__main();
+		$this->__main($geo);
 		$this->_menu($geo);
 		$this->_location($geo);
 		$this->registry->tpl->display('index.tpl', true, null, $this->registry->libs->_getRealIPv4());

@@ -86,6 +86,12 @@ if (!class_exists('access')){
  exit('Error initializing access class, unable to proceed. 0x0c8');
 }
 
+/* apply some security headers for clients */
+header('X-Alt-Referer: '.$_SESSION['csrf']);
+header('X-Forwarded-Proto: http');
+header('X-Frame-Options: deny');
+header('X-XSS-Protecton: 1;mode=deny');
+
 /* perform check against ACL to visitor */
 $access = new access($registry);
 if (!$access->_do()){
@@ -103,11 +109,5 @@ $registry->template = new template($registry);
 
 /* begin routing requests */
 $registry->router->loader();
-
-/* apply some security headers for clients */
-header('X-Alt-Referer: '.$_SESSION['csrf']);
-header('X-Forwarded-Proto: http');
-header('X-Frame-Options: deny');
-header('X-XSS-Protecton: 1;mode=deny');
 
 ?>
