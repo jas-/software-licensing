@@ -133,7 +133,7 @@ class users
         if (!$this->registry->val->_isComplex($details['password'])) {
             return array('error'=>'Password does not meet complexity requirements');
         }
-echo '<pre>'; print_r($_SESSION); echo '</pre>';
+
 		// obtain current group membership
 		// save new account
 		// generate new keyring data

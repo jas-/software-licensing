@@ -62,7 +62,7 @@ class dbSession
 	 *  @param $configuration array Array of database sepecific options
 	 *  @param $opts array Array of session specific options
 	 */
-	public function __construct($configuration, $opts)
+	private function __construct($configuration, $opts)
 	{
 		if ((class_exists('dbConn'))||(is_object($opts))) {
 			$this->dbKey = $configuration['db-key'];
@@ -85,6 +85,13 @@ class dbSession
 			exit;
 		}
 	}
+
+	/**
+	 *! @function instance
+	 *  @abstract Creates singleton object for database session handling
+	 *  @param $configuration array Array of database sepecific options
+	 *  @param $opts array Array of session specific options
+	 */
 	public static function instance($configuration, $opts)
 	{
 		if (!isset(self::$instance)) {
@@ -93,6 +100,12 @@ class dbSession
 		}
 		return self::$instance;
 	}
+
+	/**
+	 *! @function options
+	 *  @abstract Sets default options upon class initialization
+	 *  @param $configuration array Array of database sepecific options
+	 */
 	private function options($configuration)
 	{
 		ini_set('session.gc_maxlifetime', $configuration['timeout']);
@@ -104,6 +117,12 @@ class dbSession
 			session_set_cookie_params($configuration['timeout'], $this->_path(), $this->_domain(), $configuration['secure'], $configuration['proto']);
 		}
 	}
+
+	/**
+	 *! @function open
+	 *  @abstract Creates database connection handler as global object within class scope
+	 *  @param $configuration array Array of database sepecific options
+	 */
 	private function open($configuration)
 	{
 		if ((!isset($this->dbconn))||(!is_object($this->dbconn))) {
@@ -111,6 +130,12 @@ class dbSession
 			return (is_object($this->dbconn)) ? true : false;
 		}
 	}
+
+	/**
+	 *! @function read
+	 *  @abstract Returns current session data
+	 *  @param $id strung Current session id
+	 */
 	public function read($id)
 	{
 		if (isset($id)){
@@ -124,8 +149,16 @@ class dbSession
 		}
 		return '';
 	}
+
+	/**
+	 *! @function write
+	 *  @abstract Performs new session data saving
+	 *  @param $id string Session ID
+	 *  @param $data string Session data
+	 */
 	public function write($id, $data)
 	{
+		// add call to read() function and add/overwrite new data to existing
 		if ((isset($id))&&(isset($data))){
 			$x = (isset($_SERVER['HTTP_REFERER'])) ? $_SERVER['HTTP_REFERER'] : $this->_path();
 			try{
@@ -144,10 +177,21 @@ class dbSession
 		}
 		return false;
 	}
+
+	/**
+	 *! @function close
+	 *  @abstract Closes the session managment
+	 */
 	public function close()
 	{
 		return true;
 	}
+
+	/**
+	 *! @function destroy
+	 *  @abstract Destroys all session data matching session id
+	 *  @param $id string Session id
+	 */
 	private function destroy($id)
 	{
 		if (isset($id)){
@@ -161,6 +205,12 @@ class dbSession
 		}
 		return false;
 	}
+
+	/**
+	 *! @function sanitizein
+	 *  @abstract Assists in serilization and cleaning of session data
+	 *  @param $string string The session data to be cleaned
+	 */
 	private function sanitizein($string)
 	{
 		if (version_compare(PHP_VERSION, '5.2.11')>=0) {
@@ -169,6 +219,12 @@ class dbSession
 			return $this->dbconn->sanitize($string);
 		}
 	}
+
+	/**
+	 *! @function sanitizeout
+	 *  @abstract Assists in de-serilization and cleaning of session data
+	 *  @param $string string The session data to be cleaned
+	 */
 	private function sanitizeout($string)
 	{
 		if (version_compare(PHP_VERSION, '5.2.11')>=0) {
@@ -177,6 +233,12 @@ class dbSession
 			return stripslashes($string);
 		}
 	}
+
+	/**
+	 *! @function regen
+	 *  @abstract Regenerates session id to protect against session hijacking
+	 *  @param $flag boolean Used to determine action
+	 */
 	public function regen($flag=false)
 	{
 		if ($flag!==false){
@@ -187,24 +249,47 @@ class dbSession
 		}
 		return;
 	}
+
+	/**
+	 *! @function register
+	 *  @abstract Registers new key/value to session data
+	 *  @param $name string The session key
+	 *  @param $value string The session data
+	 */
 	public function register($name, $value)
 	{
 		return ((isset($name))&&(isset($value))) ? $_SESSION[$name] : false;
 	}
+
+	/**
+	 *! @function _path
+	 *  @abstract Used to generate the current users FQDN
+	 */
 	private function _path()
 	{
 		return $_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
 	}
+
+	/**
+	 *! @function domain
+	 *  @abstract Returns the current FQDN of installed application
+	 */
 	private function _domain()
 	{
 		return $_SERVER['HTTP_HOST'];
 	}
+
+	/**
+	 *! @function gc
+	 *  @abstract Performs timeout cleanup on all database key/values
+	 *  @param $timeout int The current UNIX timestamp
+	 */
 	private function gc($timeout)
 	{
 		if (isset($timeout)) {
-			$sql = sprintf('CALL Session_Timeout("%d")', time()-$timeout);
+			$sql = sprintf('CALL Session_Timeout("%d")', time() - $timeout);
 			$r = $this->dbconn->query($sql);
-			return ((is_resource($r))&&($this->dbconn->affected()>0)) ? true : false;
+			return ((is_resource($r)) && ($this->dbconn->affected() > 0)) ? true : false;
 		}
 		return false;
 	}

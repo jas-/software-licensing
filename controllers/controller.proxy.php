@@ -47,7 +47,7 @@ class proxyController
 
 		if ((!$this->__vRequest(getenv('HTTP_X_REQUESTED_WITH')))||
 			(!$this->__vCSRF(getenv('HTTP_X_ALT_REFERER'), $_SESSION['csrf']))||
-			(!$this->__vCheckSum(getenv('HTTP_CONTENT_MD5'), $post))){
+			(!$this->__vCheckSum(getenv('HTTP_CONTENT_MD5'), $post))) {
 			return;
 		} else {
 			exit($this->registry->libs->JSONencode(array('Error'=>'Invalid request made')));

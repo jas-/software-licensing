@@ -222,7 +222,7 @@ class keyring
 		}else{
 			$this->keys = $a;
 		}
-		array_push($this->keys, $a);
+		//array_push($this->keys, $a);
 		$_SESSION[$this->registry->libs->_getRealIPv4()] = $this->keys;
 	}
 
@@ -237,7 +237,7 @@ class keyring
 				(!in_array('privateKey', $a))&&
 				(!in_array('publicKey', $a))&&
 				(!in_array('emailAddress', $a))&&
-				(!in_array('password', $a))){
+				(!in_array('password', $a))) {
 			$x=true;
 		}else{
 			$x=false;
