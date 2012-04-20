@@ -117,8 +117,8 @@ class users
      *            user based on access level and group. Also initiates the
      *            users key creation and key ring additions.
      */
-    private function __addUser($details, $grp)
-    {
+	private function __addUser($details, $grp)
+	{
 		if ($this->__valEmpty($details)) {
 			return array('error'=>'Form data missing');
 		}
