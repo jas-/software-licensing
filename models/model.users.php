@@ -142,7 +142,10 @@ class users
 			return array('error'=>'An error occured during database transaction to create user account');
 		}
 
-		// save keyring data
+		if ($this->__doKeys($details, $keys)) {
+			return array('error'=>'An error occured during database transaction to create new keyring entry');
+		}
+
 		// create default permissions on new object
 		// create default permissions on new keyring entry
 	}
@@ -160,8 +163,12 @@ class users
 						   $this->registry->db->sanitize($details['level']),
 						   $this->registry->db->sanitize($details['group']),
 						   $this->registry->db->sanitize($this->registry->libs->_hash($this->registry->opts['dbKey'], $this->registry->libs->_salt($this->registry->opts['dbKey'], 2048))));
+			$this->registry->db->query($sql);
+		} catch(Exception $e) {
+			// error handler
 		}
-	}
+        return true;
+    }
 
     /**
      *! @function __doKeys
@@ -180,8 +187,12 @@ class users
 						   $this->registry->db->sanitize($keys['pri']),
 						   $this->registry->db->sanitize($keys['pub']),
 						   $this->registry->db->sanitize($this->registry->libs->_hash($this->registry->opts['dbKey'], $this->registry->libs->_salt($this->registry->opts['dbKey'], 2048))));
+			$this->registry->db->query($sql);
+		} catch(Exception $e) {
+			// error handler
 		}
-	}
+        return true;
+    }
 
     /**
      *! @function __valEmpty
