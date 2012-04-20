@@ -123,29 +123,29 @@ class users
 		return array('error'=>'Form data missing');
 	}
 
-		if ($this->__valFormat($details)) {
-			return array('error'=>'Form data invalid');
-		}
+if ($this->__valFormat($details)) {
+return array('error'=>'Form data invalid');
+}
 
-		if (!$this->__valPW($details['password'], $details['confirm'])) {
-			return array('error'=>'Passwords did not match');
-		}
+if (!$this->__valPW($details['password'], $details['confirm'])) {
+return array('error'=>'Passwords did not match');
+}
 
-		if (!$this->registry->val->_isComplex($details['password'])) {
-			return array('error'=>'Password does not meet complexity requirements');
-		}
+if (!$this->registry->val->_isComplex($details['password'])) {
+return array('error'=>'Password does not meet complexity requirements');
+}
 
-		$keys['pri'] = $this->registry->keyring->ssl->genPriv($this->registry->libs->_hash($details['password'], $this->registry->libs->_salt($details['password'], 2048)));
-		$keys['pub'] = $this->registry->keyring->ssl->genPub();
+$keys['pri'] = $this->registry->keyring->ssl->genPriv($this->registry->libs->_hash($details['password'], $this->registry->libs->_salt($details['password'], 2048)));
+$keys['pub'] = $this->registry->keyring->ssl->genPub();
 
-		if ($this->__doUser($details)) {
-			return array('error'=>'An error occured during database transaction to create user account');
-		}
+if ($this->__doUser($details)) {
+return array('error'=>'An error occured during database transaction to create user account');
+}
 
-		// save keyring data
-		// create default permissions on new object
-		// create default permissions on new keyring entry
-	}
+// save keyring data
+// create default permissions on new object
+// create default permissions on new keyring entry
+}
 
     /**
      *! @function __doUser
