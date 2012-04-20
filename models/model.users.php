@@ -135,14 +135,17 @@ class users
 			return array('error'=>'Password does not meet complexity requirements');
 		}
 
-		$keys['pri'] = $this->registry->keyring->ssl->genPriv($this->registry->libs->_hash($details['password'], $this->registry->libs->_salt($details['password'], 2048)));
+		/* because we want a strong password per account salt it */
+		$keys['pwd'] = $this->registry->libs->_hash($details['password'], $this->registry->libs->_salt($details['password'], 2048));
+
+		$keys['pri'] = $this->registry->keyring->ssl->genPriv($keys['pwd']);
 		$keys['pub'] = $this->registry->keyring->ssl->genPub();
 
-		if ($this->__doUser($details)) {
+		if (!$this->__doUser($details, $keys)) {
 			return array('error'=>'An error occured during database transaction to create user account');
 		}
 
-		if ($this->__doKeys($details, $keys)) {
+		if (!$this->__doKeys($details, $keys)) {
 			return array('error'=>'An error occured during database transaction to create new keyring entry');
 		}
 
@@ -154,18 +157,19 @@ class users
      *! @function __doUser
      *  @abstract Helper for formatting and adding the new user
      */
-    private function __doUser($details)
+    private function __doUser($details, $keys)
     {
 		try {
 			$sql = sprintf('CALL Users_AddUpdate("%s", "%s", "%s", "%s", "%s")',
 						   $this->registry->db->sanitize($details['email']),
-						   $this->registry->db->sanitize($details['password']),
+						   $this->registry->db->sanitize($keys['pwd']),
 						   $this->registry->db->sanitize($details['level']),
 						   $this->registry->db->sanitize($details['group']),
 						   $this->registry->db->sanitize($this->registry->libs->_hash($this->registry->opts['dbKey'], $this->registry->libs->_salt($this->registry->opts['dbKey'], 2048))));
-			$this->registry->db->query($sql);
+			echo $sql;
+			//$this->registry->db->query($sql);
 		} catch(Exception $e) {
-			// error handler
+			return false;
 		}
         return true;
     }
@@ -177,19 +181,21 @@ class users
     private function __doKeys($details, $keys)
     {
 		try {
-			$sql = sprintf('CALL Configuration_keys_add("%s", "%s", "%s", "%s", "%s")',
+			$sql = sprintf('CALL Configuration_keys_add("%s", "%s", "%s", "%s", "%s", "%s", "%s", "%s", "%s", "%s")',
 						   $this->registry->db->sanitize($details['countryName']),
 						   $this->registry->db->sanitize($details['stateOrProvinceName']),
 						   $this->registry->db->sanitize($details['localityName']),
-						   $this->registry->db->sanitize($details['organizationName']),
+						   $this->registry->db->sanitize($details['organizationalName']),
 						   $this->registry->db->sanitize($details['organizationalUnitName']),
+						   $this->registry->db->sanitize($details['commonName']),
 						   $this->registry->db->sanitize($details['email']),
 						   $this->registry->db->sanitize($keys['pri']),
 						   $this->registry->db->sanitize($keys['pub']),
 						   $this->registry->db->sanitize($this->registry->libs->_hash($this->registry->opts['dbKey'], $this->registry->libs->_salt($this->registry->opts['dbKey'], 2048))));
-			$this->registry->db->query($sql);
+			echo $sql;
+			//$this->registry->db->query($sql);
 		} catch(Exception $e) {
-			// error handler
+			return false;
 		}
         return true;
     }

@@ -20,7 +20,7 @@ SET foreign_key_checks = 0;
 DROP TABLE IF EXISTS `authentication_groups`;
 CREATE TABLE IF NOT EXISTS `authentication_groups` (
   `id` int(255) NOT NULL AUTO_INCREMENT,
-  `group` varchar(128) NOT NULL,
+  `group` varchar(255) NOT NULL,
   `manager` varchar(128) NOT NULL,
   `description` varchar(255) NOT NULL,
   `owner` varchar(128) NOT NULL,
@@ -59,8 +59,8 @@ CREATE TABLE IF NOT EXISTS `authentication` (
   `id` int(255) NOT NULL AUTO_INCREMENT,
   `resource` varchar(128) NOT NULL,
   `email` varchar(128) NOT NULL,
-  `password` blob NOT NULL,
-  `level` varchar(40) NOT NULL,
+  `password` varchar(128) NOT NULL,
+  `level` varchar(128) NOT NULL,
   `group` varchar(128) NOT NULL,
   `authentication_token` longtext NOT NULL,
   PRIMARY KEY (`id`),
