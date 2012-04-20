@@ -145,6 +145,22 @@ class users
     }
 
     /**
+     *! @function __doUser
+     *  @abstract Helper for formatting and adding the new user
+     */
+    private function __doUser($details)
+    {
+		try {
+			$sql = sprintf('CALL Users_AddUpdate("%s", "%s", "%s", "%s", "%s")',
+						   $this->registry->db->sanitize($details['email']),
+						   $this->registry->db->sanitize($details['password']),
+						   $this->registry->db->sanitize($details['level']),
+						   $this->registry->db->sanitize($details['group']),
+						   $this->registry->db->sanitize($this->registry->libs->_hash($this->registry->opts['dbKey'], $this->registry->libs->_salt($this->registry->opts['dbKey'], 2048))));
+		}
+	}
+
+    /**
      *! @function __valEmpty
      *  @abstract Perform check on empty variables
      */
