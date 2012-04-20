@@ -92,7 +92,7 @@ class users
 
 		$u = $this->__permsUser($auth->__user($_SESSION['token']));
 		$grp = $auth->__group($_SESSION['token']);
-        $g = $this->__permsGroup($grp);
+		$g = $this->__permsGroup($grp);
 
 		if (!empty($d['do'])) {
 			switch($d['do']) {
