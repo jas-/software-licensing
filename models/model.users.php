@@ -119,7 +119,7 @@ class users
      */
     private function __addUser($details, $grp)
     {
-		if ($this->__valEmpty($details)) {
+	if ($this->__valEmpty($details)) {
 			return array('error'=>'Form data missing');
 		}
 
