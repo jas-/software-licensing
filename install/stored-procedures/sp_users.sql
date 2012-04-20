@@ -6,7 +6,10 @@ CREATE DEFINER='licensing'@'localhost' PROCEDURE Users_AddUpdate(IN `email` VARC
  SQL SECURITY INVOKER
  COMMENT 'Add or updates user accounts'
 BEGIN
+ SET foreign_key_checks = 0;
  INSERT INTO `authentication` (`email`, `password`, `level`, `group`) VALUES (HEX(AES_ENCRYPT(email, SHA1(sKey))), HEX(AES_ENCRYPT(password, SHA1(sKey))), HEX(AES_ENCRYPT(lvl, SHA1(sKey))), HEX(AES_ENCRYPT(grp, SHA1(sKey)))) ON DUPLICATE KEY UPDATE `email`=HEX(AES_ENCRYPT(email, SHA1(sKey))), `password`=HEX(AES_ENCRYPT(password, SHA1(sKey))), `level`=HEX(AES_ENCRYPT(lvl, SHA1(sKey))), `group`=HEX(AES_ENCRYPT(grp, SHA1(sKey)));
+ SET foreign_key_checks = 1;
+ SELECT ROW_COUNT() AS affected;
 END//
 
 DROP PROCEDURE IF EXISTS Users_verify//
