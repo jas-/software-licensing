@@ -84,7 +84,7 @@ class users
 	 */
 	public function __do($obj)
 	{
-        $x = false;
+		$x = false;
 
 		$d = $this->__decrypt($obj);
 
@@ -97,17 +97,17 @@ class users
 		if (!empty($d['do'])) {
 			switch($d['do']) {
 				case 'add':
-                    $x = $this->registry->libs->JSONEncode($this->__addUser($d, $g));
+					$x = $this->registry->libs->JSONEncode($this->__addUser($d, $g));
 					break;
 				case 'edit':
 					break;
 				case 'del':
 					break;
 				default:
-					break;
+				break;
 			}
 		}
-        return $x;
+		return $x;
 	}
 
     /**
@@ -123,15 +123,15 @@ class users
             return array('error'=>'Form data missing');
         }
 
-        if ($this->__valFormat($details)) {
+		if ($this->__valFormat($details)) {
             return array('error'=>'Form data invalid');
         }
 
-   		if (!$this->__valPW($details['password'], $details['confirm'])) {
+		if (!$this->__valPW($details['password'], $details['confirm'])) {
             return array('error'=>'Passwords did not match');
         }
 
-        if (!$this->registry->val->_isComplex($details['password'])) {
+		if (!$this->registry->val->_isComplex($details['password'])) {
             return array('error'=>'Password does not meet complexity requirements');
         }
 
