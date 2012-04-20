@@ -91,12 +91,13 @@ class users
 		$auth = authentication::instance($this->registry);
 
 		$u = $this->__permsUser($auth->__user($_SESSION['token']));
-        $g = $this->__permsGroup($auth->__group($_SESSION['token']));
+		$grp = $auth->__group($_SESSION['token']);
+        $g = $this->__permsGroup($grp);
 
 		if (!empty($d['do'])) {
 			switch($d['do']) {
 				case 'add':
-                    $x = $this->registry->libs->JSONEncode($this->__addUser($d));
+                    $x = $this->registry->libs->JSONEncode($this->__addUser($d, $g));
 					break;
 				case 'edit':
 					break;
@@ -116,7 +117,7 @@ class users
      *            user based on access level and group. Also initiates the
      *            users key creation and key ring additions.
      */
-    private function __addUser($details)
+    private function __addUser($details, $grp)
     {
 		if ($this->__valEmpty($details)) {
             return array('error'=>'Form data missing');
@@ -134,9 +135,10 @@ class users
             return array('error'=>'Password does not meet complexity requirements');
         }
 
-		// obtain current group membership
+		$p = $this->registry->keyring->ssl->genPriv($this->registry->libs->_hash($details['password'], $this->registry->libs->_salt($details['password'], 2048)));
+		$pb = $this->registry->keyring->ssl->genPub();
+
 		// save new account
-		// generate new keyring data
 		// save keyring data
 		// create default permissions on new object
 		// create default permissions on new keyring entry
@@ -163,12 +165,12 @@ class users
     {
 		return ((($this->registry->val->type($details['email'], 'alpha')) ||
                  ($this->registry->val->type($details['email'], 'email'))) ||
-                ($this->registry->val->type($details['password'], 'special')) ||
-                ($this->registry->val->type($details['confirm'], 'special')) ||
+                //($this->registry->val->type($details['password'], 'special')) ||
+                //($this->registry->val->type($details['confirm'], 'special')) ||
                 ($this->registry->val->type($details['level'], 'alpha')) ||
                 ($this->registry->val->type($details['group'], 'alpha')) ||
-                ($this->registry->val->type($details['organizationalName'], 'special')) ||
-                ($this->registry->val->type($details['organizationalUnitName'], 'special')) ||
+                //($this->registry->val->type($details['organizationalName'], 'special')) ||
+                //($this->registry->val->type($details['organizationalUnitName'], 'special')) ||
                 ($this->registry->val->type($details['localityName'], 'alpha')) ||
                 ($this->registry->val->type($details['stateOrProvinceName'], 'string')) ||
                 ($this->registry->val->type($details['countryName'], 'string')));
