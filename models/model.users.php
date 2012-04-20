@@ -135,10 +135,13 @@ class users
             return array('error'=>'Password does not meet complexity requirements');
         }
 
-		$p = $this->registry->keyring->ssl->genPriv($this->registry->libs->_hash($details['password'], $this->registry->libs->_salt($details['password'], 2048)));
-		$pb = $this->registry->keyring->ssl->genPub();
+		$keys['pri'] = $this->registry->keyring->ssl->genPriv($this->registry->libs->_hash($details['password'], $this->registry->libs->_salt($details['password'], 2048)));
+		$keys['pub'] = $this->registry->keyring->ssl->genPub();
 
-		// save new account
+		if ($this->__doUser($details)) {
+			return array('error'=>'An error occured during database transaction to create user account');
+		}
+
 		// save keyring data
 		// create default permissions on new object
 		// create default permissions on new keyring entry
@@ -156,6 +159,26 @@ class users
 						   $this->registry->db->sanitize($details['password']),
 						   $this->registry->db->sanitize($details['level']),
 						   $this->registry->db->sanitize($details['group']),
+						   $this->registry->db->sanitize($this->registry->libs->_hash($this->registry->opts['dbKey'], $this->registry->libs->_salt($this->registry->opts['dbKey'], 2048))));
+		}
+	}
+
+    /**
+     *! @function __doKeys
+     *  @abstract Helper for formatting and adding the new keyring entry
+     */
+    private function __doKeys($details, $keys)
+    {
+		try {
+			$sql = sprintf('CALL Configuration_keys_add("%s", "%s", "%s", "%s", "%s")',
+						   $this->registry->db->sanitize($details['countryName']),
+						   $this->registry->db->sanitize($details['stateOrProvinceName']),
+						   $this->registry->db->sanitize($details['localityName']),
+						   $this->registry->db->sanitize($details['organizationName']),
+						   $this->registry->db->sanitize($details['organizationalUnitName']),
+						   $this->registry->db->sanitize($details['email']),
+						   $this->registry->db->sanitize($keys['pri']),
+						   $this->registry->db->sanitize($keys['pub']),
 						   $this->registry->db->sanitize($this->registry->libs->_hash($this->registry->opts['dbKey'], $this->registry->libs->_salt($this->registry->opts['dbKey'], 2048))));
 		}
 	}
