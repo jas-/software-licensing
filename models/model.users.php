@@ -110,13 +110,13 @@ class users
 		return $x;
 	}
 
-    /**
-     *! @function __addUser
-     *  @abstract Creates new user account and assigns default permissions on
-     *            the newly created account for the currently authenticated
-     *            user based on access level and group. Also initiates the
-     *            users key creation and key ring additions.
-     */
+	/**
+	 *! @function __addUser
+	 *  @abstract Creates new user account and assigns default permissions on
+	 *            the newly created account for the currently authenticated
+	 *            user based on access level and group. Also initiates the
+	 *            users key creation and key ring additions.
+	 */
 	private function __addUser($details, $grp)
 	{
 		if ($this->__valEmpty($details)) {
