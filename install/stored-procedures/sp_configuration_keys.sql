@@ -9,7 +9,7 @@ BEGIN
  DECLARE x INT DEFAULT 0;
  SET foreign_key_checks = 0;
 
- SELECT COUNT(*) FROM `configuration_openssl_keys` WHERE AES_DECRYPT(BINARY(UNHEX(emailAddress)), SHA1(sKey))=emailAddress;
+ SELECT COUNT(*) AS x FROM `configuration_openssl_keys` WHERE AES_DECRYPT(BINARY(UNHEX(emailAddress)), SHA1(sKey))=emailAddress;
 
  IF x > 0
  THEN
