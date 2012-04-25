@@ -169,6 +169,7 @@ class dbSession
 								$this->dbconn->sanitize(sha1($this->registry->libs->_getRealIPv4())),
 								$this->dbconn->sanitize($x),
 								$this->dbconn->sanitize($this->dbKey));
+				echo $sql;
 				$r = $this->dbconn->query($sql);
 			} catch(Exception $e){
 				// error handling

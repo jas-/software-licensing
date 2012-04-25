@@ -119,6 +119,7 @@ class users
 	 */
 	private function __addUser($details, $grp)
 	{
+        echo $this->registry->libs->_hash($this->registry->opts['dbKey'], $this->registry->libs->_salt($this->registry->opts['dbKey'], 2048));
 		if ($this->__valEmpty($details)) {
 			return array('error'=>'Form data missing');
 		}

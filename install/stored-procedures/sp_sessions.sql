@@ -16,7 +16,15 @@ CREATE DEFINER='licensing'@'localhost' PROCEDURE Session_Add(IN `session_id` VAR
  SQL SECURITY INVOKER
  COMMENT 'Add or update existing session id & data'
 BEGIN
- INSERT INTO `sessions` (`session_id`,`session_data`,`session_expire`,`session_agent`,`session_ip`,`session_referer`) VALUES (session_id, HEX(AES_ENCRYPT(session_data, SHA1(sKey))), session_expire, session_agent, session_ip, session_referer) ON DUPLICATE KEY UPDATE `session_id`=session_id, `session_data`=HEX(AES_ENCRYPT(session_data, SHA1(sKey))), `session_expire`=session_expire;
+ DECLARE x INT DEFAULT 0;
+ DECLARE sdata LONGTEXT DEFAULT '';
+ SELECT COUNT(*) AS x, AES_DECRYPT(BINARY(UNHEX(session_data)), SHA1(sKey)) AS sdata FROM `sessions` WHERE `session_id`=session_id;
+ IF x > 0
+ THEN
+  UPDATE `sessions` SET `session_data`=HEX(AES_ENCRYPT(CONCAT(sdata, session_data), SHA1(sKey))) WHERE `session_id`=session_id LIMIT 1;
+ ELSE
+  INSERT INTO `sessions` (`session_id`,`session_data`,`session_expire`,`session_agent`,`session_ip`,`session_referer`) VALUES (session_id, HEX(AES_ENCRYPT(session_data, SHA1(sKey))), session_expire, session_agent, session_ip, session_referer) ON DUPLICATE KEY UPDATE `session_id`=session_id, `session_data`=HEX(AES_ENCRYPT(session_data, SHA1(sKey))), `session_expire`=session_expire;
+ END IF;
 END//
 
 DROP PROCEDURE IF EXISTS Session_Destroy//

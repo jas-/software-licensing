@@ -36,16 +36,16 @@
    * @abstract Default set of options for plug-in
    */
   var defaults = defaults || {
-   appID:        'jQuery.pidCrypt',
-   storage:      'local',
-   formID:       $(this),
-   type:         'json',
-   aes:          '',
-   keys:         {},
-   use:          '',
-   callback:     function(){},
-   preCallback:  function(){},
-   errCallback:  function(){}
+   appID:        'jQuery.pidCrypt',    // Configurable CSRF token
+   storage:      'local',              // Configurable storage mechanism
+   formID:       $(this),              // Global object for bound DOM object
+   type:         'json',               // Configurable method of communication
+   aes:          '',                   // Global object for AES encryption key
+   keys:         {},                   // Global object for client keyring
+   use:          '',                   // Global object for client public key
+   callback:     function(){},         // Configurable callback method on XMLHttpRequest success
+   preCallback:  function(){},         // Configurable callback prior to XMLHttpRequest
+   errCallback:  function(){}          // Configurable callback on XMLHttpRequest error
   };
 
   /**
@@ -96,16 +96,13 @@
       } else {
        xhr.setRequestHeader('Content-MD5', pidCryptUtil.encodeBase64(pidCrypt.MD5(o.appID)));
       }
-      ((o.preCallback)&&($.isFunction(o.preCallback))) ?
-        o.preCallback(xhr) : false;
+      ((o.preCallback)&&($.isFunction(o.preCallback))) ? o.preCallback(xhr) : false;
      },
      success: function(x, status, xhr){
-      ((o.callback)&&($.isFunction(o.callback))) ?
-        o.callback.call(x) : console.log(x);
+      ((o.callback)&&($.isFunction(o.callback))) ? o.callback.call(x) : console.log(x);
      },
      error: function(xhr, status, error){
-      ((o.errCallback)&&($.isFunction(o.errCallback))) ?
-        o.errCallback.call(xhr, status, error) : false;
+      ((o.errCallback)&&($.isFunction(o.errCallback))) ? o.errCallback.call(xhr, status, error) : false;
      }
     });
    },
@@ -131,6 +128,9 @@
     */
    __gF: function(o){
     var obj={};
+    if (!_validation.__vStr(o.use)) {
+     o = _main.__setup(o, defaults);
+    }
     $.each($('#'+o.formID.attr('id')+' :input, input:radio:selected, input:checkbox:checked, textarea'), function(k, v){
      if ((_validation.__vStr(v.value))&&(_validation.__vStr(v.name))){
       obj[v.name] = (parseInt(v.value.length)>80) ? _strings.__sSplt(v.value) : v.value;
@@ -193,8 +193,7 @@
     *           as JSON object
     */
    __existing: function(o){
-    return (_storage.__gI(o.storage, _keys.__id())) ?
-      JSON.parse(_storage.__gI(o.storage, _keys.__id())) : false;
+    return (_storage.__gI(o.storage, _keys.__id())) ? JSON.parse(_storage.__gI(o.storage, _keys.__id())) : false;
    },
 
    /**
@@ -203,11 +202,7 @@
     *           configuration options with a hostname or url
     */
    __id: function(){
-    return (_validation.__vStr(location.host)) ?
-     location.host :
-      (_validation.__vStr(location.hostname)) ?
-       location.hostname :
-        'localhost';
+    return (_validation.__vStr(location.host)) ? location.host : (_validation.__vStr(location.hostname)) ? location.hostname : 'localhost';
    },
 
    /**
@@ -226,8 +221,7 @@
       uuid[i] = chars[(i == 19) ? (r & 0x3) | 0x8 : r & 0xf];
      }
     }
-    return (len!==null) ? uuid.join('').replace(/-/g, '').split('',len).join('') :
-                          uuid.join('');
+    return (len!==null) ? uuid.join('').replace(/-/g, '').split('',len).join('') : uuid.join('');
    },
 
    /**
@@ -235,9 +229,7 @@
     * @abstract Generate IV from string
     */
    __strIV: function(s){
-    return (s) ?
-     encodeURI(s.replace(/-/gi, '').substring(16,Math.ceil(16*s.length)%s.length)) :
-     false;
+    return (s) ? encodeURI(s.replace(/-/gi, '').substring(16,Math.ceil(16*s.length)%s.length)) : false;
    }
   }
 
@@ -584,8 +576,7 @@
     * @abstract Function used combine string checking functions
     */
    __vStr: function(x){
-    return ((x===false)||(x.length===0)||(!x)||(x===null)||
-            (x==='')||(typeof x==='undefined')) ? false : true;
+    return ((x===false)||(x.length===0)||(!x)||(x===null)||(x==='')||(typeof x==='undefined')) ? false : true;
    },
 
    /**

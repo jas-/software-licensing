@@ -42,7 +42,7 @@
   <h2>Manage accounts</h2>
   <p></p>
   <div id="message"></div>
-  <form id="users" name="userManagement" method="post" action="?nxs=proxy/users">
+  <form id="users" name="users" method="post" action="?nxs=proxy/users">
    <label for="email">Username: </label>
     <input type="text" id="email" name="email" value="" placeholder="johndoe@example.com" required="required" /><span class="required">*</span><br />
    <label for="password">Password: </label>
