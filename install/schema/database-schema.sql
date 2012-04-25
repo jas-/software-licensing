@@ -3,9 +3,9 @@ DROP DATABASE IF EXISTS `licensing`;
 CREATE DATABASE `licensing`;
 
 -- Create a default user and assign limited permissions
--- CREATE USER "licensing"@"localhost" IDENTIFIED BY "d3v3l0pm3n+";
--- GRANT SELECT, INSERT, UPDATE, DELETE, REFERENCES, INDEX, CREATE TEMPORARY TABLES, LOCK TABLES, EXECUTE ON `licensing`.* TO "licensing"@"localhost";
--- FLUSH PRIVILEGES;
+CREATE USER "licensing"@"localhost" IDENTIFIED BY "d3v3l0pm3n+";
+GRANT SELECT, INSERT, UPDATE, DELETE, REFERENCES, INDEX, CREATE TEMPORARY TABLES, LOCK TABLES, EXECUTE ON `licensing`.* TO "licensing"@"localhost";
+FLUSH PRIVILEGES;
 
 -- Switch to newly created db context
 USE `licensing`;
