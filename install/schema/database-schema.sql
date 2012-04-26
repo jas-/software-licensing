@@ -195,11 +195,11 @@ DROP TABLE IF EXISTS `sessions`;
 CREATE TABLE IF NOT EXISTS `sessions` (
   `id` int(255) NOT NULL AUTO_INCREMENT,
   `session_id` varchar(64) NOT NULL,
-  `session_data` longtext NOT NULL,
+  `session_data` longtext,
   `session_expire` int(10) NOT NULL,
-  `session_agent` varchar(64) NOT NULL,
-  `session_ip` varchar(64) NOT NULL,
-  `session_referer` varchar(64) NOT NULL,
+  `session_agent` longtext NOT NULL,
+  `session_ip` longtext NOT NULL,
+  `session_referer` longtext NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `session_id` (`session_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci AUTO_INCREMENT=0;
