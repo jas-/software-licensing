@@ -147,7 +147,7 @@ class users
 		}
 
 		$k = $this->__doKeys($details, $keys);
-		echo '<pre>'; print_r($k); echo '</pre>';
+		echo '<pre>'; print_r(var_dump($k)); echo '</pre>';
 		if ($k <= 0) {
 			return array('error'=>'An error occured during database transaction to create new keyring entry');
 		}
@@ -194,7 +194,8 @@ class users
 						   $this->registry->db->sanitize($keys['pri']),
 						   $this->registry->db->sanitize($keys['pub']),
 						   $this->registry->db->sanitize($this->registry->libs->_hash($this->registry->opts['dbKey'], $this->registry->libs->_salt($this->registry->opts['dbKey'], 2048))));
-			$r = $this->registry->db->query($sql);
+			echo $sql;
+            //$r = $this->registry->db->query($sql);
 		} catch(Exception $e) {
 			return false;
 		}
