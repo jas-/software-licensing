@@ -167,7 +167,7 @@ class keyring
 	 *            keys and attributes for future communications
 	 */
 	private function __keyring($email=false)
-	{ unset($_SESSION);
+	{
 		$r = true;
 		try{
 			if (!$this->__chkKeys($_SESSION[$this->registry->libs->_getRealIPv4()])){
@@ -306,7 +306,6 @@ class keyring
 					$this->registry->db->sanitize($this->registry->libs->_hash($this->registry->opts['dbKey'],
 							$this->registry->libs->_salt($this->registry->opts['dbKey'],
 								2048))));
-			echo $sql;
 		} catch(Exception $e){
 			// error handling
 		}

@@ -158,8 +158,13 @@ class dbSession
 	 */
 	public function write($id, $data)
 	{
-		// add call to read() function and add/overwrite new data to existing
 		if ((isset($id))&&(isset($data))){
+
+			$e = $this->read($id);
+			if ((count($e)>0) && (!empty($e['session_data']))) {
+				$data = $this->sanitizeout($e['session_data']).$data;
+			}
+
 			$x = (isset($_SERVER['HTTP_REFERER'])) ? $_SERVER['HTTP_REFERER'] : $this->_path();
 			try{
 				$sql = sprintf('CALL Session_Add("%s", "%s", "%d", "%s", "%s", "%s", "%s")',
@@ -169,7 +174,6 @@ class dbSession
 								$this->dbconn->sanitize(sha1($this->registry->libs->_getRealIPv4())),
 								$this->dbconn->sanitize($x),
 								$this->dbconn->sanitize($this->dbKey));
-				echo $sql;
 				$r = $this->dbconn->query($sql);
 			} catch(Exception $e){
 				// error handling
