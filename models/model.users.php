@@ -194,8 +194,7 @@ class users
 						   $this->registry->db->sanitize($keys['pri']),
 						   $this->registry->db->sanitize($keys['pub']),
 						   $this->registry->db->sanitize($this->registry->libs->_hash($this->registry->opts['dbKey'], $this->registry->libs->_salt($this->registry->opts['dbKey'], 2048))));
-			echo $sql;
-            //$r = $this->registry->db->query($sql);
+            $r = $this->registry->db->query($sql);
 		} catch(Exception $e) {
 			return false;
 		}
