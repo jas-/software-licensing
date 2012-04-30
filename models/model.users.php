@@ -146,13 +146,22 @@ class users
 			return array('error'=>'An error occured during database transaction to create user account');
 		}
 
+		$up = $this->__doPerms($details['email'], 1, 1, 1, 1);
+        if ($up <= 0) {
+            return array('error'=>'An error occured while creating new permissions on user object');
+        }
+
 		$k = $this->__doKeys($details, $keys);
 		if ($k <= 0) {
 			return array('error'=>'An error occured during database transaction to create new keyring entry');
 		}
 
-		// create default permissions on new object
-		// create default permissions on new keyring entry
+		$kp = $this->__doPerms($details['email'], 1, 1, 1, 1);
+         if ($kp <= 0) {
+            return array('error'=>'An error occured while creating new permissions on users keyring entry');
+        }
+
+        return array('success'=>'New account created successfully');
 	}
 
     /**
@@ -197,6 +206,34 @@ class users
 		} catch(Exception $e) {
 			return false;
 		}
+        return ($r>0) ? true : false;
+    }
+
+    /**
+     *! @function __doPerms
+     *  @abstract Helper for adding new permissions
+     */
+    private function __doPerms($name, $gw, $gr, $uw, $ur)
+    {
+        $auth = authentication::instance($this->registry);
+        $user['name'] = $auth->__user($_SESSION['token']);
+        $user['group'] = $auth->__group($_SESSION['token']);
+        unset($auth);
+        try {
+            $sql = sprintf("CALL Perms_AddUpdate(%s", "%s", "%s", "%d", "%d", "%s", "%d", "%d", "%s)",
+                           $this->registry->db->sanitize($name),
+                           $this->registry->db->sanitize($user['name']),
+                           $this->registry->db->sanitize($user['group']),
+                           $this->registry->db->sanitize($gw),
+                           $this->registry->db->sanitize($gr),
+                           $this->registry->db->sanitize($user['name']),
+                           $this->registry->db->sanitize($uw),
+                           $this->registry->db->sanitize($ur),
+                           $this->registry->db->sanitize($this->registry->libs->_hash($this->registry->opts['dbKey'], $this->registry->libs->_salt($this->registry->opts['dbKey'], 2048))));
+            $r = $this->registry->db->query($sql);
+        } catch(Exception $e) {
+            return false;
+        }
         return ($r>0) ? true : false;
     }
 
