@@ -136,7 +136,7 @@ class users
 		}
 
 		/* because we want a strong password per account salt it */
-		$keys['pwd'] = $this->registry->libs->_hash($details['password'], $this->registry->libs->_salt($details['password'], 2048));
+		$keys['pwd'] = $this->registry->libs->_hash($details['password'], $this->registry->libs->_salt($this->registry->opts['dbKey'], 2048));
 
 		$keys['pri'] = $this->registry->keyring->ssl->genPriv($keys['pwd']);
 		$keys['pub'] = $this->registry->keyring->ssl->genPub();
@@ -192,7 +192,7 @@ class users
 						   $this->registry->db->sanitize($details['email']),
 						   $this->registry->db->sanitize($keys['pri']),
 						   $this->registry->db->sanitize($keys['pub']),
-						   $this->registry->db->sanitize($this->registry->libs->_hash($this->registry->opts['dbKey'], $this->registry->libs->_salt($this->registry->opts['dbKey'], 2048))));
+						   $this->registry->db->sanitize($keys['pwd']));
 			$r = $this->registry->db->query($sql);
 		} catch(Exception $e) {
 			return false;
