@@ -135,7 +135,7 @@ class users
 			return array('error'=>'Password does not meet complexity requirements');
 		}
 
-		/* because we want a strong password per account salt it */
+		/* because we want a strong password per account blowfish hash & salt it with site wide key */
 		$keys['pwd'] = $this->registry->libs->_hash($details['password'], $this->registry->libs->_salt($this->registry->opts['dbKey'], 2048));
 
 		$keys['pri'] = $this->registry->keyring->ssl->genPriv($keys['pwd']);
