@@ -61,6 +61,3 @@ BEGIN
 END//
 
 DELIMITER ;
-
---  SELECT AES_DECRYPT(BINARY(UNHEX(session_data)), SHA1(sKey)) AS sdata FROM `sessions` WHERE `session_id`=session_id;
---  INSERT INTO `sessions` (`session_id`,`session_data`,`session_expire`,`session_agent`,`session_ip`,`session_referer`) VALUES (session_id, HEX(AES_ENCRYPT(session_data, SHA1(sKey))), session_expire, session_agent, session_ip, session_referer) ON DUPLICATE KEY UPDATE `session_id`=session_id, `session_data`=HEX(AES_ENCRYPT(CONCAT((AES_DECRYPT(BINARY(UNHEX(session_data)), SHA1(sKey))), session_data), SHA1(sKey))), `session_expire`=session_expire;
