@@ -178,7 +178,6 @@ class users
 						   $this->registry->db->sanitize($details['group']),
                            $this->registry->db->sanitize($keys['pwd']));
 						   //$this->registry->db->sanitize($this->registry->libs->_hash($this->registry->opts['dbKey'], $this->registry->libs->_salt($this->registry->opts['dbKey'], 2048))));
-            echo $sql;
             $r = $this->registry->db->query($sql);
 		} catch(Exception $e) {
 			return false;
@@ -204,7 +203,6 @@ class users
 						   $this->registry->db->sanitize($keys['pri']),
 						   $this->registry->db->sanitize($keys['pub']),
 						   $this->registry->db->sanitize($keys['pwd']));
-            echo $sql;
             $r = $this->registry->db->query($sql);
 		} catch(Exception $e) {
 			return false;
@@ -237,7 +235,6 @@ class users
                            $this->registry->db->sanitize($uw),
                            $this->registry->db->sanitize($ur),
                            $this->registry->db->sanitize($this->registry->libs->_hash($this->registry->opts['dbKey'], $this->registry->libs->_salt($this->registry->opts['dbKey'], 2048))));
-            echo $sql;
             $r = $this->registry->db->query($sql);
         } catch(Exception $e) {
             return false;
