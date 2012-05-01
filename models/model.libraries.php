@@ -29,6 +29,7 @@ class libraries {
 	{
 		return;
 	}
+
 	public static function init()
 	{
 		if (!isset(self::$instance)) {
@@ -76,7 +77,8 @@ class libraries {
 	 * @function _uuid
 	 * @abstract Generates a random GUID
 	 */
-	function uuid() {
+	function uuid()
+	{
 		return sprintf('%04x%04x-%04x-%04x-%04x-%04x%04x%04x', mt_rand(0, 0xffff),
 						mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0x0fff) | 0x4000,
 						mt_rand(0, 0x3fff) | 0x8000, mt_rand(0, 0xffff),
@@ -175,7 +177,8 @@ class libraries {
 	 * @param $array Array Nested array of configuration options
 	 * @return object A JSON object
 	 */
-	public function JSONencode($array){
+	public function JSONencode($array)
+	{
 		if (!function_exists('json_encode')) {
 			return self::arr2json($array);
 		} else {
