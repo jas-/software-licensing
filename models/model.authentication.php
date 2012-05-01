@@ -108,6 +108,8 @@ class authentication
 				}
 				$obj['signature'] = $this->registry->keyring->ssl->sign($token, $_SESSION[$this->registry->libs->_getRealIPv4()]['privateKey'], $_SESSION[$this->registry->libs->_getRealIPv4()]['password']);
 				$x = $this->__register($obj);
+
+				$x = ($x) ? array('success'=>'User was successfully authenticated', 'token'=>sha1($_SESSION[$this->registry->libs->_getRealIPv4()]['token']), 'keyring'=>array('email'=>$this->registry->val->__do($obj['email'], 'email'),'key'=>$_SESSION[$this->registry->libs->_getRealIPv4()]['publicKey'])) : array('error'=>'An error occured when associating token with user');
 			}
 		}
 		return $x;
@@ -275,7 +277,7 @@ class authentication
 		} catch(Exception $e) {
 			// error handling
 		}
-		return ($r) ? array('success'=>'User was successfully authenticated') : array('error'=>'An error occured when associating token with user');
+		return ($r) ? true : false;
 	}
 
 	/**
