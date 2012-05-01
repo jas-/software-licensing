@@ -126,10 +126,7 @@ class authentication
 				$this->pass = $this->registry->libs->_hash($creds['password'], $this->registry->libs->_salt($this->registry->opts['dbKey'], 2048));
 
 				try{
-					$sql = sprintf('CALL Auth_CheckUser("%s", "%s", "%s")',
-									$this->registry->db->sanitize($creds['email']),
-									$this->registry->db->sanitize($this->pass),
-									$this->registry->db->sanitize($this->pass));
+					$sql = sprintf('CALL Auth_CheckUser("%s", "%s", "%s")', $this->registry->db->sanitize($creds['email']), $this->registry->db->sanitize($this->pass), $this->registry->db->sanitize($this->pass));
 					$r = $this->registry->db->query($sql);
 					if ($r['x']<=0){
 						$x = false;
@@ -246,7 +243,7 @@ class authentication
 
 			$_SESSION[$this->registry->libs->_getRealIPv4()]['token'] = $token;
 
-			return $token;
+			return sha1($token);
 		}
 	}
 
@@ -258,9 +255,7 @@ class authentication
 	private function __getLevelGroup($email)
 	{
 		try{
-			$sql = sprintf('CALL Auth_GetLevelGroup("%s", "%s")',
-							$this->registry->val->__do($email, 'email'),
-							$this->registry->db->sanitize($this->pass));
+			$sql = sprintf('CALL Auth_GetLevelGroup("%s", "%s")', $this->registry->val->__do($email, 'email'), $this->registry->db->sanitize($this->pass));
 			$r = $this->registry->db->query($sql);
 		} catch(Exception $e){
 			// error handler
@@ -275,10 +270,7 @@ class authentication
 	private function __register($obj)
 	{
 		try {
-			$sql = sprintf('CALL Users_AddUpdateToken("%s", "%s", "%s")',
-							$this->registry->db->sanitize($obj['email']),
-							$this->registry->db->sanitize($obj['signature']),
-							$this->registry->db->sanitize($this->pass));
+			$sql = sprintf('CALL Users_AddUpdateToken("%s", "%s", "%s")', $this->registry->db->sanitize($obj['email']), $this->registry->db->sanitize($obj['signature']), $this->registry->db->sanitize($this->pass));
 			$r = $this->registry->db->query($sql);
 		} catch(Exception $e) {
 			// error handling
