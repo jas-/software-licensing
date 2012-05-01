@@ -22,12 +22,13 @@ BEGIN
 END//
 
 DROP PROCEDURE IF EXISTS Users_AddUpdateToken//
-CREATE DEFINER='licensing'@'localhost' PROCEDURE Users_AddUpdateToken(IN `email` VARCHAR(128), IN `token` LONGTEXT, IN `sKey` LONGTEXT)
+CREATE DEFINER='licensing'@'localhost' PROCEDURE Users_AddUpdateToken(IN `emailAddy` VARCHAR(128), IN `token` LONGTEXT, IN `sKey` LONGTEXT)
  DETERMINISTIC
  SQL SECURITY INVOKER
  COMMENT 'Updates users authentication token'
 BEGIN
- UPDATE `authentication` SET `authentication_token`=HEX(AES_ENCRYPT(token, SHA1(sKey))) WHERE AES_DECRYPT(BINARY(UNHEX(email)), SHA1(sKey))=email LIMIT 1;
+ UPDATE `authentication` SET `authentication_token`=HEX(AES_ENCRYPT(token, SHA1(sKey))) WHERE AES_DECRYPT(BINARY(UNHEX(email)), SHA1(sKey))=emailAddy LIMIT 1;
+ SELECT ROW_COUNT() AS affected;
 END//
 
 DROP PROCEDURE IF EXISTS Users_GetToken//
