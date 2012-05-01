@@ -26,6 +26,8 @@ BEGIN
  ELSE
   INSERT INTO `resources_users` (`resource`, `uuser`, `read`, `write`) VALUES (SHA1(name), HEX(AES_ENCRYPT(usr, SHA1(sKey))), ur, uw);
  END IF;
+
+ SELECT ROW_COUNT() AS affected;
 END//
 
 DROP PROCEDURE IF EXISTS Perms_DelAll//

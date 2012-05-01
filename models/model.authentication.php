@@ -107,13 +107,19 @@ class authentication
 	private function __auth($creds)
 	{
 		if (is_array($creds)){
-			if ((!empty($creds['email']))&&(!empty($creds['password']))){
+			if ((!empty($creds['email']))&&(!empty($creds['password']))) {
+				/* prepare the password supplied */
+				$pass = $this->registry->libs->_hash($creds['password'], $this->registry->libs->_salt($this->registry->opts['dbKey'], 2048));
 				try{
 					$sql = sprintf('CALL Auth_CheckUser("%s", "%s", "%s")',
 									$this->registry->db->sanitize($creds['email']),
-									$this->registry->db->sanitize($creds['password']),
-									$this->registry->db->sanitize($this->registry->libs->_hash($this->registry->opts['dbKey'], $this->registry->libs->_salt($this->registry->opts['dbKey'], 2048))));
+									//$this->registry->db->sanitize($creds['password']),
+									$this->registry->db->sanitize($pass),
+									$this->registry->db->sanitize($pass));
+									//$this->registry->db->sanitize($this->registry->libs->_hash($this->registry->opts['dbKey'], $this->registry->libs->_salt($this->registry->opts['dbKey'], 2048))));
 					$r = $this->registry->db->query($sql);
+					echo $sql;
+					print_r($r);
 					if ($r['x']<=0){
 						$x = false;
 					}else{
@@ -164,7 +170,7 @@ class authentication
 		$obj['signature'] = $this->registry->keyring->ssl->sign($token, $_SESSION[$this->registry->libs->_getRealIPv4()]['privateKey'], $_SESSION[$this->registry->libs->_getRealIPv4()]['password']);
 		$x = $this->__register($obj);
 
-		//return ((empty($x['error']))&&(!empty($x['success']))) ? true : false;
+		return ((empty($x['error']))&&(!empty($x['success']))) ? true : false;
 	}
 
 	/**
