@@ -94,12 +94,14 @@ class authentication
 	{
 		if (!empty($_SESSION[$this->registry->libs->_getRealIPv4()]['token'])){
 			$x = $this->__redo($_SESSION[$this->registry->libs->_getRealIPv4()]['token']);
-		}else{
+		} else {
+
 			$obj = $this->__decrypt($creds);
 			$x = $this->__auth($obj);
+
 			if (is_array($x)){
 				return $x;
-			}else{
+			} else {
 				$token = $this->__genToken($obj);
 				if (!$token) {
 					return array('error'=>'Authenticated token generation failed, cannot continue');
@@ -119,8 +121,10 @@ class authentication
 	{
 		if (is_array($creds)){
 			if ((!empty($creds['email']))&&(!empty($creds['password']))) {
+
 				/* prepare the password supplied */
 				$this->pass = $this->registry->libs->_hash($creds['password'], $this->registry->libs->_salt($this->registry->opts['dbKey'], 2048));
+
 				try{
 					$sql = sprintf('CALL Auth_CheckUser("%s", "%s", "%s")',
 									$this->registry->db->sanitize($creds['email']),
@@ -232,12 +236,12 @@ class authentication
 			}
 
 			$token = printf("%s:%s:%s:%s:%s:%s:%d",
-							$this->registry->keyring->ssl->aesEnc($this->registry->val->__do($obj['email'], 'email'), $this->pass, $this->registry->libs->_hash($this->pass, $this->registry->libs->_salt($this->registry->opts['dbKey'], 2048))),
-							$this->registry->keyring->ssl->aesEnc($this->registry->val->__do($a['level'], 'string'), $this->pass, $this->registry->libs->_hash($this->pass, $this->registry->libs->_salt($this->registry->opts['dbKey'], 2048))),
-							$this->registry->keyring->ssl->aesEnc($this->registry->val->__do($a['grp'], 'string'), $this->pass, $this->registry->libs->_hash($this->pass, $this->registry->libs->_salt($this->registry->opts['dbKey'], 2048))),
-							$this->registry->keyring->ssl->aesEnc($this->registry->val->__do(sha1($this->registry->libs->_getRealIPv4()), 'string'), $this->pass, $this->registry->libs->_hash($this->pass, $this->registry->libs->_salt($this->registry->opts['dbKey'], 2048))),
-							$this->registry->keyring->ssl->aesEnc($this->registry->val->__do(sha1(getenv('HTTP_USER_AGENT')), 'string'), $this->pass, $this->registry->libs->_hash($this->pass, $this->registry->libs->_salt($this->registry->opts['dbKey'], 2048))),
-							$this->registry->keyring->ssl->aesEnc($this->registry->val->__do(getenv('HTTP_REFERER'), 'string'), $this->pass, $this->registry->libs->_hash($this->pass, $this->registry->libs->_salt($this->registry->opts['dbKey'], 2048))),
+							$this->registry->keyring->ssl->aesEnc($this->registry->val->__do($obj['email'], 'email'), $this->pass, $this->registry->libs->_16($this->registry->libs->_hash($this->pass, $this->registry->libs->_salt($this->registry->opts['dbKey'], 2048)))),
+							$this->registry->keyring->ssl->aesEnc($this->registry->val->__do($a['level'], 'string'), $this->pass, $this->registry->libs->_16($this->registry->libs->_hash($this->pass, $this->registry->libs->_salt($this->registry->opts['dbKey'], 2048)))),
+							$this->registry->keyring->ssl->aesEnc($this->registry->val->__do($a['grp'], 'string'), $this->pass, $this->registry->libs->_16($this->registry->libs->_hash($this->pass, $this->registry->libs->_salt($this->registry->opts['dbKey'], 2048)))),
+							$this->registry->keyring->ssl->aesEnc($this->registry->val->__do(sha1($this->registry->libs->_getRealIPv4()), 'string'), $this->pass, $this->registry->libs->_16($this->registry->libs->_hash($this->pass, $this->registry->libs->_salt($this->registry->opts['dbKey'], 2048)))),
+							$this->registry->keyring->ssl->aesEnc($this->registry->val->__do(sha1(getenv('HTTP_USER_AGENT')), 'string'), $this->pass, $this->registry->libs->_16($this->registry->libs->_hash($this->pass, $this->registry->libs->_salt($this->registry->opts['dbKey'], 2048)))),
+							$this->registry->keyring->ssl->aesEnc($this->registry->val->__do(getenv('HTTP_REFERER'), 'string'), $this->pass, $this->registry->libs->_16($this->registry->libs->_hash($this->pass, $this->registry->libs->_salt($this->registry->opts['dbKey'], 2048)))),
 							time());
 
 			$_SESSION[$this->registry->libs->_getRealIPv4()]['token'] = $token;

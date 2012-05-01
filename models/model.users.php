@@ -177,7 +177,6 @@ class users
 						   $this->registry->db->sanitize($details['level']),
 						   $this->registry->db->sanitize($details['group']),
                            $this->registry->db->sanitize($keys['pwd']));
-						   //$this->registry->db->sanitize($this->registry->libs->_hash($this->registry->opts['dbKey'], $this->registry->libs->_salt($this->registry->opts['dbKey'], 2048))));
             $r = $this->registry->db->query($sql);
 		} catch(Exception $e) {
 			return false;
