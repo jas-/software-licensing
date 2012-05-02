@@ -102,19 +102,20 @@ class authentication
 			if (is_array($x)){
 				return $x;
 			} else {
+
+				if ($x) {
+					$k = $this->__reinit($this->__reset($obj['email']));
+					if (is_array($k)) {
+						$keyring = array('email'=>$this->registry->keyring->ssl->aesEnc($this->registry->val->__do($obj['email'], 'email'), $_SESSION[$this->registry->libs->_getRealIPv4()]['csrf']), 'key'=>$this->registry->keyring->ssl->aesEnc($k['publicKey'], $_SESSION[$this->registry->libs->_getRealIPv4()]['csrf']));
+					}
+				}
+
 				$token = $this->__genToken($obj);
 				if (!$token) {
 					return array('error'=>'Authenticated token generation failed, cannot continue');
 				}
 				$obj['signature'] = $this->registry->keyring->ssl->sign($token, $_SESSION[$this->registry->libs->_getRealIPv4()]['privateKey'], $_SESSION[$this->registry->libs->_getRealIPv4()]['password']);
 				$x = $this->__register($obj);
-
-				if ($x) {
-					$k = $this->__reinit($this->__reset($obj['email']));
-					if (is_array($k)) {
-						$keyring = array('email'=>$this->registry->keyring->ssl->aesEnc($this->registry->val->__do($obj['email'], 'email'), $_SESSION[$this->registry->libs->_getRealIPv4()]['csrf']),'key'=>$this->registry->keyring->ssl->aesEnc($_SESSION[$this->registry->libs->_getRealIPv4()]['publicKey'], $_SESSION[$this->registry->libs->_getRealIPv4()]['csrf']));
-					}
-				}
 
 				$x = (($x)&&(is_array($keyring))) ? array('success'=>'User was successfully authenticated', 'token'=>sha1($_SESSION[$this->registry->libs->_getRealIPv4()]['token']), 'keyring'=>$keyring) : array('error'=>'An error occured when associating token with user');
 			}
@@ -146,8 +147,15 @@ class authentication
 	private function __reinit($obj)
 	{
 		if (is_array($obj)) {
+
 			unset($this->registry->keyring->ssl);
 			$this->registry->keyring->ssl = openssl::instance($obj);
+
+		    $_SESSION[$this->registry->libs->_getRealIPv4()]['email'] = $this->email;
+			$_SESSION[$this->registry->libs->_getRealIPv4()]['privateKey'] = $obj['privateKey'];
+			$_SESSION[$this->registry->libs->_getRealIPv4()]['publicKey'] = $obj['publicKey'];
+			$_SESSION[$this->registry->libs->_getRealIPv4()]['password'] = $this->pass;
+
 			return $obj;
 		} else {
 			return false;
