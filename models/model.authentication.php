@@ -108,7 +108,7 @@ class authentication
 				}
 				$obj['signature'] = $this->registry->keyring->ssl->sign($token, $_SESSION[$this->registry->libs->_getRealIPv4()]['privateKey'], $_SESSION[$this->registry->libs->_getRealIPv4()]['password']);
 				$x = $this->__register($obj);
-
+// swith to new user context and push existing public keyring data
 				$x = ($x) ? array('success'=>'User was successfully authenticated', 'token'=>sha1($_SESSION[$this->registry->libs->_getRealIPv4()]['token']), 'keyring'=>array('email'=>$this->registry->keyring->ssl->aesEnc($this->registry->val->__do($obj['email'], 'email'), $_SESSION[$this->registry->libs->_getRealIPv4()]['csrf']),'key'=>$this->registry->keyring->ssl->aesEnc($_SESSION[$this->registry->libs->_getRealIPv4()]['publicKey'], $_SESSION[$this->registry->libs->_getRealIPv4()]['csrf']))) : array('error'=>'An error occured when associating token with user');
 			}
 //		}
@@ -234,7 +234,7 @@ class authentication
 				return false;
 			}
 
-			$token = printf("%s:%s:%s:%s:%s:%s:%d",
+			$token = sprintf("%s:%s:%s:%s:%s:%s:%d",
 							$this->registry->keyring->ssl->aesEnc($this->registry->val->__do($obj['email'], 'email'), $this->pass, $this->registry->libs->_16($this->registry->libs->_hash($this->pass, $this->registry->libs->_salt($this->registry->opts['dbKey'], 2048)))),
 							$this->registry->keyring->ssl->aesEnc($this->registry->val->__do($a['level'], 'string'), $this->pass, $this->registry->libs->_16($this->registry->libs->_hash($this->pass, $this->registry->libs->_salt($this->registry->opts['dbKey'], 2048)))),
 							$this->registry->keyring->ssl->aesEnc($this->registry->val->__do($a['grp'], 'string'), $this->pass, $this->registry->libs->_16($this->registry->libs->_hash($this->pass, $this->registry->libs->_salt($this->registry->opts['dbKey'], 2048)))),
