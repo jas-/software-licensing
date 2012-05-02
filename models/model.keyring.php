@@ -56,24 +56,24 @@ class keyring
 	/**
 	 *! @var config array - OpenSSL configuration settings
 	 */
-	private $config = array('config'              => 'config/openssl.cnf',
-			'encrypt_key'         => true,
-			'private_key_type'    => OPENSSL_KEYTYPE_RSA,
-			'digest_algorithm'    => 'sha512',
-			'private_key_bits'    => 2048,
-			'x509_extensions'     => 'usr_cert',
-			'encrypt_key_cipher'  => OPENSSL_CIPHER_3DES);
+	private $config = array('config'				=> 'config/openssl.cnf',
+							'encrypt_key'			=> true,
+							'private_key_type'		=> OPENSSL_KEYTYPE_RSA,
+							'digest_algorithm'		=> 'sha512',
+							'private_key_bits'		=> 2048,
+							'x509_extensions'		=> 'usr_cert',
+							'encrypt_key_cipher'	=> OPENSSL_CIPHER_3DES);
 
 	/**
 	 *! @var dn array - Contains location specific settings
 	 */
 	private $dn = array('countryName'             => 'US',
-			'stateOrProvinceName'     => 'Utah',
-			'localityName'            => 'Salt Lake City',
-			'organizationName'        => 'University Of Utah',
-			'organizationalUnitName'  => 'Marriott Library',
-			'commonName'              => 'localhost:8080',
-			'emailAddress'            => 'licensing@utah.edu');
+						'stateOrProvinceName'     => 'Utah',
+						'localityName'            => 'Salt Lake City',
+						'organizationName'        => 'University Of Utah',
+						'organizationalUnitName'  => 'Marriott Library',
+						'commonName'              => 'localhost:8080',
+						'emailAddress'            => 'licensing@utah.edu');
 
 	/**
 	 *! @function __construct
@@ -172,23 +172,13 @@ class keyring
 		try{
 			if (!$this->__chkKeys($_SESSION[$this->registry->libs->_getRealIPv4()])){
 				if (!$email){
-					$sql = sprintf('CALL Configuration_def_get("%s")',
-							$this->registry->db->sanitize($this->registry->libs->_hash($this->registry->opts['dbKey'],
-									$this->registry->libs->_salt($this->registry->opts['dbKey'],
-										2048))));
+					$sql = sprintf('CALL Configuration_def_get("%s")', $this->registry->db->sanitize($this->registry->libs->_hash($this->registry->opts['dbKey'], $this->registry->libs->_salt($this->registry->opts['dbKey'], 2048))));
 				} else {
-					$sql = sprintf('CALL Configuration_keys_get("%s, %s")',
-							$this->registry->db->sanitize($email),
-							$this->registry->db->sanitize($this->registry->libs->_hash($this->registry->opts['dbKey'],
-									$this->registry->libs->_salt($this->registry->opts['dbKey'],
-										2048))));
+					$sql = sprintf('CALL Configuration_keys_get("%s, %s")', $this->registry->db->sanitize($email), $this->registry->db->sanitize($this->registry->libs->_hash($this->registry->opts['dbKey'], $this->registry->libs->_salt($this->registry->opts['dbKey'], 2048))));
 				}
 
 				$r = $this->registry->db->query($sql);
-				$r = ((!empty($r['publicKey']))&&(!empty($r['emailAddress']))&&
-						(!empty($r['privateKey']))&&(!empty($r['pword']))) ?
-					array('email'=>$r['emailAddress'],'privateKey'=>$r['privateKey'],
-							'publicKey'=>$r['publicKey'],'password'=>$r['pword']) : false;
+				$r = ((!empty($r['publicKey']))&&(!empty($r['emailAddress']))&&(!empty($r['privateKey']))&&(!empty($r['pword']))) ? array('email'=>$r['emailAddress'],'privateKey'=>$r['privateKey'], 'publicKey'=>$r['publicKey'],'password'=>$r['pword']) : false;
 
 				if ($r){
 					$this->__setKeys($r);
@@ -207,8 +197,7 @@ class keyring
 	 */
 	public function __public($a=false)
 	{
-		return array('email'=>$_SESSION[$this->registry->libs->_getRealIPv4()]['email'],
-				'key'=>$_SESSION[$this->registry->libs->_getRealIPv4()]['publicKey']);
+		return array('email'=>$_SESSION[$this->registry->libs->_getRealIPv4()]['email'], 'key'=>$_SESSION[$this->registry->libs->_getRealIPv4()]['publicKey']);
 	}
 
 	/**
@@ -232,12 +221,7 @@ class keyring
 	 */
 	private function __chkKeys($a)
 	{
-		if ((is_array($a))&&
-				(count($a)>=1)&&
-				(!in_array('privateKey', $a))&&
-				(!in_array('publicKey', $a))&&
-				(!in_array('emailAddress', $a))&&
-				(!in_array('password', $a))) {
+		if ((is_array($a))&&(count($a)>=1)&&(!in_array('privateKey', $a))&&(!in_array('publicKey', $a))&&(!in_array('emailAddress', $a))&&(!in_array('password', $a))) {
 			$x=true;
 		}else{
 			$x=false;
@@ -285,27 +269,23 @@ class keyring
 		$privateKey = $this->ssl->genPriv($this->registry->opts['dbKey']);
 		$publicKey = $this->ssl->genPub();
 		try{
-			$sql = sprintf('CALL Configuration_def_add("%s", "%s", "%s", "%d", "%s",
-						"%d", "%s", "%s", "%s", "%s",
-						"%s", "%s", "%s", "%s", "%s", "%s")',
-					$this->registry->db->sanitize($this->registry->opts['title']),
-					$this->registry->db->sanitize($this->registry->opts['template']),
-					$this->registry->db->sanitize($this->registry->opts['caching']),
-					$this->registry->db->sanitize($this->config['encrypt_key']),
-					$this->registry->db->sanitize($this->dn['emailAddress']),
-					$this->registry->db->sanitize($this->registry->opts['timeout']),
-					$this->registry->db->sanitize($privateKey),
-					$this->registry->db->sanitize($publicKey),
-					$this->registry->db->sanitize($this->registry->opts['dbKey']),
-					$this->registry->db->sanitize($this->dn['countryName']),
-					$this->registry->db->sanitize($this->dn['stateOrProvinceName']),
-					$this->registry->db->sanitize($this->dn['localityName']),
-					$this->registry->db->sanitize($this->dn['organizationName']),
-					$this->registry->db->sanitize($this->dn['organizationalUnitName']),
-					$this->registry->db->sanitize($this->dn['commonName']),
-					$this->registry->db->sanitize($this->registry->libs->_hash($this->registry->opts['dbKey'],
-							$this->registry->libs->_salt($this->registry->opts['dbKey'],
-								2048))));
+			$sql = sprintf('CALL Configuration_def_add("%s", "%s", "%s", "%d", "%s","%d", "%s", "%s", "%s", "%s","%s", "%s", "%s", "%s", "%s", "%s")',
+							$this->registry->db->sanitize($this->registry->opts['title']),
+							$this->registry->db->sanitize($this->registry->opts['template']),
+							$this->registry->db->sanitize($this->registry->opts['caching']),
+							$this->registry->db->sanitize($this->config['encrypt_key']),
+							$this->registry->db->sanitize($this->dn['emailAddress']),
+							$this->registry->db->sanitize($this->registry->opts['timeout']),
+							$this->registry->db->sanitize($privateKey),
+							$this->registry->db->sanitize($publicKey),
+							$this->registry->db->sanitize($this->registry->opts['dbKey']),
+							$this->registry->db->sanitize($this->dn['countryName']),
+							$this->registry->db->sanitize($this->dn['stateOrProvinceName']),
+							$this->registry->db->sanitize($this->dn['localityName']),
+							$this->registry->db->sanitize($this->dn['organizationName']),
+							$this->registry->db->sanitize($this->dn['organizationalUnitName']),
+							$this->registry->db->sanitize($this->dn['commonName']),
+							$this->registry->db->sanitize($this->registry->libs->_hash($this->registry->opts['dbKey'], $this->registry->libs->_salt($this->registry->opts['dbKey'], 2048))));
 		} catch(Exception $e){
 			// error handling
 		}
