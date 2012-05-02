@@ -105,9 +105,7 @@ class openssl
 	 */
 	public function genRand($int = 2048)
 	{
-		return (function_exists('openssl_random_pseudo_bytes')) ?
-			bin2hex(openssl_random_pseudo_bytes($int)) :
-			bin2hex($this->altRand($int));
+		return (function_exists('openssl_random_pseudo_bytes')) ? bin2hex(openssl_random_pseudo_bytes($int)) : bin2hex($this->altRand($int));
 	}
 
 	/*!
@@ -247,8 +245,7 @@ class openssl
 	 * @param $p mixed Private key or array of private key and password
 	 * @param $o array Array of header information regarding email
 	 */
-	public function verifyx509($fin, $fout, $c=array(), $p=null, $o=null,
-			$f=PKCS7_TEXT)
+	public function verifyx509($fin, $fout, $c=array(), $p=null, $o=null, $f=PKCS7_TEXT)
 	{
 		openssl_pkcs7_verify($fin, $f, $fout, $c, $p, $o);
 		return $fout;
@@ -276,14 +273,10 @@ class openssl
 	 * @param $p string The password originally used to create private key
 	 * @return string The pkcs#12 certificate
 	 */
-	public function createpkcs12($c, $k, $p,
-			$a=array('friendly_name'=>'',
-				'extracerts'=>''), $f=false, $d=false)
+	public function createpkcs12($c, $k, $p, $a=array('friendly_name'=>'', 'extracerts'=>''), $f=false, $d=false)
 	{
 		$key = openssl_pkey_get_private($k, $p);
-		($f===false) ?
-			openssl_pkcs12_export($c, $r, $key, $p, $a) :
-			openssl_pkcs12_export_to_file($c, $r, $key, $p, $a);
+		($f===false) ? openssl_pkcs12_export($c, $r, $key, $p, $a) : openssl_pkcs12_export_to_file($c, $r, $key, $p, $a);
 		return $r;
 	}
 
@@ -329,13 +322,9 @@ class openssl
 	 */
 	public function pubDenc($crypt, $key)
 	{
-		$res = (is_array($key)) ? openssl_get_publickey($key['key']) :
-			openssl_get_publickey($key);
-		($_SERVER["HTTP_X_REQUESTED_WITH"]==='XMLHttpRequest') ?
-			openssl_public_decrypt($this->convertBin($crypt), $this->output, $res) :
-			openssl_public_decrypt($crypt, $this->output, $res);
-		return ($_SERVER["HTTP_X_REQUESTED_WITH"] === 'XMLHttpRequest') ?
-			base64_decode($this->output) : $this->output;
+		$res = (is_array($key)) ? openssl_get_publickey($key['key']) : openssl_get_publickey($key);
+		($_SERVER["HTTP_X_REQUESTED_WITH"]==='XMLHttpRequest') ? openssl_public_decrypt($this->convertBin($crypt), $this->output, $res) : openssl_public_decrypt($crypt, $this->output, $res);
+		return ($_SERVER["HTTP_X_REQUESTED_WITH"] === 'XMLHttpRequest') ? base64_decode($this->output) : $this->output;
 	}
 
 	/*!
@@ -349,17 +338,13 @@ class openssl
 	 */
 	public function privDenc($crypt, $key, $pass)
 	{
-		$res = (is_array($key)) ? openssl_get_privatekey($key['key'], $pass) :
-			openssl_get_privatekey($key, $pass);
+		$res = (is_array($key)) ? openssl_get_privatekey($key['key'], $pass) : openssl_get_privatekey($key, $pass);
 		if (is_resource($res)){
-			($_SERVER["HTTP_X_REQUESTED_WITH"] === 'XMLHttpRequest') ?
-				openssl_private_decrypt($this->convertBin($crypt), $this->output, $res) :
-				openssl_private_decrypt($crypt, $this->output, $res);
+			($_SERVER["HTTP_X_REQUESTED_WITH"] === 'XMLHttpRequest') ? openssl_private_decrypt($this->convertBin($crypt), $this->output, $res) : openssl_private_decrypt($crypt, $this->output, $res);
 		} else {
 			return false;
 		}
-		return ($_SERVER["HTTP_X_REQUESTED_WITH"] === 'XMLHttpRequest') ?
-			base64_decode($this->output) : $this->output;
+		return ($_SERVER["HTTP_X_REQUESTED_WITH"] === 'XMLHttpRequest') ? base64_decode($this->output) : $this->output;
 	}
 
 	/*!

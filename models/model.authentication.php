@@ -36,6 +36,14 @@ class authentication
 	private $registry;
 
 	/**
+	 * @var users hash
+	 * @abstract Place holder for the users hash. Because of the segragation
+	 *           of user account encryption vs. application specific encryption
+	 *           keys this needs to be available for token generation purposes
+	 */
+	private $pass;
+
+	/**
 	 *! @var instance object - class singleton object
 	 */
 	protected static $instance;
@@ -86,15 +94,22 @@ class authentication
 	{
 		if (!empty($_SESSION[$this->registry->libs->_getRealIPv4()]['token'])){
 			$x = $this->__redo($_SESSION[$this->registry->libs->_getRealIPv4()]['token']);
-		}else{
+		} else {
+
 			$obj = $this->__decrypt($creds);
 			$x = $this->__auth($obj);
+
 			if (is_array($x)){
 				return $x;
-			}else{
+			} else {
 				$token = $this->__genToken($obj);
+				if (!$token) {
+					return array('error'=>'Authenticated token generation failed, cannot continue');
+				}
 				$obj['signature'] = $this->registry->keyring->ssl->sign($token, $_SESSION[$this->registry->libs->_getRealIPv4()]['privateKey'], $_SESSION[$this->registry->libs->_getRealIPv4()]['password']);
 				$x = $this->__register($obj);
+
+				$x = ($x) ? array('success'=>'User was successfully authenticated', 'token'=>sha1($_SESSION[$this->registry->libs->_getRealIPv4()]['token']), 'keyring'=>array('email'=>$this->registry->val->__do($obj['email'], 'email'),'key'=>$_SESSION[$this->registry->libs->_getRealIPv4()]['publicKey'])) : array('error'=>'An error occured when associating token with user');
 			}
 		}
 		return $x;
@@ -107,12 +122,13 @@ class authentication
 	private function __auth($creds)
 	{
 		if (is_array($creds)){
-			if ((!empty($creds['email']))&&(!empty($creds['password']))){
+			if ((!empty($creds['email']))&&(!empty($creds['password']))) {
+
+				/* prepare the password supplied */
+				$this->pass = $this->registry->libs->_hash($creds['password'], $this->registry->libs->_salt($this->registry->opts['dbKey'], 2048));
+
 				try{
-					$sql = sprintf('CALL Auth_CheckUser("%s", "%s", "%s")',
-									$this->registry->db->sanitize($creds['email']),
-									$this->registry->db->sanitize($creds['password']),
-									$this->registry->db->sanitize($this->registry->libs->_hash($this->registry->opts['dbKey'], $this->registry->libs->_salt($this->registry->opts['dbKey'], 2048))));
+					$sql = sprintf('CALL Auth_CheckUser("%s", "%s", "%s")', $this->registry->db->sanitize($creds['email']), $this->registry->db->sanitize($this->pass), $this->registry->db->sanitize($this->pass));
 					$r = $this->registry->db->query($sql);
 					if ($r['x']<=0){
 						$x = false;
@@ -164,7 +180,7 @@ class authentication
 		$obj['signature'] = $this->registry->keyring->ssl->sign($token, $_SESSION[$this->registry->libs->_getRealIPv4()]['privateKey'], $_SESSION[$this->registry->libs->_getRealIPv4()]['password']);
 		$x = $this->__register($obj);
 
-		//return ((empty($x['error']))&&(!empty($x['success']))) ? true : false;
+		return ((empty($x['error']))&&(!empty($x['success']))) ? true : false;
 	}
 
 	/**
@@ -213,19 +229,23 @@ class authentication
 	private function __genToken($obj)
 	{
 		if (count($obj)>=2){
+
 			if (($a = $this->__getLevelGroup($obj['email']))===false){
-				return array('error'=>'Authenticated token generation failed, cannot continue');
+				return false;
 			}
-			$token = sprintf("%s:", "%s:", "%s:", "%s:", "%s:", "%s:", "%d",
-								$this->registry->val->__do($obj['email'], 'email'),
-								$this->registry->val->__do($a['level'], 'string'),
-								$this->registry->val->__do($a['group'], 'string'),
-								$this->registry->val->__do(sha1($this->registry->libs->_getRealIPv4()), 'string'),
-								$this->registry->val->__do(sha1(getenv('HTTP_USER_AGENT')), 'string'),
-								$this->registry->val->__do(getenv('HTTP_REFERER'), 'string'),
-								time());
+
+			$token = printf("%s:%s:%s:%s:%s:%s:%d",
+							$this->registry->keyring->ssl->aesEnc($this->registry->val->__do($obj['email'], 'email'), $this->pass, $this->registry->libs->_16($this->registry->libs->_hash($this->pass, $this->registry->libs->_salt($this->registry->opts['dbKey'], 2048)))),
+							$this->registry->keyring->ssl->aesEnc($this->registry->val->__do($a['level'], 'string'), $this->pass, $this->registry->libs->_16($this->registry->libs->_hash($this->pass, $this->registry->libs->_salt($this->registry->opts['dbKey'], 2048)))),
+							$this->registry->keyring->ssl->aesEnc($this->registry->val->__do($a['grp'], 'string'), $this->pass, $this->registry->libs->_16($this->registry->libs->_hash($this->pass, $this->registry->libs->_salt($this->registry->opts['dbKey'], 2048)))),
+							$this->registry->keyring->ssl->aesEnc($this->registry->val->__do(sha1($this->registry->libs->_getRealIPv4()), 'string'), $this->pass, $this->registry->libs->_16($this->registry->libs->_hash($this->pass, $this->registry->libs->_salt($this->registry->opts['dbKey'], 2048)))),
+							$this->registry->keyring->ssl->aesEnc($this->registry->val->__do(sha1(getenv('HTTP_USER_AGENT')), 'string'), $this->pass, $this->registry->libs->_16($this->registry->libs->_hash($this->pass, $this->registry->libs->_salt($this->registry->opts['dbKey'], 2048)))),
+							$this->registry->keyring->ssl->aesEnc($this->registry->val->__do(getenv('HTTP_REFERER'), 'string'), $this->pass, $this->registry->libs->_16($this->registry->libs->_hash($this->pass, $this->registry->libs->_salt($this->registry->opts['dbKey'], 2048)))),
+							time());
+
 			$_SESSION[$this->registry->libs->_getRealIPv4()]['token'] = $token;
-			return $token;
+
+			return sha1($token);
 		}
 	}
 
@@ -237,13 +257,11 @@ class authentication
 	private function __getLevelGroup($email)
 	{
 		try{
-			$sql = sprintf('CALL Auth_GetLevelGroup("%s", "%s")',
-							$this->registry->val->__do($email, 'email'),
-							$this->registry->db->sanitize($this->registry->libs->_hash($this->registry->opts['dbKey'], $this->registry->libs->_salt($this->registry->opts['dbKey'], 2048))));
+			$sql = sprintf('CALL Auth_GetLevelGroup("%s", "%s")', $this->registry->val->__do($email, 'email'), $this->registry->db->sanitize($this->pass));
+			$r = $this->registry->db->query($sql);
 		} catch(Exception $e){
 			// error handler
 		}
-		$r = $this->registry->db->query($sql);
 		return ($r) ? $r : false;
 	}
 
@@ -254,15 +272,12 @@ class authentication
 	private function __register($obj)
 	{
 		try {
-			$sql = sprintf('CALL Users_AddUpdateToken("%s", "%s", "%s")',
-							$this->registry->db->sanitize($obj['email']),
-							$this->registry->db->sanitize($obj['signature']),
-							$this->registry->db->sanitize($this->registry->libs->_hash($this->registry->opts['dbKey'], $this->registry->libs->_salt($this->registry->opts['dbKey'], 2048))));
+			$sql = sprintf('CALL Users_AddUpdateToken("%s", "%s", "%s")', $this->registry->db->sanitize($obj['email']), $this->registry->db->sanitize($obj['signature']), $this->registry->db->sanitize($this->pass));
 			$r = $this->registry->db->query($sql);
 		} catch(Exception $e) {
 			// error handling
 		}
-		return ($r) ? array('success'=>'User was successfully authenticated') : array('error'=>'An error occured when associating token with user');
+		return ($r) ? true : false;
 	}
 
 	/**
@@ -274,7 +289,7 @@ class authentication
 		$r = false;
 		if (!empty($email)) {
 			try {
-				$sql = sprintf('CALL Users_GetToken("%s", "%s")', $this->registry->db->sanitize($email), $this->registry->db->sanitize($this->registry->libs->_hash($this->registry->opts['dbKey'], $this->registry->libs->_salt($this->registry->opts['dbKey'], 2048))));
+				$sql = sprintf('CALL Users_GetToken("%s", "%s")', $this->registry->db->sanitize($email), $this->pass);
 				$r = $this->registry->db->query($sql);
 			} catch(Exception $e) {
 				// error handler

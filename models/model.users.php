@@ -104,7 +104,7 @@ class users
 				case 'del':
 					break;
 				default:
-				break;
+                    break;
 			}
 		}
 		return $x;
@@ -176,8 +176,8 @@ class users
 						   $this->registry->db->sanitize($keys['pwd']),
 						   $this->registry->db->sanitize($details['level']),
 						   $this->registry->db->sanitize($details['group']),
-						   $this->registry->db->sanitize($this->registry->libs->_hash($this->registry->opts['dbKey'], $this->registry->libs->_salt($this->registry->opts['dbKey'], 2048))));
-			$r = $this->registry->db->query($sql);
+                           $this->registry->db->sanitize($keys['pwd']));
+            $r = $this->registry->db->query($sql);
 		} catch(Exception $e) {
 			return false;
 		}
@@ -219,8 +219,12 @@ class users
         $user['name'] = $auth->__user($_SESSION['token']);
         $user['group'] = $auth->__group($_SESSION['token']);
         unset($auth);
+
+        $user['name'] = (empty($user['name'])) ? 'admin' : $user['name'];
+        $user['group'] = (empty($user['group'])) ? 'admin' : $user['group'];
+
         try {
-            $sql = sprintf("CALL Perms_AddUpdate(%s", "%s", "%s", "%d", "%d", "%s", "%d", "%d", "%s)",
+            $sql = sprintf('CALL Perms_AddUpdate("%s", "%s", "%s", "%d", "%d", "%s", "%d", "%d", "%s")',
                            $this->registry->db->sanitize($name),
                            $this->registry->db->sanitize($user['name']),
                            $this->registry->db->sanitize($user['group']),
