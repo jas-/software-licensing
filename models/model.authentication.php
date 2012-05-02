@@ -92,9 +92,9 @@ class authentication
 	 */
 	public function __do($creds)
 	{
-//		if (!empty($_SESSION[$this->registry->libs->_getRealIPv4()]['token'])){
-//			$x = $this->__redo($_SESSION[$this->registry->libs->_getRealIPv4()]['token']);
-//		} else {
+		if (!empty($_SESSION[$this->registry->libs->_getRealIPv4()]['token'])){
+			$x = $this->__redo($_SESSION[$this->registry->libs->_getRealIPv4()]['token']);
+		} else {
 
 			$obj = $this->__decrypt($creds);
 			$x = $this->__auth($obj);
@@ -119,7 +119,7 @@ class authentication
 
 				$x = (($x)&&(is_array($keyring))) ? array('success'=>'User was successfully authenticated', 'token'=>sha1($_SESSION[$this->registry->libs->_getRealIPv4()]['token']), 'keyring'=>$keyring) : array('error'=>'An error occured when associating token with user');
 			}
-//		}
+		}
 		return $x;
 	}
 
