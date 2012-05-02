@@ -92,9 +92,9 @@ class authentication
 	 */
 	public function __do($creds)
 	{
-		if (!empty($_SESSION[$this->registry->libs->_getRealIPv4()]['token'])){
-			$x = $this->__redo($_SESSION[$this->registry->libs->_getRealIPv4()]['token']);
-		} else {
+//		if (!empty($_SESSION[$this->registry->libs->_getRealIPv4()]['token'])){
+//			$x = $this->__redo($_SESSION[$this->registry->libs->_getRealIPv4()]['token']);
+//		} else {
 
 			$obj = $this->__decrypt($creds);
 			$x = $this->__auth($obj);
@@ -109,9 +109,9 @@ class authentication
 				$obj['signature'] = $this->registry->keyring->ssl->sign($token, $_SESSION[$this->registry->libs->_getRealIPv4()]['privateKey'], $_SESSION[$this->registry->libs->_getRealIPv4()]['password']);
 				$x = $this->__register($obj);
 
-				$x = ($x) ? array('success'=>'User was successfully authenticated', 'token'=>sha1($_SESSION[$this->registry->libs->_getRealIPv4()]['token']), 'keyring'=>array('email'=>$this->registry->val->__do($obj['email'], 'email'),'key'=>$_SESSION[$this->registry->libs->_getRealIPv4()]['publicKey'])) : array('error'=>'An error occured when associating token with user');
+				$x = ($x) ? array('success'=>'User was successfully authenticated', 'token'=>sha1($_SESSION[$this->registry->libs->_getRealIPv4()]['token']), 'keyring'=>array('email'=>$this->registry->keyring->ssl->aesEnc($this->registry->val->__do($obj['email'], 'email'), $_SESSION[$this->registry->libs->_getRealIPv4()]['csrf']),'key'=>$this->registry->keyring->ssl->aesEnc($_SESSION[$this->registry->libs->_getRealIPv4()]['publicKey'], $_SESSION[$this->registry->libs->_getRealIPv4()]['csrf']))) : array('error'=>'An error occured when associating token with user');
 			}
-		}
+//		}
 		return $x;
 	}
 
