@@ -108,11 +108,34 @@ class authentication
 				}
 				$obj['signature'] = $this->registry->keyring->ssl->sign($token, $_SESSION[$this->registry->libs->_getRealIPv4()]['privateKey'], $_SESSION[$this->registry->libs->_getRealIPv4()]['password']);
 				$x = $this->__register($obj);
-// swith to new user context and push existing public keyring data
+
+				/*
+				  switch to current user context by destroying application wide openssl registry item
+				  and re-enabling it with data presented from the authenticated user.
+				*/
+				if ($x) {
+					$this->__reset($obj['email']);
+				}
+
 				$x = ($x) ? array('success'=>'User was successfully authenticated', 'token'=>sha1($_SESSION[$this->registry->libs->_getRealIPv4()]['token']), 'keyring'=>array('email'=>$this->registry->keyring->ssl->aesEnc($this->registry->val->__do($obj['email'], 'email'), $_SESSION[$this->registry->libs->_getRealIPv4()]['csrf']),'key'=>$this->registry->keyring->ssl->aesEnc($_SESSION[$this->registry->libs->_getRealIPv4()]['publicKey'], $_SESSION[$this->registry->libs->_getRealIPv4()]['csrf']))) : array('error'=>'An error occured when associating token with user');
 			}
 //		}
 		return $x;
+	}
+
+	/**
+	 *! @function __reset
+	 *  @abstract Looks up recently authenticated users keyring data and registers it within
+	 *            the current users sessions information for further use
+	 */
+	private function __reset($email)
+	{
+		try {
+			$sql = sprintf('CALL Configuration_keys_get("%s", "%s")', $email, $this->pass);
+			echo $sql;
+		} catch(Exception $e) {
+			// error handling
+		}
 	}
 
 	/**

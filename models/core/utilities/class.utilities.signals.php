@@ -41,6 +41,7 @@ class signals
 			exit;
 		}
 	}
+
 	public static function instance($configuration)
 	{
 		if (!isset(self::$instance)) {
@@ -50,7 +51,7 @@ class signals
 		return self::$instance;
 	}
 
-	private function __destruct()
+	public function __destruct()
 	{
 		if (isset($this->handle)) {
 			unset($this->handle);

@@ -18,12 +18,12 @@ BEGIN
 END//
 
 DROP PROCEDURE IF EXISTS Configuration_keys_get//
-CREATE DEFINER='licensing'@'localhost' PROCEDURE Configuration_keys_get(IN `emailAddress` VARCHAR(64), IN `sKey` LONGTEXT)
+CREATE DEFINER='licensing'@'localhost' PROCEDURE Configuration_keys_get(IN `emailAddy` VARCHAR(64), IN `sKey` LONGTEXT)
  DETERMINISTIC
  SQL SECURITY INVOKER
  COMMENT 'Retrieves OpenSSL keypair by email address'
 BEGIN
- SELECT `countryName`, `stateOrProvinceName`, `localityName`, `organizationalName`, `organizationalUnitName`, `commonName`, `emailAddress`, AES_DECRYPT(BINARY(UNHEX(privateKey)), SHA1(sKey)) AS privateKey, AES_DECRYPT(BINARY(UNHEX(publicKey)), SHA1(sKey)) AS publicKey FROM `configuration_openssl_keys` WHERE `emailAddress`=emailAddress;
+ SELECT AES_DECRYPT(BINARY(UNHEX(privateKey)), SHA1(sKey)) AS privateKey, AES_DECRYPT(BINARY(UNHEX(publicKey)), SHA1(sKey)) AS publicKey FROM `configuration_openssl_keys` WHERE AES_DECRYPT(BINARY(UNHEX(emailAddress)), SHA1(sKey))=emailAddy;
 END//
 
 DELIMITER ;
