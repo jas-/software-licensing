@@ -109,15 +109,14 @@ class authentication
 				$obj['signature'] = $this->registry->keyring->ssl->sign($token, $_SESSION[$this->registry->libs->_getRealIPv4()]['privateKey'], $_SESSION[$this->registry->libs->_getRealIPv4()]['password']);
 				$x = $this->__register($obj);
 
-				/*
-				  switch to current user context by destroying application wide openssl registry item
-				  and re-enabling it with data presented from the authenticated user.
-				*/
 				if ($x) {
-					$this->__reset($obj['email']);
+					$k = $this->__reinit($this->__reset($obj['email']));
+					if (is_array($k)) {
+						$keyring = array('email'=>$this->registry->keyring->ssl->aesEnc($this->registry->val->__do($obj['email'], 'email'), $_SESSION[$this->registry->libs->_getRealIPv4()]['csrf']),'key'=>$this->registry->keyring->ssl->aesEnc($_SESSION[$this->registry->libs->_getRealIPv4()]['publicKey'], $_SESSION[$this->registry->libs->_getRealIPv4()]['csrf']));
+					}
 				}
 
-				$x = ($x) ? array('success'=>'User was successfully authenticated', 'token'=>sha1($_SESSION[$this->registry->libs->_getRealIPv4()]['token']), 'keyring'=>array('email'=>$this->registry->keyring->ssl->aesEnc($this->registry->val->__do($obj['email'], 'email'), $_SESSION[$this->registry->libs->_getRealIPv4()]['csrf']),'key'=>$this->registry->keyring->ssl->aesEnc($_SESSION[$this->registry->libs->_getRealIPv4()]['publicKey'], $_SESSION[$this->registry->libs->_getRealIPv4()]['csrf']))) : array('error'=>'An error occured when associating token with user');
+				$x = (($x)&&(is_array($keyring))) ? array('success'=>'User was successfully authenticated', 'token'=>sha1($_SESSION[$this->registry->libs->_getRealIPv4()]['token']), 'keyring'=>$keyring) : array('error'=>'An error occured when associating token with user');
 			}
 //		}
 		return $x;
@@ -125,17 +124,33 @@ class authentication
 
 	/**
 	 *! @function __reset
-	 *  @abstract Looks up recently authenticated users keyring data and registers it within
-	 *            the current users sessions information for further use
+	 *  @abstract Looks up recently authenticated users keyring data
 	 */
 	private function __reset($email)
 	{
 		try {
 			$sql = sprintf('CALL Configuration_keys_get("%s", "%s")', $email, $this->pass);
 			$r = $this->registry->db->querY($sql);
-			print_r($r);
+			return (is_array($r)) ? $r : false;
 		} catch(Exception $e) {
 			// error handling
+		}
+	}
+
+	/**
+	 *! @function __reinit
+	 *  @abstract Destroys current SSL registry object and re-initializes it
+	 *            based on the currently authenticated users private key to
+	 *            further segregate user authentication from one another
+	 */
+	private function __reinit($obj)
+	{
+		if (is_array($obj)) {
+			unset($this->registry->keyring->ssl);
+			$this->registry->keyring->ssl = openssl::instance($obj);
+			return $obj;
+		} else {
+			return false;
 		}
 	}
 
