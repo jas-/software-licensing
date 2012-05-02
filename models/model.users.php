@@ -197,7 +197,7 @@ class users
 						   $this->registry->db->sanitize($details['localityName']),
 						   $this->registry->db->sanitize($details['organizationalName']),
 						   $this->registry->db->sanitize($details['organizationalUnitName']),
-						   $this->registry->db->sanitize($details['commonName']),
+						   $this->registry->db->sanitize($this->registry->libs->_getRealIPv4()),
 						   $this->registry->db->sanitize($details['email']),
 						   $this->registry->db->sanitize($keys['pri']),
 						   $this->registry->db->sanitize($keys['pub']),

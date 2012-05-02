@@ -132,7 +132,8 @@ class authentication
 	{
 		try {
 			$sql = sprintf('CALL Configuration_keys_get("%s", "%s")', $email, $this->pass);
-			echo $sql;
+			$r = $this->registry->db->querY($sql);
+			print_r($r);
 		} catch(Exception $e) {
 			// error handling
 		}
