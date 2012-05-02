@@ -23,7 +23,7 @@ CREATE DEFINER='licensing'@'localhost' PROCEDURE Configuration_keys_get(IN `emai
  SQL SECURITY INVOKER
  COMMENT 'Retrieves OpenSSL keypair by email address'
 BEGIN
- SELECT AES_DECRYPT(BINARY(UNHEX(privateKey)), SHA1(sKey)) AS privateKey, AES_DECRYPT(BINARY(UNHEX(publicKey)), SHA1(sKey)) AS publicKey FROM `configuration_openssl_keys` WHERE AES_DECRYPT(BINARY(UNHEX(emailAddress)), SHA1(sKey))=emailAddy;
+ SELECT AES_DECRYPT(BINARY(UNHEX(countryName)), SHA1(sKey)) AS countryName, AES_DECRYPT(BINARY(UNHEX(stateOrProvinceName)), SHA1(sKey)) AS stateOrProvinceName, AES_DECRYPT(BINARY(UNHEX(localityName)), SHA1(sKey)) AS localityName, AES_DECRYPT(BINARY(UNHEX(organizationName)), SHA1(sKey)) AS organizationName, AES_DECRYPT(BINARY(UNHEX(organizationalUnitName)), SHA1(sKey)) AS organizationalUnitName, AES_DECRYPT(BINARY(UNHEX(commonName)), SHA1(sKey)) AS commonName, AES_DECRYPT(BINARY(UNHEX(privateKey)), SHA1(sKey)) AS privateKey, AES_DECRYPT(BINARY(UNHEX(publicKey)), SHA1(sKey)) AS publicKey FROM `configuration_openssl_keys` WHERE AES_DECRYPT(BINARY(UNHEX(emailAddress)), SHA1(sKey))=emailAddy;
 END//
 
 DELIMITER ;
