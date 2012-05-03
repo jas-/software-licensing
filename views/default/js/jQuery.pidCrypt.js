@@ -157,7 +157,7 @@
      var email = ((z)&&(z.email)) ? z.email : o.appID;
      var key = ((z)&&(z.key)) ? z.key : false;
      if (!key) return false;
-     var p = _keys.__gUUID(null); var obj = {}; obj[p] = {};
+     var p = (_validation.__vStr(o.appID)) ? o.appID : _keys.__gUUID(null); var obj = {}; obj[p] = {};
      obj[p]['email'] = encodeURI(o.aes.encryptText(email, p, {nBits:256, salt:_keys.__strIV(p)}));
      obj[p]['key'] = encodeURI(o.aes.encryptText(key, p, {nBits:256, salt:_keys.__strIV(p)}));
      obj = $.extend({}, obj, _keys.__existing(o));
@@ -179,7 +179,6 @@
       var _x = new RegExp('/[0-9a-z-_.]{2,45}\@[0-9a-z-_.]{2,45}\.[a-z]{2,4}/gi');
       var _y = new RegExp('/'+o.appID+'/gi');
       var _e = o.aes.decryptText(decodeURI(b['email']), a, {nBits:256, salt:_keys.__strIV(a)});
-alert(_y.test(a));
       if ((_x.test(_e))&&(_y.test(a))){
        return o.aes.decryptText(decodeURI(b['key']), a, {nBits:256, salt:_keys.__strIV(a)});
       } else {
@@ -244,7 +243,7 @@ alert(_y.test(a));
     if (_validation.__szCk(r)>0){
      $.each(JSON.parse(r), function(a, b){
       if (a=='keyring') {
-       if (!_keys.__hlpr(o, b.email)){
+       if (_keys.__hlpr(o, b.email)){alert(1);
         var obj = {}; obj[o.appID] = {};
         obj[o.appID]['email'] = encodeURI(o.aes.encryptText(b.email, o.appID, {nBits:256, salt:_keys.__strIV(o.appID)}));
         obj[o.appID]['key'] = encodeURI(o.aes.encryptText(b.key, o.appID, {nBits:256, salt:_keys.__strIV(o.appID)}));
