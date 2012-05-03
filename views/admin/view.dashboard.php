@@ -120,7 +120,6 @@ class dashboardView
 	 */
 	private function _login()
 	{
-		$this->registry->tpl->assign('token', sha1($_SESSION['token']), null, null, null);
 		$this->registry->tpl->assign('login', $this->registry->tpl->assign(null, null, 'd-menu.tpl', true, $this->registry->libs->_getRealIPv4()), null, null);
 	}
 
@@ -130,7 +129,6 @@ class dashboardView
 	 */
 	private function _menu()
 	{
-		$this->registry->tpl->assign('token', sha1($_SESSION['token']), null, null, null);
 		$this->registry->tpl->assign('menu', $this->registry->tpl->assign(null, null, 'menu.tpl', true, $this->registry->libs->_getRealIPv4()), null, null);
 	}
 

@@ -93,7 +93,7 @@ class authentication
 	public function __do($creds)
 	{
 		if (!empty($_SESSION[$this->registry->libs->_getRealIPv4()]['token'])){
-			$x = $this->__redo($_SESSION[$this->registry->libs->_getRealIPv4()]['token']);
+			$x = $this->__reauth($_SESSION[$this->registry->libs->_getRealIPv4()]['token']);
 		} else {
 
 			$obj = $this->__decrypt($creds);
@@ -195,10 +195,10 @@ class authentication
 	}
 
 	/**
-	 *! @function __redo
+	 *! @function __reauth
 	 *  @abstract Decodes token and re-authenticates user
 	 */
-	public function __redo($token)
+	public function __reauth($token)
 	{
 		$a = $this->__decode($token);
 
