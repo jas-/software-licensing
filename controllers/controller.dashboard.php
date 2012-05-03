@@ -82,8 +82,8 @@ class dashboardController
 		if ($this->__auth($_SESSION['token'])) {
 			$auth = authentication::instance($this->registry);
 
-			$l = $auth->__level($_SESSION['token']);
-			$g = $auth->__group($_SESSION['token']);
+			$l = $auth->__level($_SESSION[$this->registry->libs->_getRealIPv4()]['token']);
+			$g = $auth->__group($_SESSION[$this->registry->libs->_getRealIPv4()]['token']);
 
 			if (($l) && ($g)) {
 				switch($l) {

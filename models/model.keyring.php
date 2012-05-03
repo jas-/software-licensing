@@ -170,15 +170,15 @@ class keyring
 	{
 		$r = true;
 		try{
-			if (!$this->__chkKeys($_SESSION[$this->registry->libs->_getRealIPv4()])){
+			if ($this->__chkKeys($_SESSION[$this->registry->libs->_getRealIPv4()])){
 				if (!$email){
-					$sql = sprintf('CALL Configuration_def_get("%s")', $this->registry->db->sanitize($this->registry->libs->_hash($this->registry->opts['dbKey'], $this->registry->libs->_salt($this->registry->opts['dbKey'], 2048))));
+					$sql = sprintf('CALL Configuration_def_keys("%s")', $this->registry->db->sanitize($this->registry->libs->_hash($this->registry->opts['dbKey'], $this->registry->libs->_salt($this->registry->opts['dbKey'], 2048))));
 				} else {
 					$sql = sprintf('CALL Configuration_keys_get("%s, %s")', $this->registry->db->sanitize($email), $this->registry->db->sanitize($this->registry->libs->_hash($this->registry->opts['dbKey'], $this->registry->libs->_salt($this->registry->opts['dbKey'], 2048))));
 				}
 
 				$r = $this->registry->db->query($sql);
-				$r = ((!empty($r['publicKey']))&&(!empty($r['emailAddress']))&&(!empty($r['privateKey']))&&(!empty($r['pword']))) ? array('email'=>$r['emailAddress'],'privateKey'=>$r['privateKey'], 'publicKey'=>$r['publicKey'],'password'=>$r['pword']) : false;
+				$r = ((!empty($r['publicKey']))&&(!empty($r['emailAddress']))&&(!empty($r['privateKey']))&&(!empty($r['pword']))) ? array('email'=>$r['emailAddress'], 'privateKey'=>$r['privateKey'], 'publicKey'=>$r['publicKey'],'password'=>$r['pword']) : false;
 
 				if ($r){
 					$this->__setKeys($r);
@@ -206,13 +206,9 @@ class keyring
 	 */
 	private function __setKeys($a)
 	{
-		if ($this->__chkKeys($_SESSION[$this->registry->libs->_getRealIPv4()])){
-			$this->keys = $_SESSION[$this->registry->libs->_getRealIPv4()];
-		}else{
-			$this->keys = $a;
+		foreach($a as $key => $value) {
+			$_SESSION[$this->registry->libs->_getRealIPv4()][$key] = $value;
 		}
-		//array_push($this->keys, $a);
-		$_SESSION[$this->registry->libs->_getRealIPv4()] = $this->keys;
 	}
 
 	/**

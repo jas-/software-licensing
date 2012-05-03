@@ -18,6 +18,15 @@ BEGIN
  SELECT `title`, `templates`, `cache`, `private`, `email` AS `emailAddress`, `timeout`, AES_DECRYPT(BINARY(UNHEX(privateKey)), SHA1(challenge)) AS privateKey, AES_DECRYPT(BINARY(UNHEX(publicKey)), SHA1(challenge)) AS publicKey, AES_DECRYPT(BINARY(UNHEX(sKey)), SHA1(challenge)) AS pword, `countryName`, `stateOrProvinceName`, `localityName`, `organizationName`, `organizationalUnitName`, `commonName` FROM `configuration`;
 END//
 
+DROP PROCEDURE IF EXISTS Configuration_def_keys//
+CREATE DEFINER='licensing'@'localhost' PROCEDURE Configuration_def_keys(IN `challenge` LONGTEXT)
+ DETERMINISTIC
+ SQL SECURITY INVOKER
+ COMMENT 'Retrieves currently configured keyring data'
+BEGIN
+ SELECT `email` AS `emailAddress`, AES_DECRYPT(BINARY(UNHEX(privateKey)), SHA1(challenge)) AS privateKey, AES_DECRYPT(BINARY(UNHEX(publicKey)), SHA1(challenge)) AS publicKey, AES_DECRYPT(BINARY(UNHEX(sKey)), SHA1(challenge)) AS pword FROM `configuration`;
+END//
+
 DROP PROCEDURE IF EXISTS Configuration_def_get_dn//
 CREATE DEFINER='licensing'@'localhost' PROCEDURE Configuration_def_get_dn()
  DETERMINISTIC

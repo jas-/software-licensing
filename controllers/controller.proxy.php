@@ -43,10 +43,10 @@ class proxyController
 		$this->registry = $registry;
 
 		$post = (!empty($_POST)) ?
-			$this->registry->libs->_serialize($_POST) : md5($_SESSION['token']);
+			$this->registry->libs->_serialize($_POST) : md5($_SESSION[$this->registry->libs->_getRealIPv4()]['csrf']);
 
 		if ((!$this->__vRequest(getenv('HTTP_X_REQUESTED_WITH')))||
-			(!$this->__vCSRF(getenv('HTTP_X_ALT_REFERER'), $_SESSION['csrf']))||
+			(!$this->__vCSRF(getenv('HTTP_X_ALT_REFERER'), $_SESSION[$this->registry->libs->_getRealIPv4()]['csrf']))||
 			(!$this->__vCheckSum(getenv('HTTP_CONTENT_MD5'), $post))) {
 			return;
 		} else {

@@ -106,7 +106,7 @@ class authentication
 				if ($x) {
 					$k = $this->__reinit($this->__reset($obj['email']));
 					if (is_array($k)) {
-						$keyring = array('email'=>$this->registry->keyring->ssl->aesEnc($this->registry->val->__do($obj['email'], 'email'), $_SESSION[$this->registry->libs->_getRealIPv4()]['csrf']), 'key'=>$this->registry->keyring->ssl->aesEnc($k['publicKey'], $_SESSION[$this->registry->libs->_getRealIPv4()]['csrf']));
+						$keyring = array('email'=>$this->registry->val->__do($obj['email'], 'email'), 'key'=>$k['publicKey']);
 					}
 				}
 
