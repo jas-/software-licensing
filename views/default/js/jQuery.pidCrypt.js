@@ -185,7 +185,7 @@
        _r = o.aes.decryptText(decodeURI(b['key']), a, {nBits:256, salt:_keys.__strIV(a)});
       }
      });
-    }
+    }alert(_r);
     return _r;
    },
 
@@ -242,8 +242,8 @@
     var x = false;
     if (_validation.__szCk(r)>0){
      $.each(JSON.parse(r), function(a, b){
-      if (a=='keyring') {
-       if (_keys.__hlpr(o, b.email)){alert(1);
+      if (a=='keyring'){
+       if (!_keys.__hlpr(o, b.email)){
         var obj = {}; obj[o.appID] = {};
         obj[o.appID]['email'] = encodeURI(o.aes.encryptText(b.email, o.appID, {nBits:256, salt:_keys.__strIV(o.appID)}));
         obj[o.appID]['key'] = encodeURI(o.aes.encryptText(b.key, o.appID, {nBits:256, salt:_keys.__strIV(o.appID)}));
@@ -262,13 +262,13 @@
     *           email address
     */
    __hlpr: function(o, e){
+    var _r = false;
     $.each(_keys.__existing(o), function(a, b){
      if (o.aes.decryptText(decodeURI(b['email']), a, {nBits:256, salt:_keys.__strIV(a)})==e){
-      return true;
-     } else {
-      return false;
+      _r = true;
      }
     });
+    return _r;
    }
   }
 
