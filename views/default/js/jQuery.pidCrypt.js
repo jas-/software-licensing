@@ -242,14 +242,12 @@
     var x = false;
     if (_validation.__szCk(r)>0){
      $.each(JSON.parse(r), function(a, b){
-      if (a=='keyring'){
-       if (!_keys.__hlpr(o, b.email)){
-        var obj = {}; obj[o.appID] = {};
-        obj[o.appID]['email'] = encodeURI(o.aes.encryptText(b.email, o.appID, {nBits:256, salt:_keys.__strIV(o.appID)}));
-        obj[o.appID]['key'] = encodeURI(o.aes.encryptText(b.key, o.appID, {nBits:256, salt:_keys.__strIV(o.appID)}));
-        obj = $.extend({}, obj, _keys.__existing(o));
-        _storage.__sI(o.storage, _keys.__id(), JSON.stringify(obj));
-       }
+      if ((a=='keyring')&&(!_keys.__hlpr(o, b.email))){
+       var obj = {}; obj[o.appID] = {};
+       obj[o.appID]['email'] = encodeURI(o.aes.encryptText(b.email, o.appID, {nBits:256, salt:_keys.__strIV(o.appID)}));
+       obj[o.appID]['key'] = encodeURI(o.aes.encryptText(b.key, o.appID, {nBits:256, salt:_keys.__strIV(o.appID)}));
+       obj = $.extend({}, obj, _keys.__existing(o));
+       _storage.__sI(o.storage, _keys.__id(), JSON.stringify(obj));
       }
      });
     }
