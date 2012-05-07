@@ -131,6 +131,8 @@
     var obj={};
     if (!_validation.__vStr(o.use)) {
      o = _main.__setup(o, defaults);
+    } else {
+     o.use = _keys.__sK(o);
     }
     $.each($('#'+o.formID.attr('id')+' :input, input:radio:selected, input:checkbox:checked, textarea'), function(k, v){
      if ((_validation.__vStr(v.value))&&(_validation.__vStr(v.name))){
@@ -176,16 +178,16 @@
     var _r = false;
     if (_validation.__szCk(o.keys)>0){
      $.each(o.keys, function(a,b){
-      var _x = new RegExp('/[0-9a-z-_.]{2,45}\@[0-9a-z-_.]{2,45}\.[a-z]{2,4}/gi');
-      var _y = new RegExp('/'+o.appID+'/gi');
+      var _x = /[0-9a-z-_.]{2,45}\@[0-9a-z-_.]{2,45}\.[a-z]{2,4}/gi;
       var _e = o.aes.decryptText(decodeURI(b['email']), a, {nBits:256, salt:_keys.__strIV(a)});
-      if ((_x.test(_e))&&(_y.test(a))){
+      alert(_x.test(_e)+' => '+_e);
+      if (_x.test(_e)){
        return o.aes.decryptText(decodeURI(b['key']), a, {nBits:256, salt:_keys.__strIV(a)});
       } else {
        _r = o.aes.decryptText(decodeURI(b['key']), a, {nBits:256, salt:_keys.__strIV(a)});
       }
      });
-    }alert(_r);
+    }
     return _r;
    },
 
