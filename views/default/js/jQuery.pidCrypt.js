@@ -36,7 +36,7 @@
    * @abstract Default set of options for plug-in
    */
   var defaults = defaults || {
-   appID:        'jQuery.pidCrypt',    // Configurable CSRF token
+   appID:        '',                   // Configurable CSRF token
    storage:      'local',              // Configurable storage mechanism
    formID:       $(this),              // Global object for bound DOM object
    type:         'json',               // Configurable method of communication
@@ -62,6 +62,9 @@
     */
    init: function(o){
     var opts = _main.__setup(o, defaults);
+    $('body').removeData('use');
+    _modal.__setup(opts);
+    $('#keyring').change(function(){ $('body').data('use', _modal.__e(opts, $(this).val())); opts = _main.__setup(o, defaults); });
     $('#'+opts.formID.attr('id')).on('submit', function(e){
      e.preventDefault();
      _main.__do(opts, _main.__gF(opts));
@@ -120,7 +123,7 @@
     if (_validation.__szCk(opts.keys)<=0){
      _keys.__hK(opts);
     }
-    opts.use = _keys.__sK(opts);
+    opts.use = ($('body').data('use')) ? $('body').data('use') : _keys.__sK(opts);
     return opts;
    },
 
@@ -132,7 +135,7 @@
     var obj={};
     if (!_validation.__vStr(o.use)) {
      o = _main.__setup(o, defaults);
-    } // disappearing keys? kick lib and co off box
+    }
     $.each($('#'+o.formID.attr('id')+' :input, input:radio:selected, input:checkbox:checked, textarea'), function(k, v){
      if ((_validation.__vStr(v.value))&&(_validation.__vStr(v.name))){
       obj[v.name] = (parseInt(v.value.length)>80) ? _strings.__sSplt(v.value) : v.value;
@@ -158,9 +161,9 @@
      var email = ((z)&&(z.email)) ? z.email : o.appID;
      var key = ((z)&&(z.key)) ? z.key : false;
      if (!key) return false;
-     var obj = {}; obj[p] = {};
-     obj[o.appID]['email'] = encodeURI(o.aes.encryptText(email, p, {nBits:256, salt:_keys.__strIV(p)}));
-     obj[o.appID]['key'] = encodeURI(o.aes.encryptText(key, p, {nBits:256, salt:_keys.__strIV(p)}));
+     var obj = {}; obj[o.appID] = {};
+     obj[o.appID]['email'] = _encrypt.__e(o.aes, email, o.appID);
+     obj[o.appID]['key'] = _encrypt.__e(o.aes, key, o.appID);
      obj = $.extend({}, obj, _keys.__existing(o));
      _storage.__sI(o.storage, _keys.__id(), JSON.stringify(obj));
     }
@@ -171,18 +174,19 @@
 
    /**
     * @function __sK
-    * @abstract Attempts to find email address or current appID for user specific key retrieval
+    * @abstract Attempts to find email address for user specific key retrieval
     */
    __sK: function(o){
     var _r = false;
     if (_validation.__szCk(o.keys)>0){
      $.each(o.keys, function(a,b){
-      var _x = /[0-9a-z-_.]{2,45}\@[0-9a-z-_.]{2,45}\.[a-z]{2,4}/gi;
-      var _e = o.aes.decryptText(decodeURI(b['email']), a, {nBits:256, salt:_keys.__strIV(a)});
+      var _x = /[0-9a-z-_.]{2,45}\@[0-9a-z-_.]{2,45}\.[a-z]{2,4}/i;
+      var _e = _encrypt.__d(o.aes, b['email'], a);
       if (_x.test(_e)){
-       return o.aes.decryptText(decodeURI(b['key']), a, {nBits:256, salt:_keys.__strIV(a)});
+       _r = _encrypt.__d(o.aes, b['key'], a);
+       return false;
       } else {
-       _r = o.aes.decryptText(decodeURI(b['key']), a, {nBits:256, salt:_keys.__strIV(a)});
+       _r = _encrypt.__d(o.aes, b['key'], a);
       }
      });
     }
@@ -242,12 +246,14 @@
     var x = false;
     if (_validation.__szCk(r)>0){
      $.each(JSON.parse(r), function(a, b){
-      if ((a=='keyring')&&(!_keys.__hlpr(o, b.email))){
-       var obj = {}; obj[o.appID] = {};
-       obj[o.appID]['email'] = encodeURI(o.aes.encryptText(b.email, o.appID, {nBits:256, salt:_keys.__strIV(o.appID)}));
-       obj[o.appID]['key'] = encodeURI(o.aes.encryptText(b.key, o.appID, {nBits:256, salt:_keys.__strIV(o.appID)}));
-       obj = $.extend({}, obj, _keys.__existing(o));
-       _storage.__sI(o.storage, _keys.__id(), JSON.stringify(obj));
+      if ((a==='keyring')&&(_validation.__vStr(b['email']))){
+       if(!_keys.__hlpr(o, b['email'])){
+        var k = _keys.__gUUID(null); var obj = {}; obj[k] = {};
+        obj[k]['email'] = _encrypt.__e(o.aes, b['email'], k);
+        obj[k]['key'] = _encrypt.__e(o.aes, b['key'], k);
+        obj = $.extend({}, obj, _keys.__existing(o));
+        _storage.__sI(o.storage, _keys.__id(), JSON.stringify(obj));
+       }
       }
      });
     }
@@ -262,7 +268,7 @@
    __hlpr: function(o, e){
     var _r = false;
     $.each(_keys.__existing(o), function(a, b){
-     if (o.aes.decryptText(decodeURI(b['email']), a, {nBits:256, salt:_keys.__strIV(a)})==e){
+     if (_encrypt.__d(o.aes, b['email'], a)==e){
       _r = true;
      }
     });
@@ -386,6 +392,22 @@
      }
     }
     return retObj;
+   },
+
+   /**
+    * @function __e
+    * @abstract Encrypts specified string with specified pass & salt
+    */
+   __e: function(o, d, p){
+    return encodeURI(o.encryptText(d, pidCrypt.SHA512(p), {nBits:256, salt:_keys.__strIV(pidCrypt.SHA512(p))}));
+   },
+
+   /**
+    * @function __d
+    * @abstract Decrypts specified string with specified pass & salt
+    */
+   __d: function(o, d, p){
+    return decodeURI(o.decryptText(d, pidCrypt.SHA512(p), {nBits:256, salt:_keys.__strIV(pidCrypt.SHA512(p))}));
    }
   }
 
@@ -613,7 +635,7 @@
     * @abstract Function used combine string checking functions
     */
    __vStr: function(x){
-    return ((x===false)||(x.length===0)||(!x)||(x===null)||(x==='')||(typeof x==='undefined')) ? false : true;
+    return ((x==false)||(x.length==0)||(!x)||(x==null)||(x=='')||(typeof x=='undefined')) ? false : true;
    },
 
    /**
@@ -639,6 +661,82 @@
     });
     return n;
    }
+  }
+
+  /**
+   * @method modal
+   * @abstract Modal object
+   */
+  var _modal = _modal || {
+
+   /**
+    * @function __setup
+    * @abstract Provides preliminary setup for new modal window
+    */
+   __setup: function(o){
+    if (_validation.__szCk(o.keys)>=3){
+     var _win = '<div id="overlay"></div><div id="modal"><div id="content">'+_modal.__aK(o)+'</div></div>';
+     $('#'+o.formID.attr('name')).prepend(_win);
+     $('body').css({'overflow':'hidden'});
+     $('#overlay').css({'position':'fixed','top':0,'left':0,'width':'100%','height':'100%','background':'#000','opacity':0.5,'filter':'alpha(opacity=50)'});
+     $('#modal').css({'position':'absolute','background':'rgba(0,0,0,0.2)','border-radius':'14px','padding':'8px'});
+     $('#content').css({'border-radius':'8px','background':'#fff','padding':'20px'});
+    }
+   },
+
+   /**
+    * @function __e
+    * @abstract Executes the decryption and assignment within the global scope
+    *           of the user selected public key while closing the modal window
+    */
+   __e: function(o, e){
+    $.each(o.keys, function(a, b){
+     if (_encrypt.__d(o.aes, b['email'], a)==e){
+      o.use = _encrypt.__d(o.aes, b['key'], a);
+      $('#keyring, #content, #modal, #overlay').hide();
+      $('body').css({'overflow':'auto'});
+     }
+    });
+    return o.use;
+   },
+
+   /**
+    * @function __aK
+    * @abstract Creates selectable list of current keys
+    */
+   __aK: function(o){
+    var _s = _validation.__szCk(o.keys);
+    var _d = (_s>=5) ? 5 : _s;
+    var _x, _a = '';
+    if (_s>=3){
+     var _k = '';
+     _x = '<label for="keyring">Select your email:</label><select name="keyring" id="keyring" size="'+_d+'" multiple>';
+     $.each(o.keys, function(k, v){
+      _k = _encrypt.__d(o.aes, v['email'], k);
+      _a = /[0-9a-z-_.]{2,45}\@[0-9a-z-_.]{2,45}\.[a-z]{2,4}/i;
+      if (_a.test(_k)){
+       _x = _x + '<option value="'+_k+'">'+_k+'</option>';
+      }
+     });
+     _x = _x + '</select>';
+    }
+    return _x;
+   }
+  }
+
+  /**
+   * @function __r
+   * @abstract Function used help debug objects recursively
+   */
+  var __r = function(obj){
+   $.each(obj, function(x,y){
+    if (typeof y==='object'){
+     console.log(x);
+     __r(y);
+    } else {
+     console.log(x+' => '+y);
+    }
+   });
   }
 
   /* robot, do something */
