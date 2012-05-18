@@ -211,8 +211,10 @@ class authentication
 	 */
 	public function __reauth($token)
 	{
+//echo '<pre>'; print_r(func_get_args()); echo '</pre>';
+//echo '<pre>'; print_r($_SESSION[$this->registry->libs->_getRealIPv4()]); echo '</pre>';
 		$a = $this->__decode($token);
-
+//print_r($a);
 		if (!$this->__hijack($a)){
 			return false;
 		}
