@@ -116,7 +116,7 @@ class authentication
 			} else {
 
 				if ($x) {
-					$k = $this->__reinit($this->__reset($obj['email']));
+					$k = $this->__reinit($this->__reset($obj['email']), $obj['email']);
 					if (is_array($k)) {
 						$keyring = array('email'=>$this->registry->val->__do($obj['email'], 'email'), 'key'=>$k['publicKey']);
 					}
@@ -156,14 +156,13 @@ class authentication
 	 *            based on the currently authenticated users private key to
 	 *            further segregate user authentication from one another
 	 */
-	private function __reinit($obj)
+	private function __reinit($obj, $email)
 	{
 		if (is_array($obj)) {
-
 			unset($this->registry->keyring->ssl);
 			$this->registry->keyring->ssl = openssl::instance($obj);
 
-		    $_SESSION[$this->registry->libs->_getRealIPv4()]['email'] = $this->email;
+		    $_SESSION[$this->registry->libs->_getRealIPv4()]['email'] = $email;
 			$_SESSION[$this->registry->libs->_getRealIPv4()]['privateKey'] = $obj['privateKey'];
 			$_SESSION[$this->registry->libs->_getRealIPv4()]['publicKey'] = $obj['publicKey'];
 			$_SESSION[$this->registry->libs->_getRealIPv4()]['password'] = $this->pass;
