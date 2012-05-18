@@ -38,25 +38,6 @@ class dashboardController
 	 */
 	public function __construct($registry)
 	{
-		/* load and start up session support */
-		if (!class_exists('dbSession')){
-			exit('Error loading database session support, unable to proceed. 0x0c6');
-		}
-
-		/* create new instance of sessions? */
-		if (!is_object($regsitry->sessions)){
-			$registry->sessions = new dbSession($settings['sessions'], $registry);
-		}
-
-		/* generate or use CSRF token */
-		if (!isset($_SESSION[$registry->libs->_getRealIPv4()]['csrf'])) {
-			$_SESSION[$registry->libs->_getRealIPv4()]['csrf'] = $registry->libs->uuid();
-		}
-
-		/* always reset the session_id */
-		$registry->sessions->regen(true);
-		echo '<pre>'; print_r($_SESSION); echo '</pre>';
-
 		$this->registry = $registry;
 	}
 
@@ -66,8 +47,7 @@ class dashboardController
 	 */
 	private function __auth($token)
 	{
-		$email = (!empty($_SESSION[$this->registry->libs->_getRealIPv4()]['email'])) ? array('email'=>$_SESSION[$this->registry->libs->_getRealIPv4()]['email']) : $_POST;
-		$this->registry->keyring = new keyring($this->registry, $this->registry->val->__do($email));
+		$this->registry->keyring = new keyring($this->registry, $this->registry->val->__do($_POST));
 		$auth = authentication::instance($this->registry);
 		return ($auth->__reauth($token)) ? true : false;
 	}
