@@ -54,23 +54,6 @@ $settings['sessions']['db-key'] = $registry->libs->_hash($settings['sessions']['
 
 /* query for application settings */
 
-/* load and start up session support */
-if (!class_exists('dbSession')){
-	exit('Error loading database session support, unable to proceed. 0x0c6');
-}
-
-/* create new instance of sessions? */
-if (!is_object($regsitry->sessions)){
- $registry->sessions = new dbSession($settings['sessions'], $registry);
-}
-
-/* generate or use CSRF token */
-if (!isset($_SESSION[$registry->libs->_getRealIPv4()]['csrf'])) {
-	$_SESSION[$registry->libs->_getRealIPv4()]['csrf'] = $registry->libs->uuid();
-}
-
-/* always reset the session_id */
-$registry->sessions->regen(true);
 
 /* Set application defaults within registry */
 $settings['opts']['dbKey'] = $settings['sessions']['db-key'];

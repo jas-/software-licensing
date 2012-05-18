@@ -38,6 +38,25 @@ class dashboardUsersController
 	 */
 	public function __construct($registry)
 	{
+		/* load and start up session support */
+		if (!class_exists('dbSession')){
+			exit('Error loading database session support, unable to proceed. 0x0c6');
+		}
+
+		/* create new instance of sessions? */
+		if (!is_object($regsitry->sessions)){
+			$registry->sessions = new dbSession($settings['sessions'], $registry);
+		}
+
+		/* generate or use CSRF token */
+		if (!isset($_SESSION[$registry->libs->_getRealIPv4()]['csrf'])) {
+			$_SESSION[$registry->libs->_getRealIPv4()]['csrf'] = $registry->libs->uuid();
+		}
+
+		/* always reset the session_id */
+		$registry->sessions->regen(true);
+		echo '<pre>'; print_r($_SESSION); echo '</pre>';
+
 		$this->registry = $registry;
 	}
 
