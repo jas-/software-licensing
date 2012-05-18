@@ -89,6 +89,14 @@ class authentication
 	/**
 	 *! @function __do
 	 *  @abstract Performs initial authentication
+	 *            1. Checks for existing session token & re-authenticates if present
+	 *            2. Decrypts submitted authentication credentials & exits if it fails
+	 *            3. Performs authentication on decrypted form submission
+	 *            4. Generates new sesssion token upon successful authentication
+	 *            5. Associates signature digest with user account to help prevent
+	 *               token manipulation
+	 *            6. Generates response consisting of success message, hash of session
+	 *               token (to be used for cross domain & SSO purposes)
 	 */
 	public function __do($creds)
 	{
@@ -97,6 +105,10 @@ class authentication
 		} else {
 
 			$obj = $this->__decrypt($creds);
+			if (array_key_exists('error', $obj)) {
+				return $obj;
+			}
+
 			$x = $this->__auth($obj);
 
 			if (is_array($x)){
@@ -240,6 +252,23 @@ class authentication
 			$x = array();
 			foreach($obj as $key => $value){
 				$x[$key] = $this->registry->keyring->ssl->privDenc($value, $_SESSION[$this->registry->libs->_getRealIPv4()]['privateKey'], $_SESSION[$this->registry->libs->_getRealIPv4()]['password']);
+			}
+		}
+		return ($this->__dHlpr($obj, $x)) ? $x : array('error'=>'Decryption of submitted form data failed, bad key syncronization');
+	}
+
+	/**
+	 *! @function __dHlpr
+	 *  @abstract Compares original key/value with decrypted key/value to ensure no missing data
+	 */
+	private function __dHlpr($orig, $dec)
+	{
+		$x = true;
+		if (is_array($dec)) {
+			foreach($dec as $key => $value) {
+				if ((array_key_exists($key, $orig))&&(empty($value))/*||(!isset($value))||(strcmp($value, '')==0)*/) {
+					return false;
+				}
 			}
 		}
 		return $x;
