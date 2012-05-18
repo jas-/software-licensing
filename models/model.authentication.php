@@ -253,7 +253,7 @@ class authentication
 				$x[$key] = $this->registry->keyring->ssl->privDenc($value, $_SESSION[$this->registry->libs->_getRealIPv4()]['privateKey'], $_SESSION[$this->registry->libs->_getRealIPv4()]['password']);
 			}
 		}
-		return ($this->__dHlpr($obj, $x)) ? $x : array('error'=>'Decryption of submitted form data failed, bad key syncronization');
+		return ($this->__dHlpr($obj, $x)) ? $x : array('error'=>'Decryption of submitted form data failed');
 	}
 
 	/**
@@ -265,7 +265,7 @@ class authentication
 		$x = true;
 		if (is_array($dec)) {
 			foreach($dec as $key => $value) {
-				if ((array_key_exists($key, $orig))&&(empty($value))/*||(!isset($value))||(strcmp($value, '')==0)*/) {
+				if ((array_key_exists($key, $orig))&&(empty($value))) {
 					return false;
 				}
 			}
