@@ -75,8 +75,7 @@ class dbSession
 					array(&$this, 'read'),
 					array(&$this, 'write'),
 					array(&$this, 'destroy'),
-					array(&$this, 'gc')
-					);
+					array(&$this, 'gc'));
 			register_shutdown_function('session_write_close');
 			if (!isset($_SESSION)) session_start();
 		} else {

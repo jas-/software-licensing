@@ -143,7 +143,7 @@ class authentication
 	{
 		try {
 			$sql = sprintf('CALL Configuration_keys_get("%s", "%s")', $email, $this->pass);
-			$r = $this->registry->db->querY($sql);
+			$r = $this->registry->db->query($sql);
 			return (is_array($r)) ? $r : false;
 		} catch(Exception $e) {
 			// error handling
@@ -211,26 +211,26 @@ class authentication
 	 */
 	public function __reauth($token)
 	{
-//echo '<pre>'; print_r(func_get_args()); echo '</pre>';
-//echo '<pre>'; print_r($_SESSION[$this->registry->libs->_getRealIPv4()]); echo '</pre>';
+		$this->pass = $_SESSION[$this->registry->libs->_getRealIPv4()]['password'];
+
 		$a = $this->__decode($token);
-//print_r($a);
+
 		if (!$this->__hijack($a)){
-			return false;
+			return array('error'=>'Session hijack attempt detected, destroying token');
 		}
 
 		if (!$this->__timeout($a[6], $this->registry->opts['timeout'])){
-			return false;
+			return array('error'=>'The authenticated session has timed out, please re-authenticate');
 		}
 
 		$s = $this->__getSignature($a[0]);
 
 		if (!$s){
-			return false;
+			return array('error'=>'Could not obtain signature associated with authentication token, destroying token');
 		}
 
 		if (!$this->__checkSignature($_SESSION[$this->registry->libs->_getRealIPv4()]['token'], $s)){
-			return false;
+			return array('error'=>'Cryptographic verification of authentication token signature failed, destroying token');
 		}
 
 		$obj['email'] = $a[0];
@@ -290,9 +290,15 @@ class authentication
 	 */
 	private function __hijack($a)
 	{
-		if (!is_array($a)){
-			$x = ((strcmp($a[3], sha1($this->registry->libs->_getRealIPv4()))===0)&&(strcmp($a[4], sha1(genenv('HTTP_USER_AGENT')))===0)&&(filter_var($a[5], FILTER_VALIDATE_REGEXP, array('options'=> array('regexp'=>'/^http(s?)\:\/\/'.getenv('HTTP_REFERER').'/Di')))));
-		}else{
+		//log::instance('/tmp/sso.log', $this->registry->keyring->ssl->aesDenc($a[3], $this->pass, $this->registry->libs->_16($this->registry->libs->_hash($this->pass, $this->registry->libs->_salt($this->registry->opts['dbKey'], 2048)))).' :: '.sha1($this->registry->libs->_getRealIPv4()));
+		//log::instance('/tmp/sso.log', $this->registry->keyring->ssl->aesDenc($a[4], $this->pass, $this->registry->libs->_16($this->registry->libs->_hash($this->pass, $this->registry->libs->_salt($this->registry->opts['dbKey'], 2048)))).' :: '.sha1(getenv('HTTP_USER_AGENT')));
+		//log::instance('/tmp/sso.log', $this->registry->keyring->ssl->aesDenc($a[5], $this->pass, $this->registry->libs->_16($this->registry->libs->_hash($this->pass, $this->registry->libs->_salt($this->registry->opts['dbKey'], 2048)))).' :: '.getenv('HTTP_REFERER'));
+
+		if (is_array($a)){
+			$x = ((strcmp($this->registry->keyring->ssl->aesDenc($a[3], $this->pass, $this->registry->libs->_16($this->registry->libs->_hash($this->pass, $this->registry->libs->_salt($this->registry->opts['dbKey'], 2048)))), sha1($this->registry->libs->_getRealIPv4()))==0)&&
+				  (strcmp($this->registry->keyring->ssl->aesDenc($a[4], $this->pass, $this->registry->libs->_16($this->registry->libs->_hash($this->pass, $this->registry->libs->_salt($this->registry->opts['dbKey'], 2048)))), sha1(getenv('HTTP_USER_AGENT')))==0)&&
+				  (filter_var($this->registry->keyring->ssl->aesDenc($a[5], $this->pass, $this->registry->libs->_16($this->registry->libs->_hash($this->pass, $this->registry->libs->_salt($this->registry->opts['dbKey'], 2048)))), FILTER_VALIDATE_REGEXP, array('options'=> array('regexp'=>'/^http(s?)\:\/\/'.getenv('HTTP_REFERER').'/Di')))));
+		} else {
 			$x = false;
 		}
 		return $x;

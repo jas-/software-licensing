@@ -38,6 +38,7 @@ class dashboardUsersController
 	 */
 	public function __construct($registry)
 	{
+		//echo '<pre>'; print_r($_SESSION); echo '</pre>';
 		$this->registry = $registry;
 	}
 

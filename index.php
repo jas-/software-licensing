@@ -61,7 +61,8 @@ if (!class_exists('dbSession')){
 
 /* create new instance of sessions? */
 if (!is_object($regsitry->sessions)){
-	$registry->sessions = new dbSession($settings['sessions'], $registry);
+	//$registry->sessions = new dbSession($settings['sessions'], $registry);
+	$registry->sessions = dbSession::instance($settings['sessions'], $registry);
 }
 
 /* generate or use CSRF token */
