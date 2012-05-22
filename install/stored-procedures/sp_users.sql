@@ -32,12 +32,12 @@ BEGIN
 END//
 
 DROP PROCEDURE IF EXISTS Users_GetToken//
-CREATE DEFINER='licensing'@'localhost' PROCEDURE Users_GetToken(IN `email` VARCHAR(128), IN `sKey` LONGTEXT)
+CREATE DEFINER='licensing'@'localhost' PROCEDURE Users_GetToken(IN `emailAddy` VARCHAR(128), IN `sKey` LONGTEXT)
  DETERMINISTIC
  SQL SECURITY INVOKER
  COMMENT 'Decrypts and retrieves users authenticated token signature'
 BEGIN
- SELECT AES_DECRYPT(BINARY(UNHEX(authentication_token)), SHA1(sKey)) AS signature FROM `authentication` WHERE AES_DECRYPT(BINARY(UNHEX(email)), SHA1(sKey))=email;
+ SELECT AES_DECRYPT(BINARY(UNHEX(authentication_token)), SHA1(sKey)) AS signature FROM `authentication` WHERE AES_DECRYPT(BINARY(UNHEX(email)), SHA1(sKey))=emailAddy;
 END//
 
 DROP PROCEDURE IF EXISTS Users_GetLevelGroup//

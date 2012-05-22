@@ -226,7 +226,7 @@ class authentication
 		$s = $this->__getSignature($a[0]);
 
 		if (!$s){
-			return array('error'=>'Could not obtain signature associated with authentication token, destroying token');
+			return array('error'=>'Could not obtain signature associated with authentication, destroying token');
 		}
 
 		if (!$this->__checkSignature($_SESSION[$this->registry->libs->_getRealIPv4()]['token'], $s)){
@@ -290,14 +290,10 @@ class authentication
 	 */
 	private function __hijack($a)
 	{
-		//log::instance('/tmp/sso.log', $this->registry->keyring->ssl->aesDenc($a[3], $this->pass, $this->registry->libs->_16($this->registry->libs->_hash($this->pass, $this->registry->libs->_salt($this->registry->opts['dbKey'], 2048)))).' :: '.sha1($this->registry->libs->_getRealIPv4()));
-		//log::instance('/tmp/sso.log', $this->registry->keyring->ssl->aesDenc($a[4], $this->pass, $this->registry->libs->_16($this->registry->libs->_hash($this->pass, $this->registry->libs->_salt($this->registry->opts['dbKey'], 2048)))).' :: '.sha1(getenv('HTTP_USER_AGENT')));
-		//log::instance('/tmp/sso.log', $this->registry->keyring->ssl->aesDenc($a[5], $this->pass, $this->registry->libs->_16($this->registry->libs->_hash($this->pass, $this->registry->libs->_salt($this->registry->opts['dbKey'], 2048)))).' :: '.getenv('HTTP_REFERER'));
-
 		if (is_array($a)){
 			$x = ((strcmp($this->registry->keyring->ssl->aesDenc($a[3], $this->pass, $this->registry->libs->_16($this->registry->libs->_hash($this->pass, $this->registry->libs->_salt($this->registry->opts['dbKey'], 2048)))), sha1($this->registry->libs->_getRealIPv4()))==0)&&
 				  (strcmp($this->registry->keyring->ssl->aesDenc($a[4], $this->pass, $this->registry->libs->_16($this->registry->libs->_hash($this->pass, $this->registry->libs->_salt($this->registry->opts['dbKey'], 2048)))), sha1(getenv('HTTP_USER_AGENT')))==0)&&
-				  (filter_var($this->registry->keyring->ssl->aesDenc($a[5], $this->pass, $this->registry->libs->_16($this->registry->libs->_hash($this->pass, $this->registry->libs->_salt($this->registry->opts['dbKey'], 2048)))), FILTER_VALIDATE_REGEXP, array('options'=> array('regexp'=>'/^http(s?)\:\/\/'.getenv('HTTP_REFERER').'/Di')))));
+				  (filter_var(urlencode($this->registry->keyring->ssl->aesDenc($a[5], $this->pass, $this->registry->libs->_16($this->registry->libs->_hash($this->pass, $this->registry->libs->_salt($this->registry->opts['dbKey'], 2048))))), FILTER_VALIDATE_REGEXP, array('options'=> array('regexp'=>'/^'.urlencode(getenv('HTTP_REFERER')).'/Di')))));
 		} else {
 			$x = false;
 		}
@@ -372,7 +368,8 @@ class authentication
 		$r = false;
 		if (!empty($email)) {
 			try {
-				$sql = sprintf('CALL Users_GetToken("%s", "%s")', $this->registry->db->sanitize($email), $this->pass);
+				$sql = sprintf('CALL Users_GetToken("%s", "%s")', $this->registry->db->sanitize($this->registry->keyring->ssl->aesDenc($email, $this->pass, $this->registry->libs->_16($this->registry->libs->_hash($this->pass, $this->registry->libs->_salt($this->registry->opts['dbKey'], 2048))))), $this->pass);
+				echo $sql;
 				$r = $this->registry->db->query($sql);
 			} catch(Exception $e) {
 				// error handler
