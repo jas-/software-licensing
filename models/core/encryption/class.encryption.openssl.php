@@ -399,9 +399,9 @@ class openssl
  public function verify($data, $sig, $key, $algo="sha512")
  {
   $id = openssl_pkey_get_public($key);
-  $r = openssl_verify($data, $sig, $id, $algo);
+  $r = openssl_verify($data, base64_decode($sig), $key, $algo);
   openssl_free_key($id);
-  return $r;
+  return ($r==1) ? true : false;
  }
 
  /*!

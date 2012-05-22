@@ -126,6 +126,7 @@ class authentication
 				if (!$token) {
 					return array('error'=>'Authenticated token generation failed, cannot continue');
 				}
+
 				$obj['signature'] = $this->registry->keyring->ssl->sign($token, $_SESSION[$this->registry->libs->_getRealIPv4()]['privateKey'], $_SESSION[$this->registry->libs->_getRealIPv4()]['password']);
 				$x = $this->__register($obj);
 
@@ -219,24 +220,23 @@ class authentication
 			return array('error'=>'Session hijack attempt detected, destroying token');
 		}
 
-		if (!$this->__timeout($a[6], $this->registry->opts['timeout'])){
+		if ($this->__timeout($a[6], $this->registry->opts['timeout'])){
 			return array('error'=>'The authenticated session has timed out, please re-authenticate');
 		}
 
 		$s = $this->__getSignature($a[0]);
 
-		if (!$s){
+		if (empty($s['signature'])){
 			return array('error'=>'Could not obtain signature associated with authentication, destroying token');
 		}
 
-		if (!$this->__checkSignature($_SESSION[$this->registry->libs->_getRealIPv4()]['token'], $s)){
+		if (!$this->__checkSignature($_SESSION[$this->registry->libs->_getRealIPv4()]['token'], $s['signature'])){
 			return array('error'=>'Cryptographic verification of authentication token signature failed, destroying token');
 		}
 
 		$obj['email'] = $a[0];
 
 		$token = $this->__genToken($obj);
-
 		$obj['signature'] = $this->registry->keyring->ssl->sign($token, $_SESSION[$this->registry->libs->_getRealIPv4()]['privateKey'], $_SESSION[$this->registry->libs->_getRealIPv4()]['password']);
 		$x = $this->__register($obj);
 
@@ -369,7 +369,6 @@ class authentication
 		if (!empty($email)) {
 			try {
 				$sql = sprintf('CALL Users_GetToken("%s", "%s")', $this->registry->db->sanitize($this->registry->keyring->ssl->aesDenc($email, $this->pass, $this->registry->libs->_16($this->registry->libs->_hash($this->pass, $this->registry->libs->_salt($this->registry->opts['dbKey'], 2048))))), $this->pass);
-				echo $sql;
 				$r = $this->registry->db->query($sql);
 			} catch(Exception $e) {
 				// error handler
@@ -387,10 +386,12 @@ class authentication
 		if ((empty($token))||(empty($signature))) {
 			return false;
 		}
-		if (!$this->registry->ssl->verify($token, $signature, $_SESSION[$this->registry->libs->_getRealIPv4()]['publicKey'])) {
-			return false;
+
+		if ($this->registry->keyring->ssl->verify($token, $signature, $_SESSION[$this->registry->libs->_getRealIPv4()]['publicKey'])) {
+			return true;
 		}
-		return true;
+
+		return false;
 	}
 
 	/**
