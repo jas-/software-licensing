@@ -210,9 +210,15 @@ class authentication
 	 *! @function __reauth
 	 *  @abstract Decodes token and re-authenticates user
 	 */
-	public function __reauth($token)
+	public function __reauth($token, $hash)
 	{
 		$this->pass = $_SESSION[$this->registry->libs->_getRealIPv4()]['password'];
+
+		if (!empty($hash)) {
+			if (strcmp($hash, sha1($token))!==0) {
+				return array('error'=>'Authentication provided incorrect, destroying token');
+			}
+		}
 
 		$a = $this->__decode($token);
 
@@ -236,13 +242,11 @@ class authentication
 		}
 		*/
 
-		$obj['email'] = $a[0];
+		$token = $this->__regenToken($a);
+		$a['signature'] = $this->registry->keyring->ssl->sign($token, $_SESSION[$this->registry->libs->_getRealIPv4()]['privateKey'], $_SESSION[$this->registry->libs->_getRealIPv4()]['password']);
+		$x = $this->__register($a);
 
-		$token = $this->__genToken($obj);
-		$obj['signature'] = $this->registry->keyring->ssl->sign($token, $_SESSION[$this->registry->libs->_getRealIPv4()]['privateKey'], $_SESSION[$this->registry->libs->_getRealIPv4()]['password']);
-		$x = $this->__register($obj);
-
-		return $x;
+		return ($x) ? array('success'=>'Re-authentication succeeded', 'token'=>$token) : array('error'=>'Re-authenticaiton failed');
 	}
 
 	/**
@@ -328,6 +332,21 @@ class authentication
 
 			return sha1($token);
 		}
+	}
+
+	/**
+	 *! @function __regenToken
+	 *  @abstract Regenerates unique token based on visiting machine and
+	 *            authenticated user information
+	 */
+	private function __regenToken($obj)
+	{
+		$token = sprintf("%s:%s:%s:%s:%s:%s:%d",
+						$obj[0], $obj[1], $obj[2], $obj[3], $obj[4], $obj[5], time());
+
+		$_SESSION[$this->registry->libs->_getRealIPv4()]['token'] = $token;
+
+		return sha1($token);
 	}
 
 	/**

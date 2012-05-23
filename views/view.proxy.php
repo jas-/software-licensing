@@ -81,8 +81,8 @@ class proxyView
 			switch($cmd){
 				case 'authenticate':
 					$auth = authentication::instance($this->registry);
-					$token = (!empty($_GET['token'])) ? $_GET['token'] : (!empty($_SERVER['HTTP_AUTHORIZATION'])) ? $_SERVER['HTTP_AUTHORIZATION'] : false;
-					$x = ($token) ? $auth->__reauth($token) : $auth->__do($this->registry->val->__do($_POST));
+					$token = (!empty($_GET['token'])) ? $_GET['token'] : (!empty($_SERVER['HTTP_AUTHORIZATION'])) ? $_SERVER['HTTP_AUTHORIZATION'] : (!empty($_COOKIE['token'])) ? $_COOKIE['token'] : false;
+					$x = (!empty($token)) ? $auth->__reauth($_SESSION[$this->registry->libs->_getRealIPv4()]['token'], $token) : $auth->__do($this->registry->val->__do($_POST));
 					break;
 				case 'key':
 					$x = $this->registry->keyring->__public($this->registry->val->__do($_POST['email']));
