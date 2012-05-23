@@ -230,9 +230,11 @@ class authentication
 			return array('error'=>'Could not obtain signature associated with authentication, destroying token');
 		}
 
+		/* Disabled due to bug id#61930
 		if (!$this->__checkSignature($_SESSION[$this->registry->libs->_getRealIPv4()]['token'], $s['signature'])){
 			return array('error'=>'Cryptographic verification of authentication token signature failed, destroying token');
 		}
+		*/
 
 		$obj['email'] = $a[0];
 
@@ -240,7 +242,7 @@ class authentication
 		$obj['signature'] = $this->registry->keyring->ssl->sign($token, $_SESSION[$this->registry->libs->_getRealIPv4()]['privateKey'], $_SESSION[$this->registry->libs->_getRealIPv4()]['password']);
 		$x = $this->__register($obj);
 
-		return ((empty($x['error']))&&(!empty($x['success']))) ? true : false;
+		return $x;
 	}
 
 	/**
