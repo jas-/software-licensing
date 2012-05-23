@@ -38,6 +38,7 @@ class dashboardUsersController
 	 */
 	public function __construct($registry)
 	{
+		//echo '<pre>'; print_r($_SESSION); echo '</pre>';
 		$this->registry = $registry;
 	}
 
@@ -47,7 +48,8 @@ class dashboardUsersController
 	 */
 	private function __auth($token)
 	{
-		$this->registry->keyring = new keyring($this->registry, $this->registry->val->__do($_POST));
+		$email = (!empty($_SESSION[$this->registry->libs->_getRealIPv4()]['email'])) ? array('email'=>$_SESSION[$this->registry->libs->_getRealIPv4()]['email']) : $_POST;
+		$this->registry->keyring = new keyring($this->registry, $this->registry->val->__do($email));
 		$auth = authentication::instance($this->registry);
 		return ($auth->__reauth($token)) ? true : false;
 	}
@@ -79,7 +81,7 @@ class dashboardUsersController
 	 */
 	public function index()
 	{
-		if ($this->__auth($_SESSION['token'])) {
+		if ($this->__auth($_SESSION[$this->registry->libs->_getRealIPv4()]['token'])) {
 			$auth = authentication::instance($this->registry);
 
 			$l = $auth->__level($_SESSION[$this->registry->libs->_getRealIPv4()]['token']);

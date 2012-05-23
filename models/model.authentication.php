@@ -89,6 +89,14 @@ class authentication
 	/**
 	 *! @function __do
 	 *  @abstract Performs initial authentication
+	 *            1. Checks for existing session token & re-authenticates if present
+	 *            2. Decrypts submitted authentication credentials & exits if it fails
+	 *            3. Performs authentication on decrypted form submission
+	 *            4. Generates new sesssion token upon successful authentication
+	 *            5. Associates signature digest with user account to help prevent
+	 *               token manipulation
+	 *            6. Generates response consisting of success message, hash of session
+	 *               token (to be used for cross domain & SSO purposes)
 	 */
 	public function __do($creds)
 	{
@@ -97,6 +105,10 @@ class authentication
 		} else {
 
 			$obj = $this->__decrypt($creds);
+			if (array_key_exists('error', $obj)) {
+				return $obj;
+			}
+
 			$x = $this->__auth($obj);
 
 			if (is_array($x)){
@@ -104,7 +116,7 @@ class authentication
 			} else {
 
 				if ($x) {
-					$k = $this->__reinit($this->__reset($obj['email']));
+					$k = $this->__reinit($this->__reset($obj['email']), $obj['email']);
 					if (is_array($k)) {
 						$keyring = array('email'=>$this->registry->val->__do($obj['email'], 'email'), 'key'=>$k['publicKey']);
 					}
@@ -114,6 +126,7 @@ class authentication
 				if (!$token) {
 					return array('error'=>'Authenticated token generation failed, cannot continue');
 				}
+
 				$obj['signature'] = $this->registry->keyring->ssl->sign($token, $_SESSION[$this->registry->libs->_getRealIPv4()]['privateKey'], $_SESSION[$this->registry->libs->_getRealIPv4()]['password']);
 				$x = $this->__register($obj);
 
@@ -131,7 +144,7 @@ class authentication
 	{
 		try {
 			$sql = sprintf('CALL Configuration_keys_get("%s", "%s")', $email, $this->pass);
-			$r = $this->registry->db->querY($sql);
+			$r = $this->registry->db->query($sql);
 			return (is_array($r)) ? $r : false;
 		} catch(Exception $e) {
 			// error handling
@@ -144,14 +157,13 @@ class authentication
 	 *            based on the currently authenticated users private key to
 	 *            further segregate user authentication from one another
 	 */
-	private function __reinit($obj)
+	private function __reinit($obj, $email)
 	{
 		if (is_array($obj)) {
-
 			unset($this->registry->keyring->ssl);
 			$this->registry->keyring->ssl = openssl::instance($obj);
 
-		    $_SESSION[$this->registry->libs->_getRealIPv4()]['email'] = $this->email;
+		    $_SESSION[$this->registry->libs->_getRealIPv4()]['email'] = $email;
 			$_SESSION[$this->registry->libs->_getRealIPv4()]['privateKey'] = $obj['privateKey'];
 			$_SESSION[$this->registry->libs->_getRealIPv4()]['publicKey'] = $obj['publicKey'];
 			$_SESSION[$this->registry->libs->_getRealIPv4()]['password'] = $this->pass;
@@ -200,30 +212,31 @@ class authentication
 	 */
 	public function __reauth($token)
 	{
+		$this->pass = $_SESSION[$this->registry->libs->_getRealIPv4()]['password'];
+
 		$a = $this->__decode($token);
 
 		if (!$this->__hijack($a)){
-			return false;
+			return array('error'=>'Session hijack attempt detected, destroying token');
 		}
 
-		if (!$this->__timeout($a[6], $this->registry->opts['timeout'])){
-			return false;
+		if ($this->__timeout($a[6], $this->registry->opts['timeout'])){
+			return array('error'=>'The authenticated session has timed out, please re-authenticate');
 		}
 
 		$s = $this->__getSignature($a[0]);
 
-		if (!$s){
-			return false;
+		if (empty($s['signature'])){
+			return array('error'=>'Could not obtain signature associated with authentication, destroying token');
 		}
 
-		if (!$this->__checkSignature($_SESSION[$this->registry->libs->_getRealIPv4()]['token'], $s)){
-			return false;
+		if (!$this->__checkSignature($_SESSION[$this->registry->libs->_getRealIPv4()]['token'], $s['signature'])){
+			return array('error'=>'Cryptographic verification of authentication token signature failed, destroying token');
 		}
 
 		$obj['email'] = $a[0];
 
 		$token = $this->__genToken($obj);
-
 		$obj['signature'] = $this->registry->keyring->ssl->sign($token, $_SESSION[$this->registry->libs->_getRealIPv4()]['privateKey'], $_SESSION[$this->registry->libs->_getRealIPv4()]['password']);
 		$x = $this->__register($obj);
 
@@ -240,6 +253,23 @@ class authentication
 			$x = array();
 			foreach($obj as $key => $value){
 				$x[$key] = $this->registry->keyring->ssl->privDenc($value, $_SESSION[$this->registry->libs->_getRealIPv4()]['privateKey'], $_SESSION[$this->registry->libs->_getRealIPv4()]['password']);
+			}
+		}
+		return ($this->__dHlpr($obj, $x)) ? $x : array('error'=>'Decryption of submitted form data failed');
+	}
+
+	/**
+	 *! @function __dHlpr
+	 *  @abstract Compares original key/value with decrypted key/value to ensure no missing data
+	 */
+	private function __dHlpr($orig, $dec)
+	{
+		$x = true;
+		if (is_array($dec)) {
+			foreach($dec as $key => $value) {
+				if ((array_key_exists($key, $orig))&&(empty($value))) {
+					return false;
+				}
 			}
 		}
 		return $x;
@@ -260,9 +290,11 @@ class authentication
 	 */
 	private function __hijack($a)
 	{
-		if (!is_array($a)){
-			$x = ((strcmp($a[3], sha1($this->registry->libs->_getRealIPv4()))===0)&&(strcmp($a[4], sha1(genenv('HTTP_USER_AGENT')))===0)&&(filter_var($a[5], FILTER_VALIDATE_REGEXP, array('options'=> array('regexp'=>'/^http(s?)\:\/\/'.getenv('HTTP_REFERER').'/Di')))));
-		}else{
+		if (is_array($a)){
+			$x = ((strcmp($this->registry->keyring->ssl->aesDenc($a[3], $this->pass, $this->registry->libs->_16($this->registry->libs->_hash($this->pass, $this->registry->libs->_salt($this->registry->opts['dbKey'], 2048)))), sha1($this->registry->libs->_getRealIPv4()))==0)&&
+				  (strcmp($this->registry->keyring->ssl->aesDenc($a[4], $this->pass, $this->registry->libs->_16($this->registry->libs->_hash($this->pass, $this->registry->libs->_salt($this->registry->opts['dbKey'], 2048)))), sha1(getenv('HTTP_USER_AGENT')))==0)&&
+				  (filter_var(urlencode($this->registry->keyring->ssl->aesDenc($a[5], $this->pass, $this->registry->libs->_16($this->registry->libs->_hash($this->pass, $this->registry->libs->_salt($this->registry->opts['dbKey'], 2048))))), FILTER_VALIDATE_REGEXP, array('options'=> array('regexp'=>'/^'.urlencode(getenv('HTTP_REFERER')).'/Di')))));
+		} else {
 			$x = false;
 		}
 		return $x;
@@ -336,7 +368,7 @@ class authentication
 		$r = false;
 		if (!empty($email)) {
 			try {
-				$sql = sprintf('CALL Users_GetToken("%s", "%s")', $this->registry->db->sanitize($email), $this->pass);
+				$sql = sprintf('CALL Users_GetToken("%s", "%s")', $this->registry->db->sanitize($this->registry->keyring->ssl->aesDenc($email, $this->pass, $this->registry->libs->_16($this->registry->libs->_hash($this->pass, $this->registry->libs->_salt($this->registry->opts['dbKey'], 2048))))), $this->pass);
 				$r = $this->registry->db->query($sql);
 			} catch(Exception $e) {
 				// error handler
@@ -354,10 +386,12 @@ class authentication
 		if ((empty($token))||(empty($signature))) {
 			return false;
 		}
-		if (!$this->registry->ssl->verify($token, $signature, $_SESSION[$this->registry->libs->_getRealIPv4()]['publicKey'])) {
-			return false;
+
+		if ($this->registry->keyring->ssl->verify($token, $signature, $_SESSION[$this->registry->libs->_getRealIPv4()]['publicKey'])) {
+			return true;
 		}
-		return true;
+
+		return false;
 	}
 
 	/**

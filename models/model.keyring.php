@@ -83,7 +83,8 @@ class keyring
 	public function __construct($registry, $args)
 	{
 		$this->registry = $registry;
-		$this->__setup($this->registry->val->__do($args['email'], 'email'));
+		$email = (!empty($_SESSION[$this->registry->libs->_getRealIPv4()]['email'])) ? $_SESSION[$this->registry->libs->_getRealIPv4()]['email'] : $args['email'];
+		$this->__setup($this->registry->val->__do($email));
 	}
 
 	/**
@@ -119,7 +120,7 @@ class keyring
 		}
 
 		if (is_object($this->ssl)){
-			(!empty($args['email'])) ? $this->__keyring($_POST['email']) : $this->__keyring();
+			(!empty($args['email'])) ? $this->__keyring($args['email']) : $this->__keyring();
 		}
 	}
 
@@ -169,6 +170,7 @@ class keyring
 	private function __keyring($email=false)
 	{
 		$r = true;
+		$email = (!empty($_SESSION[$this->registry->libs->_getRealIPv4()]['email'])) ? $_SESSION[$this->registry->libs->_getRealIPv4()]['email'] : $email;
 		try{
 			if ($this->__chkKeys($_SESSION[$this->registry->libs->_getRealIPv4()])){
 				if (!$email){
@@ -217,7 +219,7 @@ class keyring
 	 */
 	private function __chkKeys($a)
 	{
-		if ((is_array($a))&&(count($a)>=1)&&(!in_array('privateKey', $a))&&(!in_array('publicKey', $a))&&(!in_array('emailAddress', $a))&&(!in_array('password', $a))) {
+		if ((is_array($a))&&(count($a)>=1)&&(!in_array('privateKey', $a))&&(!in_array('publicKey', $a))&&(!in_array('email', $a))&&(!in_array('password', $a))) {
 			$x=true;
 		}else{
 			$x=false;

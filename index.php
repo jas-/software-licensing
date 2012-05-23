@@ -58,7 +58,12 @@ $settings['sessions']['db-key'] = $registry->libs->_hash($settings['sessions']['
 if (!class_exists('dbSession')){
 	exit('Error loading database session support, unable to proceed. 0x0c6');
 }
-$registry->sessions = new dbSession($settings['sessions'], $registry);
+
+/* create new instance of sessions? */
+if (!is_object($regsitry->sessions)){
+	//$registry->sessions = new dbSession($settings['sessions'], $registry);
+	$registry->sessions = dbSession::instance($settings['sessions'], $registry);
+}
 
 /* generate or use CSRF token */
 if (!isset($_SESSION[$registry->libs->_getRealIPv4()]['csrf'])) {

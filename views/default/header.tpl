@@ -11,6 +11,7 @@
  <script src="{$templates}/js/pidCrypt/javascripts/compressed/pidcrypt_c.js"></script>
  <script src="{$templates}/js/pidCrypt/javascripts/compressed/pidcrypt_util_c.js"></script>
  <script src="{$templates}/js/pidCrypt/javascripts/compressed/md5_c.js"></script>
+ <script src="{$templates}/js/pidCrypt/javascripts/compressed/sha512_c.js"></script>
  <script src="{$templates}/js/pidCrypt/javascripts/compressed/asn1_c.js"></script>
  <script src="{$templates}/js/pidCrypt/javascripts/compressed/jsbn_c.js"></script>
  <script src="{$templates}/js/pidCrypt/javascripts/compressed/rng_c.js"></script>
@@ -21,7 +22,7 @@
  <script src="{$templates}/js/gibberish-aes.min.js" type="text/javascript"></script>
  <script src="{$templates}/js/jQuery.AJAX.min.js" type="text/javascript"></script>
  <script src="{$templates}/js/jQuery.handleStorage.min.js" type="text/javascript"></script>
- <script src="{$templates}/js/jQuery.pidCrypt.js"></script>
+ <script src="{$templates}/js/jQuery.pidCrypt.min.js"></script>
  <script src="{$templates}/js/libraries.js"></script>
 </head>
 <body>
