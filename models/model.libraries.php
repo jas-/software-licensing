@@ -278,8 +278,8 @@ class libraries {
 	 */
 	function _serialize($array)
 	{
+		$x = '';
 		if ((is_array($array)) && (count($array) > 0)) {
-			$x = '';
 			foreach($array as $key => $value) {
 				$x .= $key.'='.$value.'&';
 			}

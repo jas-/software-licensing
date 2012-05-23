@@ -135,7 +135,7 @@ class logging {
 	 */
 	private function _main()
 	{
-		$x['guid'] = $_SESSION['csrf'];
+		$x['guid'] = $_SESSION[$this->registry->libs->_getRealIPv4()]['csrf'];
 		$x['adate'] = $this->_time();
 		$x['ip'] = $this->_ip();
 		$x['hostname'] = $this->_host();
