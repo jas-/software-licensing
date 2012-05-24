@@ -127,7 +127,7 @@ class authentication
 					return array('error'=>'Authenticated token generation failed, cannot continue');
 				}
 
-				$obj['signature'] = $this->registry->keyring->ssl->sign($token, $_SESSION[$this->registry->libs->_getRealIPv4()]['privateKey'], $_SESSION[$this->registry->libs->_getRealIPv4()]['password']);
+				$obj['signature'] = $this->registry->keyring->ssl->sign($_SESSION[$this->registry->libs->_getRealIPv4()]['token'], $_SESSION[$this->registry->libs->_getRealIPv4()]['privateKey'], $_SESSION[$this->registry->libs->_getRealIPv4()]['password']);
 				$x = $this->__register($obj);
 
 				$x = (($x)&&(is_array($keyring))) ? array('success'=>'User was successfully authenticated', 'token'=>sha1($_SESSION[$this->registry->libs->_getRealIPv4()]['token']), 'keyring'=>$keyring) : array('error'=>'An error occured when associating token with user');
@@ -210,7 +210,7 @@ class authentication
 	 *! @function __reauth
 	 *  @abstract Decodes token and re-authenticates user
 	 */
-	public function __reauth($token, $hash)
+	public function __reauth($token, $hash=false)
 	{
 		$this->pass = $_SESSION[$this->registry->libs->_getRealIPv4()]['password'];
 
@@ -236,11 +236,9 @@ class authentication
 			return array('error'=>'Could not obtain signature associated with authentication, destroying token');
 		}
 
-		/* Disabled due to bug id#61930
 		if (!$this->__checkSignature($_SESSION[$this->registry->libs->_getRealIPv4()]['token'], $s['signature'])){
 			return array('error'=>'Cryptographic verification of authentication token signature failed, destroying token');
 		}
-		*/
 
 		$token = $this->__regenToken($a);
 		$a['signature'] = $this->registry->keyring->ssl->sign($token, $_SESSION[$this->registry->libs->_getRealIPv4()]['privateKey'], $_SESSION[$this->registry->libs->_getRealIPv4()]['password']);
@@ -373,6 +371,7 @@ class authentication
 	{
 		try {
 			$sql = sprintf('CALL Users_AddUpdateToken("%s", "%s", "%s")', $this->registry->db->sanitize($obj['email']), $this->registry->db->sanitize($obj['signature']), $this->registry->db->sanitize($this->pass));
+			echo $sql;
 			$r = $this->registry->db->query($sql);
 		} catch(Exception $e) {
 			// error handling
