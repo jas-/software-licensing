@@ -241,7 +241,8 @@ class authentication
 		}
 
 		$token = $this->__regenToken($a);
-		$a['signature'] = $this->registry->keyring->ssl->sign($token, $_SESSION[$this->registry->libs->_getRealIPv4()]['privateKey'], $_SESSION[$this->registry->libs->_getRealIPv4()]['password']);
+		$a['signature'] = $this->registry->keyring->ssl->sign($_SESSION[$this->registry->libs->_getRealIPv4()]['token'], $_SESSION[$this->registry->libs->_getRealIPv4()]['privateKey'], $_SESSION[$this->registry->libs->_getRealIPv4()]['password']);
+		$a['email'] = $this->registry->keyring->ssl->aesDenc($a[0], $this->pass, $this->registry->libs->_16($this->registry->libs->_hash($this->pass, $this->registry->libs->_salt($this->registry->opts['dbKey'], 2048))));
 		$x = $this->__register($a);
 
 		return ($x) ? array('success'=>'Re-authentication succeeded', 'token'=>$token) : array('error'=>'Re-authenticaiton failed');
@@ -371,7 +372,6 @@ class authentication
 	{
 		try {
 			$sql = sprintf('CALL Users_AddUpdateToken("%s", "%s", "%s")', $this->registry->db->sanitize($obj['email']), $this->registry->db->sanitize($obj['signature']), $this->registry->db->sanitize($this->pass));
-			echo $sql;
 			$r = $this->registry->db->query($sql);
 		} catch(Exception $e) {
 			// error handling
