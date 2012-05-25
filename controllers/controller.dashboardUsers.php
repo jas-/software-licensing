@@ -118,9 +118,6 @@ class dashboardUsersController
 			$p = 'views/admin/view.dashboardDisallowed.php';
 			$c = 'dashboardDisallowed';
 		}
-		/* remove these once user management complete */
-		$p = 'views/admin/view.dashboardUsers.php';
-		$c = 'dashboardUsersView';
 		$this->__load($p, $c);
 	}
 }

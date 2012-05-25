@@ -118,9 +118,6 @@ class dashboardController
 			$p = 'views/admin/view.dashboardDisallowed.php';
 			$c = 'dashboardDisallowed';
 		}
-		/* remove these once dashboard complete */
-		$p = 'views/admin/view.dashboard.php';
-		$c = 'dashboardView';
 		$this->__load($p, $c);
 	}
 }

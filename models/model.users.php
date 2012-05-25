@@ -201,7 +201,7 @@ class users
 						   $this->registry->db->sanitize($details['email']),
 						   $this->registry->db->sanitize($keys['pri']),
 						   $this->registry->db->sanitize($keys['pub']),
-						   $this->registry->db->sanitize($keys['pwd']));
+						   $this->registry->db->sanitize($keys['pwd'])); echo $sql;
             $r = $this->registry->db->query($sql);
 		} catch(Exception $e) {
 			return false;
