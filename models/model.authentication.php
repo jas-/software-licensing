@@ -431,7 +431,7 @@ class authentication
 	public function __user($token)
 	{
 		if ($l = $this->__decode($token) !== false) {
-			return $l[0];
+			return $this->registry->keyring->ssl->aesDenc($l[0], $this->pass, $this->registry->libs->_16($this->registry->libs->_hash($this->pass, $this->registry->libs->_salt($this->registry->opts['dbKey'], 2048))));
 		}
 		return false;
 	}
@@ -442,8 +442,8 @@ class authentication
 	 */
 	public function __level($token)
 	{
-		if ($l = $this->__decode($token) !== false) {
-			return $l[1];
+		if (($l = $this->__decode($token)) !== false) {
+			return $this->registry->keyring->ssl->aesDenc($l[1], $this->pass, $this->registry->libs->_16($this->registry->libs->_hash($this->pass, $this->registry->libs->_salt($this->registry->opts['dbKey'], 2048))));
 		}
 		return false;
 	}
@@ -454,8 +454,8 @@ class authentication
 	 */
 	public function __group($token)
 	{
-		if ($l = $this->__decode($token) !== false) {
-			return $l[2];
+		if (($l = $this->__decode($token)) !== false) {
+			return $this->registry->keyring->ssl->aesDenc($l[2], $this->pass, $this->registry->libs->_16($this->registry->libs->_hash($this->pass, $this->registry->libs->_salt($this->registry->opts['dbKey'], 2048))));
 		}
 		return false;
 	}
