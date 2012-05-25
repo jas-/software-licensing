@@ -38,8 +38,8 @@ class dashboardController
 	 */
 	public function __construct($registry)
 	{
-		//echo '<pre>'; print_r($_SESSION); echo '</pre>';
 		$this->registry = $registry;
+		$this->registry->auth = authentication::instance($this->registry);
 	}
 
 	/**
@@ -49,8 +49,8 @@ class dashboardController
 	private function __auth($token)
 	{
 		$this->registry->keyring = new keyring($this->registry, $this->registry->val->__do($_POST));
-		$auth = authentication::instance($this->registry);
-		return ($auth->__reauth($token)) ? true : false;
+		$x = $this->registry->auth->__reauth($token);
+		return (array_key_exists('success', $x)) ? true : false;
 	}
 
 	/**
@@ -80,11 +80,10 @@ class dashboardController
 	 */
 	public function index()
 	{
-		if ($this->__auth($_SESSION['token'])) {
-			$auth = authentication::instance($this->registry);
+		if ($this->__auth($_SESSION[$this->registry->libs->_getRealIPv4()]['token'])) {
 
-			$l = $auth->__level($_SESSION[$this->registry->libs->_getRealIPv4()]['token']);
-			$g = $auth->__group($_SESSION[$this->registry->libs->_getRealIPv4()]['token']);
+			$l = $this->registry->auth->__level($_SESSION[$this->registry->libs->_getRealIPv4()]['token']);
+			$g = $this->registry->auth->__group($_SESSION[$this->registry->libs->_getRealIPv4()]['token']);
 
 			if (($l) && ($g)) {
 				switch($l) {

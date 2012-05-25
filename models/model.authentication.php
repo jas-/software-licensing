@@ -127,7 +127,7 @@ class authentication
 					return array('error'=>'Authenticated token generation failed, cannot continue');
 				}
 
-				$obj['signature'] = $this->registry->keyring->ssl->sign($token, $_SESSION[$this->registry->libs->_getRealIPv4()]['privateKey'], $_SESSION[$this->registry->libs->_getRealIPv4()]['password']);
+				$obj['signature'] = $this->registry->keyring->ssl->sign($_SESSION[$this->registry->libs->_getRealIPv4()]['token'], $_SESSION[$this->registry->libs->_getRealIPv4()]['privateKey'], $_SESSION[$this->registry->libs->_getRealIPv4()]['password']);
 				$x = $this->__register($obj);
 
 				$x = (($x)&&(is_array($keyring))) ? array('success'=>'User was successfully authenticated', 'token'=>sha1($_SESSION[$this->registry->libs->_getRealIPv4()]['token']), 'keyring'=>$keyring) : array('error'=>'An error occured when associating token with user');
@@ -210,41 +210,49 @@ class authentication
 	 *! @function __reauth
 	 *  @abstract Decodes token and re-authenticates user
 	 */
-	public function __reauth($token, $hash)
+	public function __reauth($token, $hash=false)
 	{
 		$this->pass = $_SESSION[$this->registry->libs->_getRealIPv4()]['password'];
 
 		if (!empty($hash)) {
 			if (strcmp($hash, sha1($token))!==0) {
 				return array('error'=>'Authentication provided incorrect, destroying token');
+				$this->__nuke();
 			}
 		}
 
 		$a = $this->__decode($token);
 
 		if (!$this->__hijack($a)){
+			$this->__nuke();
 			return array('error'=>'Session hijack attempt detected, destroying token');
 		}
 
 		if ($this->__timeout($a[6], $this->registry->opts['timeout'])){
+			$this->__nuke();
 			return array('error'=>'The authenticated session has timed out, please re-authenticate');
 		}
 
 		$s = $this->__getSignature($a[0]);
 
 		if (empty($s['signature'])){
+			$this->__nuke();
 			return array('error'=>'Could not obtain signature associated with authentication, destroying token');
 		}
 
-		/* Disabled due to bug id#61930
 		if (!$this->__checkSignature($_SESSION[$this->registry->libs->_getRealIPv4()]['token'], $s['signature'])){
+			$this->__nuke();
 			return array('error'=>'Cryptographic verification of authentication token signature failed, destroying token');
 		}
-		*/
 
 		$token = $this->__regenToken($a);
-		$a['signature'] = $this->registry->keyring->ssl->sign($token, $_SESSION[$this->registry->libs->_getRealIPv4()]['privateKey'], $_SESSION[$this->registry->libs->_getRealIPv4()]['password']);
+		$a['signature'] = $this->registry->keyring->ssl->sign($_SESSION[$this->registry->libs->_getRealIPv4()]['token'], $_SESSION[$this->registry->libs->_getRealIPv4()]['privateKey'], $_SESSION[$this->registry->libs->_getRealIPv4()]['password']);
+		$a['email'] = $this->registry->keyring->ssl->aesDenc($a[0], $this->pass, $this->registry->libs->_16($this->registry->libs->_hash($this->pass, $this->registry->libs->_salt($this->registry->opts['dbKey'], 2048))));
 		$x = $this->__register($a);
+
+		if (!$x) {
+			$this->__nuke();
+		}
 
 		return ($x) ? array('success'=>'Re-authentication succeeded', 'token'=>$token) : array('error'=>'Re-authenticaiton failed');
 	}
@@ -297,9 +305,10 @@ class authentication
 	private function __hijack($a)
 	{
 		if (is_array($a)){
+			$t = filter_var(urlencode($this->registry->keyring->ssl->aesDenc($a[5], $this->pass, $this->registry->libs->_16($this->registry->libs->_hash($this->pass, $this->registry->libs->_salt($this->registry->opts['dbKey'], 2048))))), FILTER_VALIDATE_REGEXP, array('options'=> array('regexp'=>'/^'.urlencode(getenv('HTTP_REFERER')).'/Di')));
 			$x = ((strcmp($this->registry->keyring->ssl->aesDenc($a[3], $this->pass, $this->registry->libs->_16($this->registry->libs->_hash($this->pass, $this->registry->libs->_salt($this->registry->opts['dbKey'], 2048)))), sha1($this->registry->libs->_getRealIPv4()))==0)&&
 				  (strcmp($this->registry->keyring->ssl->aesDenc($a[4], $this->pass, $this->registry->libs->_16($this->registry->libs->_hash($this->pass, $this->registry->libs->_salt($this->registry->opts['dbKey'], 2048)))), sha1(getenv('HTTP_USER_AGENT')))==0)&&
-				  (filter_var(urlencode($this->registry->keyring->ssl->aesDenc($a[5], $this->pass, $this->registry->libs->_16($this->registry->libs->_hash($this->pass, $this->registry->libs->_salt($this->registry->opts['dbKey'], 2048))))), FILTER_VALIDATE_REGEXP, array('options'=> array('regexp'=>'/^'.urlencode(getenv('HTTP_REFERER')).'/Di')))));
+				  (strcmp($t, urlencode(getenv('HTTP_REFERER'))==0)));
 		} else {
 			$x = false;
 		}
@@ -460,5 +469,17 @@ class authentication
 		return ($a < (time() - $v));
 	}
 
+	/**
+	 *! @function __nuke
+	 *  @abstract Kills authentication token, removes digital signature of
+	 *            authenticated user & destroys user specific authentication data
+	 */
+	private function __nuke()
+	{
+		$x = $this->__decode($_SESSION[$this->registry->libs->_getRealIPv4()]['token']);
+		$this->__register($x);
+		unset($_SESSION[$this->registry->libs->_getRealIPv4()]['token']);
+		return;
+	}
 }
 ?>
