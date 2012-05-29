@@ -20,7 +20,7 @@ if ((empty($settings['db']['hostname']))&&(empty($settings['db']['username']))&&
 
 /* execute autoload */
 if (!file_exists(__SITE.'/models/model.autoloader.php')){
-	 exit('Error loading autoloader class, unable to proceed. 0x0c2');
+	exit('Error loading autoloader class, unable to proceed. 0x0c2');
 }
 include __SITE.'/models/model.autoloader.php';
 
@@ -32,7 +32,7 @@ new autoloader('models/');
 
 /* load the registry class */
 if (!class_exists('registry')){
-	 exit('Error initializing registry class, unable to proceed. 0x0c4');
+	exit('Error initializing registry class, unable to proceed. 0x0c4');
 }
 $registry = new registry;
 

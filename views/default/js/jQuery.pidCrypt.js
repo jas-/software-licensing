@@ -91,6 +91,7 @@
      url: o.formID.attr('action'),
      type: o.formID.attr('method'),
      data: _data,
+	 dataType: o.type,
      crossDomain: (o.type==='jsonp') ? true : false,
      beforeSend: function(xhr){
       xhr.setRequestHeader('X-Alt-Referer', o.appID);
