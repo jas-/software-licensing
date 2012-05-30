@@ -53,7 +53,9 @@ class io
 
 	function __main($file)
 	{
-		return (!$this->__exists($file))
+		if (!$this->__exists($file)) {
+			return false;
+		}
 
 		$h = $this->__open($file);
 		if (!$h) {
