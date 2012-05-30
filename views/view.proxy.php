@@ -46,8 +46,9 @@ class proxyView
 	public function __construct($registry)
 	{
 		$this->registry = $registry;
-		$do = (!empty($_POST['key'])) ? 'key' : $this->registry->router->action;
-		exit($this->registry->libs->JSONencode($this->__decide($do)));
+		$do = ((!empty($_POST['key']))||(!empty($_GET['key']))) ? 'key' : $this->registry->router->action;
+		$response = (!empty($_GET['callback'])) ? $_GET['callback'].'('.$this->registry->libs->JSONencode($this->__decide($do)).')' : $this->registry->libs->JSONencode($this->__decide($do));
+		exit($response);
 	}
 
 	/**
