@@ -271,7 +271,7 @@ class dbSession
 	 */
 	private function _path()
 	{
-		return $_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
+		return ($_SERVER['HTTP_HOST'] == $_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'] : $_SERVER['HTTP_REFERER'];
 	}
 
 	/**
@@ -280,7 +280,7 @@ class dbSession
 	 */
 	private function _domain()
 	{
-		return $_SERVER['HTTP_HOST'];
+		return ($_SERVER['HTTP_HOST'] == $_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_HOST'] : $_SERVER['HTTP_REFERER'];
 	}
 
 	/**
