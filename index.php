@@ -1,4 +1,5 @@
 <?php
+
 /* define application path */
 define('__SITE', realpath(dirname(__FILE__)));
 
@@ -90,6 +91,16 @@ header('X-Alt-Referer: '.$_SESSION[$registry->libs->_getRealIPv4()]['csrf']);
 header('X-Forwarded-Proto: http');
 header('X-Frame-Options: deny');
 header('X-XSS-Protecton: 1;mode=deny');
+
+/* set headers when $_OPTIONS asks for specific access controls */
+/* this should also do a comparision against whitelist of allowed referal applications */
+if (!empty($_SERVER['HTTP_ORIGIN'])) {
+	header('Access-Control-Max-Age: -1728000');
+	header('Access-Control-Allow-Origin: http://localhost:8080');
+	header('Access-Control-Allow-Methods: POST');
+	header('Access-Control-Allow-Headers: Content-MD5, X-Alt-Referer, X-Requested-With');
+	header("Content-Type: application/json");
+}
 
 /* perform check against ACL to visitor */
 $access = new access($registry);

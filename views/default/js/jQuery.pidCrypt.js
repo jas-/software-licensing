@@ -91,15 +91,10 @@
      url: o.formID.attr('action'),
      type: o.formID.attr('method'),
      data: _data,
-	 dataType: o.type,
+     dataType: o.type,
      crossDomain: (o.type==='jsonp') ? true : false,
      beforeSend: function(xhr){
-      xhr.setRequestHeader('X-Alt-Referer', o.appID);
-      if (_validation.__vStr(_data)){
-       xhr.setRequestHeader('Content-MD5', pidCryptUtil.encodeBase64(pidCrypt.MD5(_data)));
-      } else {
-       xhr.setRequestHeader('Content-MD5', pidCryptUtil.encodeBase64(pidCrypt.MD5(o.appID)));
-      }
+      xhr = _main.__sH(o, xhr, _data);
       ((o.preCallback)&&($.isFunction(o.preCallback))) ? o.preCallback(xhr) : false;
      },
      success: function(x, status, xhr){
@@ -143,6 +138,25 @@
      }
     });
     return _encrypt.__eO(o, obj);
+   },
+
+   /**
+    * @function __sH
+    * @abstract Sets application specific header options
+    */
+   __sH: function(o, xhr, _data){
+    xhr.setRequestHeader('X-Alt-Referer', o.appID);
+    if (_validation.__vStr(_data)){
+     xhr.setRequestHeader('Content-MD5', pidCryptUtil.encodeBase64(pidCrypt.MD5(_data)));
+    } else {
+     xhr.setRequestHeader('Content-MD5', pidCryptUtil.encodeBase64(pidCrypt.MD5(o.appID)));
+    }
+    if (!_data){
+     xhr.setRequestHeader('Access-Control-Allow-Origin', _keys.__id());
+     xhr.setRequestHeader('Access-Control-Allow-Methods', 'POST');
+     xhr.setRequestHeader('Content-Type', 'application/json');
+    }
+    return xhr;
    }
   }
 
@@ -158,7 +172,7 @@
     */
    __hK: function(o){
     var y = function(){
-     var z = (this) ? JSON.parse(this) : false;
+     var z = (this) ? this : false;
      var email = ((z)&&(z.email)) ? z.email : o.appID;
      var key = ((z)&&(z.key)) ? z.key : false;
      if (!key) return false;
@@ -246,7 +260,7 @@
    __hR: function(r, o){
     var x = false;
     if (_validation.__szCk(r)>0){
-     $.each(JSON.parse(r), function(a, b){
+     $.each(r, function(a, b){
       if ((a==='keyring')&&(_validation.__vStr(b['email']))){
        if(!_keys.__hlpr(o, b['email'])){
         var k = _keys.__gUUID(null); var obj = {}; obj[k] = {};
@@ -636,6 +650,7 @@
     * @abstract Function used combine string checking functions
     */
    __vStr: function(x){
+    if (!x) return false;
     return ((x==false)||(x.length==0)||(!x)||(x==null)||(x=='')||(typeof x=='undefined')) ? false : true;
    },
 
