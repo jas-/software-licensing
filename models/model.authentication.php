@@ -103,7 +103,6 @@ class authentication
 		if (!empty($_SESSION[$this->registry->libs->_getRealIPv4()]['token'])){
 			$x = $this->__reauth($_SESSION[$this->registry->libs->_getRealIPv4()]['token']);
 		} else {
-
 			$obj = $this->__decrypt($creds);
 			if (array_key_exists('error', $obj)) {
 				return $obj;
