@@ -46,7 +46,7 @@ class openssl
 		if (function_exists('openssl_pkey_new')){
 			$this->setOpt($configuration);
 			$this->setDN($configuration);
-			$this->d = ($_SERVER["HTTP_X_REQUESTED_WITH"] === 'XMLHttpRequest') ? true : false;
+			$this->d = (($_SERVER["HTTP_X_REQUESTED_WITH"] === 'XMLHttpRequest') || (!preg_match('/'.$_SERVER['HTTP_HOST'].'/', $_SERVER['HTTP_REFERER']))) ? true : false;
 			return;
 		} else {
 			unset($instance);
@@ -334,11 +334,13 @@ class openssl
 	public function privDenc($crypt, $key, $pass)
 	{
 		$res = (is_array($key)) ? openssl_get_privatekey($key['key'], $pass) : openssl_get_privatekey($key, $pass);
-		if (is_resource($res)){
+		if (is_resource($res)) {
+			//openssl_private_decrypt($this->convertBin($crypt), $this->output, $res);
 			($this->d) ? openssl_private_decrypt($this->convertBin($crypt), $this->output, $res) : openssl_private_decrypt($crypt, $this->output, $res);
 		} else {
 			return false;
 		}
+		//return base64_decode($this->output);
 		return ($this->d) ? base64_decode($this->output) : $this->output;
 	}
 

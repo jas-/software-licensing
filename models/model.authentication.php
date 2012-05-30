@@ -263,8 +263,8 @@ class authentication
 	private function __decrypt($obj)
 	{
 		if (count($obj)>0){
-			$x = array();
-			foreach($obj as $key => $value){
+			$x = array(); $obj = $this->__strip($obj);
+			foreach($obj as $key => $value) {
 				$x[$key] = $this->registry->keyring->ssl->privDenc($value, $_SESSION[$this->registry->libs->_getRealIPv4()]['privateKey'], $_SESSION[$this->registry->libs->_getRealIPv4()]['password']);
 			}
 		}
@@ -282,6 +282,23 @@ class authentication
 			foreach($dec as $key => $value) {
 				if ((array_key_exists($key, $orig))&&(empty($value))) {
 					return false;
+				}
+			}
+		}
+		return $x;
+	}
+
+	/**
+	 *! @function __strip
+	 *  @abstract Strip out XMLHttpRequest specifics as they will cause decryption to fail
+	 */
+	private function __strip($data)
+	{
+		$x = false;
+		if (is_array($data)) {
+			foreach($data as $key => $value) {
+				if ((strcmp($key, '_')!=0)&&(strcmp($key, 'callback')!=0)&&(strcmp($key, 'nxs')!=0)) {
+					$x[$key] = $value;
 				}
 			}
 		}
