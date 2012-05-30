@@ -101,7 +101,7 @@ CREATE TABLE IF NOT EXISTS `configuration` (
   UNIQUE KEY `email` (`email`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci AUTO_INCREMENT=0;
 
--- Create a table for default application access list
+-- Create a table for client acess control list
 --  Primary key: id
 DROP TABLE IF EXISTS `configuration_access`;
 CREATE TABLE IF NOT EXISTS `configuration_access` (
@@ -111,6 +111,17 @@ CREATE TABLE IF NOT EXISTS `configuration_access` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `allow` (`allow`),
   UNIQUE KEY `deny` (`deny`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci AUTO_INCREMENT=0;
+
+-- Create a table for default application access list
+--  Primary key: id
+DROP TABLE IF EXISTS `configuration_applications`;
+CREATE TABLE IF NOT EXISTS `configuration_applications` (
+  `id` int(255) NOT NULL AUTO_INCREMENT,
+  `application` VARCHAR(255) DEFAULT NULL,
+  `url` VARCHAR(255) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `application` (`application`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci AUTO_INCREMENT=0;
 
 -- Create a table for default OpenSSL extension options
