@@ -90,8 +90,8 @@ class users
 
 		$auth = authentication::instance($this->registry);
 
-		$u = $this->__permsUser($auth->__user($_SESSION['token']));
-		$grp = $auth->__group($_SESSION['token']);
+		$u = $this->__permsUser($auth->__user($_SESSION[$this->registry->libs->_getRealIPv4()]['token']));
+		$grp = $auth->__group($_SESSION[$this->registry->libs->_getRealIPv4()]['token']);
 		$g = $this->__permsGroup($grp);
 
 		if (!empty($d['do'])) {

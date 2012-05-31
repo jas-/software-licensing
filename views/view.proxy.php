@@ -94,8 +94,8 @@ class proxyView
 					$x = $users->__do($this->registry->val->__do($_POST));
 					break;
 				case 'acl':
-					/* initialize acl class */
-					/* perform CRUD on data */
+					$acl = manageAccess($this->registry);
+					$x = $acl->__do($this->registry->val->__do($_POST));
 					break;
 				default:
 					$x = array('error'=>'Invalid command recieved, unable to process');

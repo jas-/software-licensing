@@ -184,7 +184,7 @@ class manageAccess
 	{
 		$list = 0;
 		try{
-			$list = $this->registry->libs->__flatten($this->registry->db->query($this->__query($t), true));
+			$list = $this->registry->libs->__flatten($this->registry->db->query($this->__queryList($t), true));
 		} catch(PDOException $e){
 			// error handling
 		}
@@ -195,11 +195,43 @@ class manageAccess
 	 *! @function __query
 	 *  @abstract Generates SQL query to access list of allowed/denied hosts
 	 */
-	private function __query($type)
+	private function __queryList($type)
 	{
 		return sprintf('CALL Configuration_access_get("%s", "%s")',
 						$this->registry->db->sanitize($type),
 						$this->registry->db->sanitize($this->registry->libs->_hash($this->registry->opts['dbKey'], $this->registry->libs->_salt($this->registry->opts['dbKey'], 2048))));
+	}
+
+	/**
+	 *! @function _add
+	 *  @abstract Determines allow or deny and adds/updates records
+	 */
+	public function _add($type, $data)
+	{
+		try{
+			$sql = sprintf("CALL Configuration_access_add_%s('%s', '%s')",
+						   $type, $this->registry->db->santize($data),
+						   $this->registry->db->sanitize($this->registry->libs->_hash($this->registry->opts['dbKey'], $this->registry->libs->_salt($this->registry->opts['dbKey'], 2048))));
+			$r = $this->registry->db->query($sql);
+		} catch(PDOException $e){
+			// error handling
+		}
+		return $r;
+	}
+
+	/**
+	 *! @function __decrypt
+	 *  @abstract Handle decryption of submitted form data
+	 */
+	private function __decrypt($obj)
+	{
+		if (count($obj)>0) {
+			$x = array();
+			foreach($obj as $key => $value) {
+				$x[$key] = $this->registry->keyring->ssl->privDenc($value, $_SESSION[$this->registry->libs->_getRealIPv4()]['privateKey'], $_SESSION[$this->registry->libs->_getRealIPv4()]['password']);
+			}
+		}
+		return $x;
 	}
 
 }
