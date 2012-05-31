@@ -118,10 +118,11 @@ CREATE TABLE IF NOT EXISTS `configuration_access` (
 DROP TABLE IF EXISTS `configuration_applications`;
 CREATE TABLE IF NOT EXISTS `configuration_applications` (
   `id` int(255) NOT NULL AUTO_INCREMENT,
+  `resource` varchar(128) NOT NULL,
   `application` VARCHAR(255) DEFAULT NULL,
   `url` VARCHAR(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `application` (`application`)
+  UNIQUE KEY `resource` (`resource`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci AUTO_INCREMENT=0;
 
 -- Create a table for default OpenSSL extension options
