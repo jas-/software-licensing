@@ -42,11 +42,10 @@ class proxyController
 	{
 		$this->registry = $registry;
 
-		$post = (!empty($_POST)) ?
-			$this->registry->libs->_serialize($_POST) : md5($_SESSION[$this->registry->libs->_getRealIPv4()]['csrf']);
-echo 'REQUEST MADE:';print_r(var_dump($this->__vRequest(getenv('HTTP_X_REQUESTED_WITH'))));
-echo 'X-ALT-REFERER:';print_r(var_dump($this->__vCSRF(getenv('HTTP_X_ALT_REFERER'), $_SESSION[$this->registry->libs->_getRealIPv4()]['csrf'])));
-echo 'CONTENT-MD5:';print_r(var_dump($this->__vCheckSum(getenv('HTTP_CONTENT_MD5'), $post)));
+		$post = (!empty($_POST)) ? $this->registry->libs->_serialize($_POST) : md5($_SESSION[$this->registry->libs->_getRealIPv4()]['csrf']);
+print_r(var_dump($this->__vRequest(getenv('HTTP_X_REQUESTED_WITH'))));
+print_r(var_dump($this->__vCSRF(getenv('HTTP_X_ALT_REFERER'), $_SESSION[$this->registry->libs->_getRealIPv4()]['csrf'])));
+print_r(var_dump($this->__vCheckSum(getenv('HTTP_CONTENT_MD5'), $post)));
 		if (($this->__vRequest(getenv('HTTP_X_REQUESTED_WITH')))&&
 			($this->__vCSRF(getenv('HTTP_X_ALT_REFERER'), $_SESSION[$this->registry->libs->_getRealIPv4()]['csrf']))&&
 			($this->__vCheckSum(getenv('HTTP_CONTENT_MD5'), $post))) {
@@ -80,7 +79,8 @@ echo 'CONTENT-MD5:';print_r(var_dump($this->__vCheckSum(getenv('HTTP_CONTENT_MD5
 	 */
 	private function __vCheckSum($header, $array)
 	{
-		return (strcmp(base64_decode($header), md5($this->registry->libs->_serialize($array)))!==0) ? false : true;
+		$string = (gettype($array)=='string') ? md5($array) : md5(md5($this->registry->libs->_serialize($array)));
+		return (strcmp(base64_decode($header), $string)!==0) ? false : true;
 	}
 
 	/**
