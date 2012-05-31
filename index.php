@@ -95,8 +95,8 @@ header('X-XSS-Protecton: 1;mode=deny');
 /* set headers when $_OPTIONS asks for specific access controls */
 /* this should also do a comparision against whitelist of allowed referal applications */
 if (!empty($_SERVER['HTTP_ORIGIN'])) {
-	header('Access-Control-Max-Age: -1728000');
-	header('Access-Control-Allow-Origin: http://localhost:8080');
+	header('Access-Control-Max-Age: 1728000');
+	header('Access-Control-Allow-Origin: http://rapp.dev:8080');
 	header('Access-Control-Allow-Methods: POST');
 	header('Access-Control-Allow-Headers: Content-MD5, X-Alt-Referer, X-Requested-With');
 	header("Content-Type: application/json");
