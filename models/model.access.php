@@ -135,4 +135,46 @@ class access {
 		return;
 	}
 }
+
+/**
+ *! @class access
+ *  @abstract Handles management of allow/deny list
+ */
+class manageAccess
+{
+	/**
+	 * @var registry object
+	 * @abstract Global class handler
+	 */
+	private $registry;
+
+	/**
+	 * @var instance object
+	 * @abstract This class handler
+	 */
+	protected static $instance;
+
+	/**
+	 *! @function init
+	 *  @abstract Creates singleton for allow/deny class
+	 *  @param $args array Array of registry items
+	 */
+	public static function init($args)
+	{
+		if (self::$instance == NULL)
+			self::$instance = new self($args);
+		return self::$instance;
+	}
+
+	/**
+	 *! @function __construct
+	 *  @abstract Class initialization and ip to access/deny processing
+	 *  @param $args array Array of registry items
+	 */
+	public function __construct($registry)
+	{
+		$this->registry = $registry;
+	}
+	
+}
 ?>

@@ -190,6 +190,10 @@ a:hover{
  margin-top:0.3em;
 }
 
+#form textarea{
+ width:70%;
+}
+
 .info, .success, .warning, .error, .validation{
  font-size:0.8em;
  border: 1px solid;
