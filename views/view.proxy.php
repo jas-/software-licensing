@@ -94,7 +94,7 @@ class proxyView
 					$x = $users->__do($this->registry->val->__do($_POST));
 					break;
 				case 'acl':
-					$acl = manageAccess($this->registry);
+					$acl = manageAccess::init($this->registry);
 					$x = $acl->__do($this->registry->val->__do($_POST));
 					break;
 				default:

@@ -44,9 +44,9 @@
   <div id="message"></div>
   <form id="acl" name="acl" method="post" action="?nxs=proxy/acl">
    <label for="allow">Allow: </label>
-    <textarea id="allow" name="allow" value="" placeholder="192.168.0.1, 10.10.0.0/24, 192.168.10.5-192.168.10.200" required="required">{$allow}</textarea><span class="required">*</span><br />
+    <textarea id="allow" name="allow" value="" placeholder="192.168.0.1, 10.10.0.0/24, 192.168.10.5-192.168.10.200">{$allow}</textarea><span class="required">*</span><br />
    <label for="deny">Deny: </label>
-    <textarea id="deny" name="deny" value="" placeholder="192.168.0.1, 10.10.0.0/24, 192.168.10.5-192.168.10.200" required="required">{$deny}</textarea><span class="required">*</span><br />
+    <textarea id="deny" name="deny" value="" placeholder="192.168.0.1, 10.10.0.0/24, 192.168.10.5-192.168.10.200">{$deny}</textarea><span class="required">*</span><br />
    <label></label>
     <input type="hidden" id="do" name="do" />
     <input type="submit" value="Add" id="submit-button" />

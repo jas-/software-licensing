@@ -12,6 +12,7 @@ BEGIN
  ELSE
   INSERT INTO `configuration_access` (`allow`) VALUES (HEX(AES_ENCRYPT(allow, SHA1(skey)))) ON DUPLICATE KEY UPDATE `allow`=HEX(AES_ENCRYPT(allow, SHA1(skey)));
  END IF;
+ SELECT ROW_COUNT() AS affected;
 END//
 
 DROP PROCEDURE IF EXISTS Configuration_access_add_deny//
@@ -26,6 +27,7 @@ BEGIN
  ELSE
   INSERT INTO `configuration_access` (`deny`) VALUES (HEX(AES_ENCRYPT(deny, SHA1(skey)))) ON DUPLICATE KEY UPDATE `deny`=HEX(AES_ENCRYPT(deny, SHA1(skey)));
  END IF;
+ SELECT ROW_COUNT() AS affected;
 END//
 
 DROP PROCEDURE IF EXISTS Configuration_access_del//

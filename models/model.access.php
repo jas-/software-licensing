@@ -177,6 +177,34 @@ class manageAccess
 	}
 	
 	/**
+	 *! @function __do
+	 *  @abstract Determines action and acts accordingly
+	 */
+	public function __do($obj)
+	{
+		$x = false;
+
+		$d = $this->__decrypt($obj);
+		$a = $d['do'];
+		unset($d['do']);
+
+		if (!empty($a)) {
+			switch($a) {
+				case 'add':
+					$x = $this->registry->libs->JSONEncode($this->_add($d));
+					break;
+				case 'edit':
+					break;
+				case 'del':
+					break;
+				default:
+                    break;
+			}
+		}
+		return $x;
+	}
+
+	/**
 	 *! @function _get
 	 *  @abstract Retrieves currently configured list of allowed/denied hosts
 	 */
@@ -206,17 +234,24 @@ class manageAccess
 	 *! @function _add
 	 *  @abstract Determines allow or deny and adds/updates records
 	 */
-	public function _add($type, $data)
+	private function _add($data)
 	{
-		try{
-			$sql = sprintf("CALL Configuration_access_add_%s('%s', '%s')",
-						   $type, $this->registry->db->santize($data),
-						   $this->registry->db->sanitize($this->registry->libs->_hash($this->registry->opts['dbKey'], $this->registry->libs->_salt($this->registry->opts['dbKey'], 2048))));
-			$r = $this->registry->db->query($sql);
-		} catch(PDOException $e){
-			// error handling
+		$r = 0;
+		if (!is_array($data)) {
+			return $r;
 		}
-		return $r;
+
+		foreach($data as $key => $value){
+			try{
+				$sql = sprintf('CALL Configuration_access_add_%s("%s", "%s")',	
+							   $key, $this->registry->db->sanitize($value),
+							   $this->registry->db->sanitize($this->registry->libs->_hash($this->registry->opts['dbKey'], $this->registry->libs->_salt($this->registry->opts['dbKey'], 2048))));
+				$r = $this->registry->db->query($sql);
+			} catch(PDOException $e){
+				// error handling
+			}
+		}
+		return ($r > 0) ? true : false;
 	}
 
 	/**
