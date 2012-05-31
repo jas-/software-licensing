@@ -151,6 +151,40 @@ class libraries {
 	}
 
 	/**
+	 *! @function __array2string
+	 *  @abstract Creates comma separated list from array values
+	 */
+	public function __array2string($a)
+	{
+		$x = '';
+		if ((count($a)>0)&&(is_array($a))){
+			foreach($a as $k => $v){
+				if (is_array($v)){
+					$x .= $this->__flatten($v);
+				} else {
+					$x .= $v.',';
+				}
+			}
+		} else {
+			$x = $a;
+		}
+		return (!is_array($x)) ? substr($x, 0, -1) : false;
+	}
+
+	/**
+	 *! @function __string2array
+	 *  @abstract Creates array from comma separated string
+	 */
+	public function __string2array($a)
+	{
+		$x = array();
+		if ((!empty($a))&&(preg_match('/[\w+]\,\s?', $a))) {
+			$x = preg_split('/\s/', preg_split('/,/', $a));
+		}
+		return (count($x) >0 ) ? $x : false;
+	}
+
+	/**
 	 *! @function __flatten
 	 *  @abstract Flattens a multi-dimensional array into one array
 	 */

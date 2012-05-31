@@ -177,10 +177,25 @@ class manageAccess
 	}
 	
 	/**
+	 *! @function _get
+	 *  @abstract Retrieves currently configured list of allowed/denied hosts
+	 */
+	public function _get($t)
+	{
+		$list = 0;
+		try{
+			$list = $this->registry->libs->__flatten($this->registry->db->query($this->__query($t), true));
+		} catch(PDOException $e){
+			// error handling
+		}
+		return $list;
+	}
+
+	/**
 	 *! @function __query
 	 *  @abstract Generates SQL query to access list of allowed/denied hosts
 	 */
-	public function __query($type)
+	private function __query($type)
 	{
 		return sprintf('CALL Configuration_access_get("%s", "%s")',
 						$this->registry->db->sanitize($type),

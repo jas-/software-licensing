@@ -111,7 +111,14 @@ class dashboardUsersView
 	 */
 	private function __main()
 	{
-		/* initialize ACL management and populate lists if any exist */
+		$acl = manageAccess::init($this->registry);
+
+		$allow = $this->registry->libs->__array2string($acl->_get('allow'));
+		$deny = $this->registry->libs->__array2string($acl->_get('deny'));
+
+		$this->registry->tpl->assign('allow', $allow, null, null, null);
+		$this->registry->tpl->assign('deny', $deny, null, null, null);
+
 		$this->registry->tpl->assign('main', $this->registry->tpl->assign(null, null, 'dashboard.access.tpl', true, $this->registry->libs->_getRealIPv4()), null, null);
 	}
 
