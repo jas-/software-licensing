@@ -93,7 +93,7 @@ class proxyView
 					$users = users::instance($this->registry);
 					$x = $users->__do($this->registry->val->__do($_POST));
 					break;
-				case 'acl'
+				case 'acl':
 					/* initialize acl class */
 					/* perform CRUD on data */
 					break;
