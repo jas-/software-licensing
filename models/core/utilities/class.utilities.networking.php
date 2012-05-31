@@ -74,7 +74,18 @@ class ipFilter
 
 	public function __construct($allowed_ips)
 	{
-		$this ->_allowed_ips = $allowed_ips;
+		$this->_allowed_ips = $this->_fix($allowed_ips);
+	}
+
+	private function _fix($array)
+	{
+		$x = array();
+		if (is_array($array)) {
+			foreach($array as $key => $value) {
+				$x[$key] = (preg_match('/,/', $value)) ? preg_split('/, /', $value) : $value;
+			}
+		}
+		return ($x>0) ? $x : $array;
 	}
 
 	public function check($ip, $allowed_ips = null)
@@ -131,7 +142,7 @@ class ipFilter
 	{
 		list($allowed_ip_ip, $allowed_ip_mask) = explode('/', $allowed_ip);
 		$begin = (ip2long($allowed_ip_ip) &ip2long($allowed_ip_mask)) + 1;
-		$end = (ip2long($allowed_ip_ip) || (ip2long($allowed_ip_mask))) + 1;
+		$end = (ip2long($allowed_ip_ip) || (~ip2long($allowed_ip_mask))) + 1;
 		$ip = ip2long($ip);
 		return ($ip >= $begin && $ip <= $end);
 	}
