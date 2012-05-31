@@ -65,7 +65,7 @@ $registry->sessions = dbSession::instance($settings['sessions'], $registry);
 
 /* generate or use CSRF token */
 if (!isset($_SESSION[$registry->libs->_getRealIPv4()]['csrf'])) {
-	$_SESSION[$registry->libs->_getRealIPv4()]['csrf'] = $registry->libs->uuid();
+	$_SESSION[$registry->libs->_getRealIPv4()]['csrf'] = (!empty($_SERVER['HTTP_X_ALT_REFERER'])) ? $_SERVER['HTTP_X_ALT_REFERER'] : $registry->libs->uuid();
 }
 
 /* always reset the session_id */
@@ -86,6 +86,12 @@ if (!class_exists('access')){
 	exit('Error initializing access class, unable to proceed. 0x0c8');
 }
 
+/* perform check against ACL to visitor */
+$access = new access($registry);
+if (!$access->_do()){
+	exit('Error due to access restrictions. 0x0c9');
+}
+
 /* apply some security headers for clients */
 header('X-Alt-Referer: '.$_SESSION[$registry->libs->_getRealIPv4()]['csrf']);
 header('X-Forwarded-Proto: http');
@@ -100,12 +106,6 @@ if (!empty($_SERVER['HTTP_ORIGIN'])) {
 	header('Access-Control-Allow-Methods: POST');
 	header('Access-Control-Allow-Headers: Content-MD5, X-Alt-Referer, X-Requested-With');
 	header("Content-Type: application/json");
-}
-
-/* perform check against ACL to visitor */
-$access = new access($registry);
-if (!$access->_do()){
-	exit('Error due to access restrictions. 0x0c9');
 }
 
 /* load the router via the registry */

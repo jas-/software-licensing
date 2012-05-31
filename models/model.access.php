@@ -61,7 +61,6 @@ class access {
 	public function __construct($registry)
 	{
 		$this->registry = $registry;
-		//$this->_do();
 	}
 
 	/**

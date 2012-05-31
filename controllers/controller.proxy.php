@@ -44,13 +44,15 @@ class proxyController
 
 		$post = (!empty($_POST)) ?
 			$this->registry->libs->_serialize($_POST) : md5($_SESSION[$this->registry->libs->_getRealIPv4()]['csrf']);
-
-		if ((!$this->__vRequest(getenv('HTTP_X_REQUESTED_WITH')))||
-			(!$this->__vCSRF(getenv('HTTP_X_ALT_REFERER'), $_SESSION[$this->registry->libs->_getRealIPv4()]['csrf']))||
-			(!$this->__vCheckSum(getenv('HTTP_CONTENT_MD5'), $post))) {
+echo 'REQUEST MADE:';print_r(var_dump($this->__vRequest(getenv('HTTP_X_REQUESTED_WITH'))));
+echo 'X-ALT-REFERER:';print_r(var_dump($this->__vCSRF(getenv('HTTP_X_ALT_REFERER'), $_SESSION[$this->registry->libs->_getRealIPv4()]['csrf'])));
+echo 'CONTENT-MD5:';print_r(var_dump($this->__vCheckSum(getenv('HTTP_CONTENT_MD5'), $post)));
+		if (($this->__vRequest(getenv('HTTP_X_REQUESTED_WITH')))&&
+			($this->__vCSRF(getenv('HTTP_X_ALT_REFERER'), $_SESSION[$this->registry->libs->_getRealIPv4()]['csrf']))&&
+			($this->__vCheckSum(getenv('HTTP_CONTENT_MD5'), $post))) {
 			return;
 		} else {
-			exit($this->registry->libs->JSONencode(array('Error'=>'Invalid request made')));
+			exit($this->registry->libs->JSONencode(array('Error'=>'Required headers were not valid')));
 		}
 	}
 
