@@ -251,7 +251,7 @@ class manageAccess
 				// error handling
 			}
 		}
-		return ($r > 0) ? true : false;
+		return ($r > 0) ? array('success'=>'Successfully added new ACL') : array('error'=>'An error occured adding new ACL');
 	}
 
 	/**

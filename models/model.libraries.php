@@ -160,7 +160,7 @@ class libraries {
 		if ((count($a)>0)&&(is_array($a))){
 			foreach($a as $k => $v){
 				if (is_array($v)){
-					$x .= $this->__flatten($v);
+					$x .= $this->__array2string($v).',';
 				} else {
 					$x .= $v.',';
 				}

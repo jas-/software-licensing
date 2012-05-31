@@ -131,7 +131,7 @@ class ipFilter
 	{
 		list($allowed_ip_ip, $allowed_ip_mask) = explode('/', $allowed_ip);
 		$begin = (ip2long($allowed_ip_ip) &ip2long($allowed_ip_mask)) + 1;
-		$end = (ip2long($allowed_ip_ip) || (~ip2long($allowed_ip_mask))) + 1;
+		$end = (ip2long($allowed_ip_ip) || (ip2long($allowed_ip_mask))) + 1;
 		$ip = ip2long($ip);
 		return ($ip >= $begin && $ip <= $end);
 	}
