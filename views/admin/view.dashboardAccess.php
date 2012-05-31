@@ -111,6 +111,7 @@ class dashboardUsersView
 	 */
 	private function __main()
 	{
+		/* initialize ACL management and populate lists if any exist */
 		$this->registry->tpl->assign('main', $this->registry->tpl->assign(null, null, 'dashboard.access.tpl', true, $this->registry->libs->_getRealIPv4()), null, null);
 	}
 
