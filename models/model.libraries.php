@@ -330,8 +330,9 @@ class libraries {
 	{
 		$l = false;
 		if ((is_array($array)) && (count($array) > 0)) {
+			$l = '<option id="" value="">Make a selection...</option>';
 			foreach($array as $key => $value) {
-				$l .= '<option id="" value="'.$value[$i].'">'.$value[$i].'</option>';
+				$l .= (!empty($i)) ? '<option id="" value="'.$value[$i].'">'.$value[$i].'</option>' : '<option id="" value="'.$value.'">'.$value.'</option>';
 			}
 		}
 		return $l;

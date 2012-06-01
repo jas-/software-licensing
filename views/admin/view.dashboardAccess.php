@@ -112,10 +112,11 @@ class dashboardUsersView
 	private function __main()
 	{
 		$acl = manageAccess::init($this->registry);
-print_r($acl->_get);
+
 		$list = $this->registry->libs->_genOptionsList($acl->_get());
 
 		$this->registry->tpl->assign('acl', $list, null, null, null);
+		$this->registry->tpl->assign('filter', $filter, null, null, null);
 
 		$this->registry->tpl->assign('main', $this->registry->tpl->assign(null, null, 'dashboard.access.tpl', true, $this->registry->libs->_getRealIPv4()), null, null);
 	}

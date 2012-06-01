@@ -212,21 +212,13 @@ class manageAccess
 	{
 		$list = 0;
 		try{
-			$list = $this->registry->libs->__flatten($this->registry->db->query($this->__queryList(), true));
+			$sql = sprintf('CALL Configuration_access_get_list("%s")',
+							$this->registry->db->sanitize($this->registry->libs->_hash($this->registry->opts['dbKey'], $this->registry->libs->_salt($this->registry->opts['dbKey'], 2048))));
+			$list = $this->registry->db->query($sql);
 		} catch(PDOException $e){
 			// error handling
 		}
 		return $list;
-	}
-
-	/**
-	 *! @function __query
-	 *  @abstract Generates SQL query to access list of allowed/denied hosts
-	 */
-	private function __queryList()
-	{
-		return sprintf('CALL Configuration_access_get_list("%s")',
-						$this->registry->db->sanitize($this->registry->libs->_hash($this->registry->opts['dbKey'], $this->registry->libs->_salt($this->registry->opts['dbKey'], 2048))));
 	}
 
 	/**
