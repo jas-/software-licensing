@@ -71,6 +71,8 @@ class access {
 	{
 		$a = $this->__compare($this->__visitor(), $this->_get('allow'));
 		$b = $this->__compare($this->__visitor(), $this->_get('deny'));
+print_r($this->_get('allow'));
+print_r($this->_get('deny'));
 		return (($a)&&(!$b)||((!$a)&&(!$b))) ? true : false;
 	}
 
@@ -82,7 +84,8 @@ class access {
 	{
 		$list = 0;
 		try{
-			$list = $this->registry->libs->__flatten($this->registry->db->query($this->__query($t), true));
+			echo $this->__query($t);
+			$list = $this->registry->db->query($this->__query($t));
 		} catch(PDOException $e){
 			// error handling
 		}

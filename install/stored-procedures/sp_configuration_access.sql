@@ -64,16 +64,16 @@ BEGIN
 END//
 
 DROP PROCEDURE IF EXISTS Configuration_access_get//
-CREATE DEFINER='licensing'@'localhost' PROCEDURE Configuration_access_get(IN `type` VARCHAR(30), IN `skey` LONGTEXT)
+CREATE DEFINER='licensing'@'localhost' PROCEDURE Configuration_access_get(IN `t` VARCHAR(30), IN `skey` LONGTEXT)
  DETERMINISTIC
  SQL SECURITY INVOKER
  COMMENT 'Returns list of access controls'
 BEGIN
- IF (STRCMP(type, 'allow') = 0)
+ IF (STRCMP(t, 'allow') = 0)
  THEN
-  SELECT AES_DECRYPT(BINARY(UNHEX(filter)), SHA1(sKey)) AS allow FROM `configuration_access` WHERE `type`=type;
+  SELECT AES_DECRYPT(BINARY(UNHEX(filter)), SHA1(sKey)) AS allow FROM `configuration_access` WHERE `type`=t;
  ELSE
-  SELECT AES_DECRYPT(BINARY(UNHEX(filter)), SHA1(sKey)) AS deny FROM `configuration_access` WHERE `type`=type;
+  SELECT AES_DECRYPT(BINARY(UNHEX(filter)), SHA1(sKey)) AS deny FROM `configuration_access` WHERE `type`=t;
  END IF;
 END//
 
