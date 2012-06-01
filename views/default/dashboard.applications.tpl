@@ -46,7 +46,7 @@
    <label for="applications">Select to edit: </label>
     <select id="applications" name="applications" placeholder="AllowThisApp" style="width: 30%">
      {$applications}
-    </select><span class="required">*</span><div><hr /></div>
+    </select><span class="required">*</span><br /><br /><hr /><br />
    <label for="application">Application: </label>
     <input type="text" id="application" name="application" value="" placeholder="AllowThisApp" required="required" /><span class="required">*</span><br />
    <label for="url">URL: </label>

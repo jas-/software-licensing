@@ -46,7 +46,7 @@
    <label for="users">Select to edit: </label>
     <select id="users" name="users" placeholder="John Doe" style="width: 30%">
      {$users}
-    </select><span class="required">*</span><br /><hr />
+    </select><span class="required">*</span><br /><br /><hr /><br />
    <label for="email">Username: </label>
     <input type="text" id="email" name="email" value="" placeholder="johndoe@example.com" required="required" /><span class="required">*</span><br />
    <label for="password">Password: </label>

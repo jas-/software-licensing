@@ -46,13 +46,16 @@
    <label for="acl">Select to edit: </label>
     <select id="acl" name="acl" placeholder="ACL-name" style="width: 30%">
      {$acl}
-    </select><span class="required">*</span><br /><hr />
-   <label for="aclName">ACL Name: </label>
-    <input type="text" id="aclName" name="aclName" value="" placeholder="MyHostACL" required="required" /><span class="required">*</span><br />
-   <label for="allow">Allow: </label>
-    <textarea id="allow" name="allow" value="" placeholder="192.168.0.1, 10.10.0.0/24, 192.168.10.5-192.168.10.200">{$allow}</textarea><span class="required">*</span><br />
-   <label for="deny">Deny: </label>
-    <textarea id="deny" name="deny" value="" placeholder="192.168.0.1, 10.10.0.0/24, 192.168.10.5-192.168.10.200">{$deny}</textarea><span class="required">*</span><br />
+    </select><span class="required">*</span><br /><br /><hr /><br />
+   <label for="type">ACL type: </label>
+    <select id="type" name="type" placeholder="allow/deny" style="width: 30%">
+     <option value="allow">Allow</option>
+     <option value="deny">Deny</option>
+    </select><span class="required">*</span><br />
+   <label for="name">ACL Name: </label>
+    <input type="text" id="name" name="name" value="" placeholder="MyHostACL" required="required" /><span class="required">*</span><br />
+   <label for="filter">Address(s): </label>
+    <textarea id="filter" name="filter" value="" placeholder="192.168.0.1, 10.10.0.0/24, 192.168.10.5-192.168.10.200">{$filter}</textarea><span class="required">*</span><br />
    <label></label>
     <input type="hidden" id="do" name="do" />
     <input type="submit" value="Add" id="submit-button" />

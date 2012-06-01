@@ -1,5 +1,20 @@
 DELIMITER //
 
+DROP PROCEDURE IF EXISTS Configuration_access_add//
+CREATE DEFINER='licensing'@'localhost' PROCEDURE Configuration_access_add(IN `type` VARCHAR(10), IN `name` VARCHAR(32), IN `filter` VARCHAR(255), `skey` LONGTEXT)
+ DETERMINISTIC
+ SQL SECURITY INVOKER
+ COMMENT 'Add or updates ACL'
+BEGIN
+ IF EXISTS (SELECT `name` FROM `configuration_access` WHERE `name`=HEX(AES_ENCRYPT(name, SHA1(skey))))
+ THEN
+  UPDATE `configuration_access` SET `filter`=HEX(AES_ENCRYPT(filter, SHA1(skey))) WHERE `name`=HEX(AES_ENCRYPT(name, SHA1(skey))) LIMIT 1;
+ ELSE
+  INSERT INTO `configuration_access` (`type`, `name`, `filter`) VALUES (type, HEX(AES_ENCRYPT(name, SHA1(skey))), HEX(AES_ENCRYPT(filter, SHA1(skey)))) ON DUPLICATE KEY UPDATE `type`=type, `name`=HEX(AES_ENCRYPT(name, SHA1(skey))), `filter`=HEX(AES_ENCRYPT(filter, SHA1(skey)));
+ END IF;
+ SELECT ROW_COUNT() AS affected;
+END//
+
 DROP PROCEDURE IF EXISTS Configuration_access_add_allow//
 CREATE DEFINER='licensing'@'localhost' PROCEDURE Configuration_access_add_allow(IN `allow` LONGTEXT, `skey` LONGTEXT)
  DETERMINISTIC
@@ -39,6 +54,15 @@ BEGIN
  DELETE FROM `configuration_access` WHERE `id`=id LIMIT 1;
 END//
 
+DROP PROCEDURE IF EXISTS Configuration_access_list//
+CREATE DEFINER='licensing'@'localhost' PROCEDURE Configuration_access_get_list(IN `skey` LONGTEXT)
+ DETERMINISTIC
+ SQL SECURITY INVOKER
+ COMMENT 'Returns list of access controls'
+BEGIN
+ SELECT AES_DECRYPT(BINARY(UNHEX(name)), SHA1(sKey)) AS name FROM `configuration_access`;
+END//
+
 DROP PROCEDURE IF EXISTS Configuration_access_get//
 CREATE DEFINER='licensing'@'localhost' PROCEDURE Configuration_access_get(IN `type` VARCHAR(30), IN `skey` LONGTEXT)
  DETERMINISTIC
@@ -47,9 +71,9 @@ CREATE DEFINER='licensing'@'localhost' PROCEDURE Configuration_access_get(IN `ty
 BEGIN
  IF (STRCMP(type, 'allow') = 0)
  THEN
-  SELECT AES_DECRYPT(BINARY(UNHEX(allow)), SHA1(sKey)) AS allow FROM `configuration_access` WHERE `allow` IS NOT NULL;
+  SELECT AES_DECRYPT(BINARY(UNHEX(filter)), SHA1(sKey)) AS allow FROM `configuration_access` WHERE `type`=type;
  ELSE
-  SELECT AES_DECRYPT(BINARY(UNHEX(deny)), SHA1(sKey)) AS deny FROM `configuration_access` WHERE `deny` IS NOT NULL;
+  SELECT AES_DECRYPT(BINARY(UNHEX(filter)), SHA1(sKey)) AS deny FROM `configuration_access` WHERE `type`=type;
  END IF;
 END//
 

@@ -51,7 +51,7 @@ class io
 		return self::$instance;
 	}
 
-	function __main($file)
+	private function __main($file)
 	{
 		if (!$this->__exists($file)) {
 			return false;
@@ -81,7 +81,7 @@ class io
 	 * @var $file The specified filename
 	 * @return boolean
 	 */
-	function __exists($file)
+	private function __exists($file)
 	{
 		return (!empty($file)) ? file_exists($file) : false;
 	}
@@ -91,7 +91,7 @@ class io
 	 * @var $file The specified filename
 	 * @return mixed Returns an array of file details or false
 	 */
-	function __stat($file)
+	private function __stat($file)
 	{
 		return (is_link($file)) ? lstat($file) : (is_file($file)) ? stat($file) : false;
 	}
@@ -101,7 +101,7 @@ class io
 	 * @var $attr Array of files attributes
 	 * @return boolean
 	 */
-	function __validate($attr, $file)
+	private function __validate($attr, $file)
 	{
 		$n = $this->__stat($file);
 		return ((is_array($attr)) && ($attr['size'] > 0) && ($attr['nlink'] <= 1) && ($attr['dev'] == $n['dev']) && ($attr['ino'] == $n['ino']) && (($attr['atime'] - $n['atime']) <= 10)) ? true : false;
@@ -112,7 +112,7 @@ class io
 	 * @var $handle The currently opened file descriptor
 	 * @return boolean
 	 */
-	function __lockr($handle)
+	private function __lockr($handle)
 	{
 		return (is_resource($handle)) ? flock($handle, LOCK_SH) : false;
 	}
@@ -122,7 +122,7 @@ class io
 	 * @var $handle The currently opened file descriptor
 	 * @return boolean
 	 */
-	function __lockw($handle)
+	private function __lockw($handle)
 	{
 		return (is_resource($handle)) ? flock($handle, LOCK_EX) : false;
 	}
@@ -132,7 +132,7 @@ class io
 	 * @var $file The specified filename
 	 * @return file descriptor of opened file
 	 */
-	function __open($file)
+	private function __open($file)
 	{
 		return (file_exists($file)) ? fopen($file, 'rb') : false;
 	}
@@ -143,7 +143,7 @@ class io
 	 * @var $bytes Location of data to be read
 	 * @return array
 	 */
-	function __read($handle, $bytes)
+	private function __read($handle, $bytes)
 	{
 		fseek($handle, $bytes, SEEK_SET);
 		return fgets($handle);
@@ -154,7 +154,7 @@ class io
 	 * @var $handle The file descriptor
 	 * @return boolean
 	 */
-	function __close($handle)
+	private function __close($handle)
 	{
 		return (is_resource($handle)) ? fclose($handle) : false;
 	}
@@ -164,7 +164,7 @@ class io
 	 * @var $handle The file descriptor
 	 * @return boolean
 	 */
-	function __unlock($handle)
+	private function __unlock($handle)
 	{
 		return (is_resource($handle)) ? flock($handle, LOCK_UN) : false;
 	}
@@ -174,7 +174,7 @@ class io
 	 * @var $handle The file descriptor
 	 * @return boolean
 	 */
-	function __flush($handle)
+	private function __flush($handle)
 	{
 		return (is_resource($handle)) ? fflush($handle) : false;
 	}
@@ -185,7 +185,7 @@ class io
 	 * @var $magic The global array of file comparison options
 	 * @return boolean
 	 */
-	function __magic($handle, $file)
+	private function __magic($handle, $file)
 	{
 		foreach($this->magic as $type => $value) {
 			foreach($value as $bytes => $regex) {

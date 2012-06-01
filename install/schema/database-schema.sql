@@ -106,11 +106,12 @@ CREATE TABLE IF NOT EXISTS `configuration` (
 DROP TABLE IF EXISTS `configuration_access`;
 CREATE TABLE IF NOT EXISTS `configuration_access` (
   `id` int(255) NOT NULL AUTO_INCREMENT,
-  `allow` VARCHAR(255) DEFAULT NULL,
-  `deny` VARCHAR(255) DEFAULT NULL,
+  `type` VARCHAR(10) DEFAULT NULL,
+  `name` VARCHAR(32) DEFAULT NULL,
+  `filter` VARCHAR(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `allow` (`allow`),
-  UNIQUE KEY `deny` (`deny`)
+  UNIQUE KEY `name` (`name`),
+  UNIQUE KEY `filter` (`filter`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci AUTO_INCREMENT=0;
 
 -- Create a table for default application access list
