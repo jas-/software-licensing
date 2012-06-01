@@ -43,6 +43,12 @@
   <p>Create defined lists of allowed & denied clients. Individual records get automatically added to the deny list when threat detection is reached</p>
   <div id="message"></div>
   <form id="acl" name="acl" method="post" action="?nxs=proxy/acl">
+   <label for="acl">Select to edit: </label>
+    <select id="acl" name="acl" placeholder="ACL-name" style="width: 30%">
+     {$acl}
+    </select><span class="required">*</span><br /><hr />
+   <label for="aclName">ACL Name: </label>
+    <input type="text" id="aclName" name="aclName" value="" placeholder="MyHostACL" required="required" /><span class="required">*</span><br />
    <label for="allow">Allow: </label>
     <textarea id="allow" name="allow" value="" placeholder="192.168.0.1, 10.10.0.0/24, 192.168.10.5-192.168.10.200">{$allow}</textarea><span class="required">*</span><br />
    <label for="deny">Deny: </label>

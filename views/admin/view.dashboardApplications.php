@@ -111,14 +111,8 @@ class dashboardApplicationsView
 	 */
 	private function __main()
 	{
-		$acl = manageAccess::init($this->registry);
-
-		$allow = $this->registry->libs->__array2string($acl->_get('allow'));
-		$deny = $this->registry->libs->__array2string($acl->_get('deny'));
-
-		$this->registry->tpl->assign('allow', $allow, null, null, null);
-		$this->registry->tpl->assign('deny', $deny, null, null, null);
-
+		/* load current list of allowed applications into list */
+		
 		$this->registry->tpl->assign('main', $this->registry->tpl->assign(null, null, 'dashboard.applications.tpl', true, $this->registry->libs->_getRealIPv4()), null, null);
 	}
 

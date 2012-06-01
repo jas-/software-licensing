@@ -30,7 +30,7 @@
   $j('#submit-button').on('click', function(){
    $j('#do').val($j(this).val().toLowerCase());
   });
-  $j('#acl').pidCrypt({
+  $j('#app').pidCrypt({
    appID:'{$token}',
    callback:function(){ _message(this); },
    preCallback:function(){ _load(); }
@@ -42,11 +42,15 @@
   <h2>Manage applications</h2>
   <p>Here you can add refering applications explicit access for using authentication service</p>
   <div id="message"></div>
-  <form id="acl" name="acl" method="post" action="?nxs=proxy/acl">
-   <label for="allow">Allow: </label>
-    <textarea id="allow" name="allow" value="" placeholder="192.168.0.1, 10.10.0.0/24, 192.168.10.5-192.168.10.200">{$allow}</textarea><span class="required">*</span><br />
-   <label for="deny">Deny: </label>
-    <textarea id="deny" name="deny" value="" placeholder="192.168.0.1, 10.10.0.0/24, 192.168.10.5-192.168.10.200">{$deny}</textarea><span class="required">*</span><br />
+  <form id="app" name="app" method="post" action="?nxs=proxy/app">
+   <label for="applications">Select to edit: </label>
+    <select id="applications" name="applications" placeholder="AllowThisApp" style="width: 30%">
+     {$applications}
+    </select><span class="required">*</span><div><hr /></div>
+   <label for="application">Application: </label>
+    <input type="text" id="application" name="application" value="" placeholder="AllowThisApp" required="required" /><span class="required">*</span><br />
+   <label for="url">URL: </label>
+    <input type="text" id="url" name="url" value="" placeholder="http://remote-app.org" required="required" /><span class="required">*</span><br />
    <label></label>
     <input type="hidden" id="do" name="do" />
     <input type="submit" value="Add" id="submit-button" />

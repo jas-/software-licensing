@@ -97,6 +97,10 @@ class proxyView
 					$acl = manageAccess::init($this->registry);
 					$x = $acl->__do($this->registry->val->__do($_POST));
 					break;
+				case 'app':
+					$app = manageApplications::init($this->registry);
+					$x = $app->__do($this->registry->val->__do($_POST));
+					break;
 				default:
 					$x = array('error'=>'Invalid command recieved, unable to process');
 					break;
