@@ -42,6 +42,8 @@ class proxyController
 	{
 		$this->registry = $registry;
 
+		$this->__vACL();
+
 		$post = (!empty($_POST)) ? $this->registry->libs->_serialize($_POST) : md5($_SESSION[$this->registry->libs->_getRealIPv4()]['csrf']);
 
 		if (($this->__vRequest(getenv('HTTP_X_REQUESTED_WITH')))&&
@@ -50,6 +52,22 @@ class proxyController
 			return;
 		} else {
 			exit($this->registry->libs->JSONencode(array('Error'=>'Required headers were not valid')));
+		}
+	}
+
+	/**
+	 *! @function __vACL
+	 *  @abstract Verify the request was not on denied access list
+	 */
+	private function __vACL()
+	{
+		if (!class_exists('access')){
+			exit($this->registry->JSONencode(array('Error'=>'Error initializing access class, unable to proceed. 0x0c8')));
+		}
+
+		$access = new access($registry);
+		if (!$access->_do()){
+			exit($this->registry->libs->JSONencode(array('Error'=>'Error due to access restrictions. 0x0c9')));
 		}
 	}
 

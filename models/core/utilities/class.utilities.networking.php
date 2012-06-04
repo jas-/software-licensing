@@ -88,15 +88,25 @@ class ipFilter
 		return ($x>0) ? $x : $array;
 	}
 
-	public function check($ip, $allowed_ips = null)
+	public function check($ip, $allowed_ips = null, $type)
 	{
 		$allowed_ips = $allowed_ips ? $allowed_ips : $this->_allowed_ips;
-		foreach($allowed_ips as $allowed_ip){
-			$type = $this->_judge_ip_type($allowed_ip);
-			$sub_rst = call_user_func(array($this,'_sub_checker_' . $type), $allowed_ip, $ip);
-			if ($sub_rst){
-				return true;
+		if (count($allowed_ips)>0){
+			foreach($allowed_ips as $allowed_ip){	
+				if (is_array($allowed_ip)) {
+					return $this->check($ip, $allowed_ip, $type);
+				} else {
+					$type = $this->_judge_ip_type($allowed_ip);
+					$sub_rst = call_user_func(array($this,'_sub_checker_' . $type), $allowed_ip, $ip);
+					if (($sub_rst)&&($type=='allow')){
+						return true;
+					} else {
+						return false;
+					}
+				}
 			}
+		} else {
+			return true;
 		}
 		return false;
 	}
@@ -119,7 +129,7 @@ class ipFilter
 	}
 
 	private function _sub_checker_single($allowed_ip, $ip)
-	{
+	{ 
 		return (ip2long($allowed_ip) == ip2long($ip));
 	}
 

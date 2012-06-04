@@ -69,13 +69,9 @@ class access {
 	 */
 	public function _do()
 	{
-		$a = $this->__compare($this->__visitor(), $this->_get('allow'));
-		$b = $this->__compare($this->__visitor(), $this->_get('deny'));
-		print_r($this->__visitor());
-		print_r(var_dump($a));
-		print_r(var_dump($b));
-print_r(var_dump((($a)&&(!$b)||((!$a)&&(!$b)))));
-		return (($a)&&(!$b)||((!$a)&&(!$b))) ? true : false;
+		$a = $this->__compare($this->__visitor(), $this->_get('allow'), 'allow');
+		$b = $this->__compare($this->__visitor(), $this->_get('deny'), 'deny');
+		return (!$b) ? false : true;
 	}
 
 	/**
@@ -86,7 +82,7 @@ print_r(var_dump((($a)&&(!$b)||((!$a)&&(!$b)))));
 	{
 		$list = 0;
 		try{
-			$list = $this->registry->db->query($this->__query($t));
+			$list = $this->registry->db->query($this->__query($t), true);
 		} catch(PDOException $e){
 			// error handling
 		}
@@ -118,20 +114,20 @@ print_r(var_dump((($a)&&(!$b)||((!$a)&&(!$b)))));
 	 *  @abstract Performs comparisions on hosts, ips and additional network
 	 *            declarations
 	 */
-	private function __compare($i, $l)
+	private function __compare($i, $l, $type)
 	{
 		$a = false; $x = false;
 		if (count($l)>0){
 			foreach($l as $k => $v){
 				$n = (class_exists('ipFilter')) ? new ipFilter($v) : false;
 				if ($n){
-					$a = $n->check($i);
+					$a = $n->check($i, $l, $type);
 					if($a) $x=true;
 				}
 				unset($n);
 			}
 		}
-		return $x;
+		return (count($l)>0) ? $x : true;
 	}
 
 	public function __destruct()
