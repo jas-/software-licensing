@@ -65,7 +65,7 @@ class proxyController
 			exit($this->registry->JSONencode(array('Error'=>'Error initializing access class, unable to proceed. 0x0c8')));
 		}
 
-		$access = new access($registry);
+		$access = new access($this->registry);
 		if (!$access->_do()){
 			exit($this->registry->libs->JSONencode(array('Error'=>'Error due to access restrictions. 0x0c9')));
 		}

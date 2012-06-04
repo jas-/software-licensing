@@ -71,7 +71,7 @@ class access {
 	{
 		$a = $this->__compare($this->__visitor(), $this->_get('allow'), 'allow');
 		$b = $this->__compare($this->__visitor(), $this->_get('deny'), 'deny');
-		return (!$b) ? false : true;
+		return (($a)&&(!$b)||(($a)&&($b))||((!$a)&&($b))) ? true : false;
 	}
 
 	/**
