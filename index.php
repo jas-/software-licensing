@@ -102,13 +102,13 @@ header('X-XSS-Protecton: 1;mode=deny');
 
 /* set headers when $_OPTIONS asks for specific access controls */
 /* this should also do a comparision against whitelist of allowed referal applications */
+if (!class_exists('applications')) {
+	exit('Error initializing applications class, unable to proceed. 0x0c10');
+}
+
 if (!empty($_SERVER['HTTP_ORIGIN'])) {
-	header('Access-Control-Max-Age: 1728000');
-	header('Access-Control-Allow-Origin: http://rapp.dev:8080');
-	header('Access-Control-Allow-Methods: POST');
-	header('Access-Control-Allow-Headers: Content-MD5, X-Alt-Referer, X-Requested-With');
-	header('Access-Control-Allow-Credentials', true);
-	header("Content-Type: application/json");
+	$apps = new applications($registry);
+	$apps->_do($_SERVER['HTTP_ORIGIN']);
 }
 
 /* load the router via the registry */
