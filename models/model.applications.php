@@ -89,7 +89,7 @@ class applications {
 			$sql = sprintf('CALL Configuration_applications_search("%s", "%s")',
 							$this->registry->db->sanitize($url),
 							$this->registry->db->sanitize($this->registry->libs->_hash($this->registry->opts['dbKey'], $this->registry->libs->_salt($this->registry->opts['dbKey'], 2048))));
-			echo $sql;
+			//echo $sql;
 			$list = $this->registry->db->query($sql);
 		} catch(PDOException $e){
 			// error handling

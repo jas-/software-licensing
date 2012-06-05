@@ -67,10 +67,11 @@ class networking
 class ipFilter
 {
 	private static $_IP_TYPE_SINGLE = 'single';
-	private static $_IP_TYPE_WILDCARD = 'wildcard';
-	private static $_IP_TYPE_MASK = 'mask';
-	private static $_IP_TYPE_SECTION = 'section';
-	private $_allowed_ips = array();
+    private static $_IP_TYPE_WILDCARD = 'wildcard';
+    private static $_IP_TYPE_MASK = 'mask';
+    private static $_IP_TYPE_CIDR = 'CIDR';
+    private static $_IP_TYPE_SECTION = 'section';
+    private $_allowed_ips = array(); 
 
 	public function __construct($allowed_ips)
 	{
@@ -98,7 +99,7 @@ class ipFilter
 				} else {
 					$type = $this->_judge_ip_type($allowed_ip);
 					$sub_rst = call_user_func(array($this,'_sub_checker_' . $type), $allowed_ip, $ip);
-					if (($sub_rst)&&($type=='allow')){
+					if ($sub_rst){
 						return true;
 					} else {
 						return false;
@@ -111,23 +112,31 @@ class ipFilter
 		return false;
 	}
 
-	private function _judge_ip_type($ip)
-	{
-		if (strpos($ip, '*')){
-			return self :: $_IP_TYPE_WILDCARD;
-		}
-		if (strpos($ip, '/')){
-			return self :: $_IP_TYPE_MASK;
-		}
-		if (strpos($ip, '-')){
-			return self :: $_IP_TYPE_SECTION;
-		}
-		if (ip2long($ip)){
-			return self :: $_IP_TYPE_SINGLE;
-		}
-		return false;
-	}
+    private function _judge_ip_type($ip) {
+        if (strpos($ip, '*')) {
+            return self :: $_IP_TYPE_WILDCARD;
+        }
 
+        if (strpos($ip, '/')) {
+            $tmp = explode('/', $ip);
+            if (strpos($tmp[1], '.')) {
+                return self :: $_IP_TYPE_MASK;
+            } else {
+                return self :: $_IP_TYPE_CIDR;
+            }
+        }
+
+        if (strpos($ip, '-')) {
+            return self :: $_IP_TYPE_SECTION;
+        }
+
+        if (ip2long($ip)) {
+            return self :: $_IP_TYPE_SINGLE;
+        }
+
+        return false;
+    }
+	
 	private function _sub_checker_single($allowed_ip, $ip)
 	{ 
 		return (ip2long($allowed_ip) == ip2long($ip));
@@ -148,23 +157,29 @@ class ipFilter
 		}
 	}
 
-	private function _sub_checker_mask($allowed_ip, $ip)
+    private function _sub_checker_mask($allowed_ip, $ip)
 	{
-		list($allowed_ip_ip, $allowed_ip_mask) = explode('/', $allowed_ip);
-		$begin = (ip2long($allowed_ip_ip) &ip2long($allowed_ip_mask)) + 1;
-		$end = (ip2long($allowed_ip_ip) || (~ip2long($allowed_ip_mask))) + 1;
-		$ip = ip2long($ip);
-		return ($ip >= $begin && $ip <= $end);
-	}
+        list($allowed_ip_ip, $allowed_ip_mask) = explode('/', $allowed_ip);
+        $begin = (ip2long($allowed_ip_ip) & ip2long($allowed_ip_mask)) + 1;
+        $end = (ip2long($allowed_ip_ip) | (~ ip2long($allowed_ip_mask))) + 1;
+        $ip = ip2long($ip);
+        return ($ip >= $begin && $ip <= $end);
+    } 
 
-	private function _sub_checker_section($allowed_ip, $ip)
+    private function _sub_checker_section($allowed_ip, $ip)
 	{
-		list($begin, $end) = explode('-', $allowed_ip);
-		$begin = ip2long($begin);
-		$end = ip2long($end);
-		$ip = ip2long($ip);
-		return ($ip >= $begin && $ip <= $end);
-	}
+        list($begin, $end) = explode('-', $allowed_ip);
+        $begin = ip2long($begin);
+        $end = ip2long($end);
+        $ip = ip2long($ip);
+        return ($ip >= $begin && $ip <= $end);
+    }
+
+    private function _sub_checker_CIDR($CIDR, $IP)
+	{
+        list ($net, $mask) = explode('/', $CIDR);
+        return ( ip2long($IP) & ~((1 << (32 - $mask)) - 1) ) == ip2long($net);
+    }
 }
 
 ?>

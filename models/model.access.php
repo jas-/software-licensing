@@ -71,7 +71,14 @@ class access {
 	{
 		$a = $this->__compare($this->__visitor(), $this->_get('allow'), 'allow');
 		$b = $this->__compare($this->__visitor(), $this->_get('deny'), 'deny');
-		return (($a)&&(!$b)||(($a)&&($b))||((!$a)&&($b))) ? true : false;
+/*
+echo $this->__visitor().'<br/>';
+echo '<pre>'; print_r(var_dump($this->_get('allow'))); echo '</pre>';
+echo '<pre>'; print_r(var_dump($a)); echo '</pre>';
+echo '<pre>'; print_r(var_dump($this->_get('deny'))); echo '</pre>';
+echo '<pre>'; print_r(var_dump($b)); echo '</pre>';
+*/
+		return (($a)&&(!$b)||(($a)&&($b))) ? true : false;
 	}
 
 	/**
@@ -214,7 +221,7 @@ class manageAccess
 		try{
 			$sql = sprintf('CALL Configuration_access_get_list("%s")',
 							$this->registry->db->sanitize($this->registry->libs->_hash($this->registry->opts['dbKey'], $this->registry->libs->_salt($this->registry->opts['dbKey'], 2048))));
-			$list = $this->registry->db->query($sql);
+			$list = $this->registry->db->query($sql, true);
 		} catch(PDOException $e){
 			// error handling
 		}
