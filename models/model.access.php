@@ -71,14 +71,15 @@ class access {
 	{
 		$a = $this->__compare($this->__visitor(), $this->_get('allow'), 'allow');
 		$b = $this->__compare($this->__visitor(), $this->_get('deny'), 'deny');
-/*
-echo $this->__visitor().'<br/>';
-echo '<pre>'; print_r(var_dump($this->_get('allow'))); echo '</pre>';
-echo '<pre>'; print_r(var_dump($a)); echo '</pre>';
-echo '<pre>'; print_r(var_dump($this->_get('deny'))); echo '</pre>';
-echo '<pre>'; print_r(var_dump($b)); echo '</pre>';
-*/
-		return (($a)&&(!$b)||(($a)&&($b))) ? true : false;
+echo 'REMOTE IP: '.$this->__visitor().'<br/>';
+echo 'ALLOWED LIST<pre>'; print_r(var_dump($this->_get('allow'))); echo '</pre>';
+echo 'RESULTS<pre>'; print_r(var_dump($a)); echo '</pre>';
+echo 'DENIED LIST<pre>'; print_r(var_dump($this->_get('deny'))); echo '</pre>';
+echo 'RESULTS<pre>'; print_r(var_dump($b)); echo '</pre>';
+		return (!$a && !$b) ? false : ($b && $a) || ($a && !$b) ? true : false;
+		//return (($b) && ($a && $b) || ($a && !$b) || (!$a && $b) || (!$a && !$b)) ? true : false;
+		//if (!$b) return false;
+		//return (($a)&&(!$b)||(($a)&&($b))) ? true : false;
 	}
 
 	/**
@@ -89,7 +90,7 @@ echo '<pre>'; print_r(var_dump($b)); echo '</pre>';
 	{
 		$list = 0;
 		try{
-			$list = $this->registry->db->query($this->__query($t), true);
+			$list = $this->registry->libs->__flatten($this->registry->db->query($this->__query($t), true));
 		} catch(PDOException $e){
 			// error handling
 		}
@@ -124,17 +125,23 @@ echo '<pre>'; print_r(var_dump($b)); echo '</pre>';
 	private function __compare($i, $l, $type)
 	{
 		$a = false; $x = false;
-		if (count($l)>0){
-			foreach($l as $k => $v){
-				$n = (class_exists('ipFilter')) ? new ipFilter($v) : false;
-				if ($n){
-					$a = $n->check($i, $l, $type);
-					if($a) $x=true;
-				}
-				unset($n);
-			}
+		$n = (class_exists('ipFilter')) ? ($type == 'allow') ? new ipFilter($l) : new ipFilter(false) : false;
+		if ($n){
+			$a = $n->check($i, $l, $type);
+			//echo 'ipFilter<pre>'; print_r(var_dump($a)); echo '</pre>'; 
+			if($a) $x=true;
 		}
+		unset($n);
 		return (count($l)>0) ? $x : true;
+	}
+
+	/**
+	 *! @function _helper
+	 *  @abstract Helps convert array of allowed IP's for ipFilter class
+	 */
+	private function _helper($array)
+	{
+		
 	}
 
 	public function __destruct()

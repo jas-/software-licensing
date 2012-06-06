@@ -191,16 +191,8 @@ class libraries {
 	public function __flatten($a)
 	{
 		$x = array();
-		if (count($a)>0){
-			foreach($a as $k => $v){
-				if (is_array($v)){
-					$x[] = $this->__flatten($v);
-				} else {
-					$x[] = $v;
-				}
-			}
-		} else {
-			$x = $a;
+		foreach(new RecursiveIteratorIterator(new RecursiveArrayIterator($a)) as $value){
+			$x[] = $value;
 		}
 		return $x;
 	}
