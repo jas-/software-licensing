@@ -69,13 +69,14 @@ class applications {
 	 */
 	public function _do($url)
 	{
-		print_r($this->_get($url));
-		header('Access-Control-Max-Age: 1728000');
-		header('Access-Control-Allow-Origin: http://rapp.dev:8080');
-		header('Access-Control-Allow-Methods: POST');
-		header('Access-Control-Allow-Headers: Content-MD5, X-Alt-Referer, X-Requested-With');
-		header('Access-Control-Allow-Credentials', true);
-		header("Content-Type: application/json");
+		if (in_array($url, $this->_get($url))) {
+			header('Access-Control-Max-Age: 1728000');
+			header('Access-Control-Allow-Origin: '.$url);
+			header('Access-Control-Allow-Methods: POST');
+			header('Access-Control-Allow-Headers: Content-MD5, X-Alt-Referer, X-Requested-With');
+			header('Access-Control-Allow-Credentials', true);
+			header("Content-Type: application/json");
+		}
 	}
 
 	/**
@@ -89,7 +90,6 @@ class applications {
 			$sql = sprintf('CALL Configuration_applications_search("%s", "%s")',
 							$this->registry->db->sanitize($url),
 							$this->registry->db->sanitize($this->registry->libs->_hash($this->registry->opts['dbKey'], $this->registry->libs->_salt($this->registry->opts['dbKey'], 2048))));
-			//echo $sql;
 			$list = $this->registry->db->query($sql);
 		} catch(PDOException $e){
 			// error handling

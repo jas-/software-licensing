@@ -30,7 +30,7 @@ CREATE DEFINER='licensing'@'localhost' PROCEDURE Configuration_applications_sear
  SQL SECURITY INVOKER
  COMMENT 'Searches for specified domain in list of allowed applications'
 BEGIN
- SELECT AES_DECRYPT(BINARY(UNHEX(url)), SHA1(sKey)) AS url FROM `configuration_applications` WHERE `url`=dmn;
+ SELECT AES_DECRYPT(BINARY(UNHEX(url)), SHA1(sKey)) AS url FROM `configuration_applications` WHERE AES_DECRYPT(BINARY(UNHEX(url)), SHA1(sKey))=dmn;
 END//
 
 DELIMITER ;
