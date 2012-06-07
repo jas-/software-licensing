@@ -90,16 +90,16 @@ class proxyView
 					$x = $this->registry->keyring->__public($this->registry->val->__do($_POST['email']));
 					break;
 				case 'users':
-					$users = users::instance($this->registry);
-					$x = $users->__do($this->registry->val->__do($_POST));
+					$x = users::instance($this->registry)->__do($this->registry->val->__do($_POST));
 					break;
 				case 'acl':
-					$acl = manageAccess::init($this->registry);
-					$x = $acl->__do($this->registry->val->__do($_POST));
+					$x = manageAccess::init($this->registry)->__do($this->registry->val->__do($_POST));
 					break;
 				case 'app':
-					$app = manageApplications::init($this->registry);
-					$x = $app->__do($this->registry->val->__do($_POST));
+					$x = manageApplications::init($this->registry)->__do($this->registry->val->__do($_POST));
+					break;
+				case 'remote':
+					/* load up the remote template with server specific options */
 					break;
 				default:
 					$x = array('error'=>'Invalid command recieved, unable to process');
