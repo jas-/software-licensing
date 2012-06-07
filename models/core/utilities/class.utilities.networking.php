@@ -4,7 +4,7 @@
 //namespace core\utilities\networking;
 
 /* prevent direct access */
-//if (!defined('__SITE')) exit('No direct calls please...');
+if (!defined('__SITE')) exit('No direct calls please...');
 
 /**
  * Handle networking functions
