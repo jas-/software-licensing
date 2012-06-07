@@ -99,12 +99,12 @@ header('X-Forwarded-Proto: http');
 header('X-Frame-Options: deny');
 header('X-XSS-Protecton: 1;mode=deny');
 
-/* set headers when $_OPTIONS asks for specific access controls */
-/* this should also do a comparision against whitelist of allowed referal applications */
+/* initialize the allowed applications class */
 if (!class_exists('applications')) {
 	exit('Error initializing applications class, unable to proceed. 0x0c10');
 }
 
+/* perform comparision of whitelist & set necessary CORS headers if allowed */
 if (!empty($_SERVER['HTTP_ORIGIN'])) {
 	applications::init($registry)->_do($_SERVER['HTTP_ORIGIN']);
 }
