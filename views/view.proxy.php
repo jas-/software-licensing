@@ -99,8 +99,11 @@ class proxyView
 					$x = manageApplications::init($this->registry)->__do($this->registry->val->__do($_POST));
 					break;
 				case 'remote':
-					/* load up the remote template with server specific options */
-					break;
+					if (file_exists('views/view.remote.php')){
+						require 'views/view.remote.php';
+					}
+					remoteView::instance($this->registry);
+					exit;
 				default:
 					$x = array('error'=>'Invalid command recieved, unable to process');
 					break;
