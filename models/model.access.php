@@ -69,17 +69,7 @@ class access {
 	 */
 	public function _do()
 	{
-		$a = $this->__compare($this->__visitor(), $this->_get('allow'), 'allow');
-		$b = $this->__compare($this->__visitor(), $this->_get('deny'), 'deny');
-echo 'REMOTE IP: '.$this->__visitor().'<br/>';
-echo 'ALLOWED LIST<pre>'; print_r(var_dump($this->_get('allow'))); echo '</pre>';
-echo 'RESULTS<pre>'; print_r(var_dump($a)); echo '</pre>';
-echo 'DENIED LIST<pre>'; print_r(var_dump($this->_get('deny'))); echo '</pre>';
-echo 'RESULTS<pre>'; print_r(var_dump($b)); echo '</pre>';
-		return (!$a && !$b) ? false : ($b && $a) || ($a && !$b) ? true : false;
-		//return (($b) && ($a && $b) || ($a && !$b) || (!$a && $b) || (!$a && !$b)) ? true : false;
-		//if (!$b) return false;
-		//return (($a)&&(!$b)||(($a)&&($b))) ? true : false;
+		return $this->__compare($this->__visitor(), $this->_get());
 	}
 
 	/**
@@ -112,8 +102,7 @@ echo 'RESULTS<pre>'; print_r(var_dump($b)); echo '</pre>';
 	 */
 	private function __query($type)
 	{
-		return sprintf('CALL Configuration_access_get("%s", "%s")',
-						$this->registry->db->sanitize($type),
+		return sprintf('CALL Configuration_access_get("%s")',
 						$this->registry->db->sanitize($this->registry->libs->_hash($this->registry->opts['dbKey'], $this->registry->libs->_salt($this->registry->opts['dbKey'], 2048))));
 	}
 
@@ -122,17 +111,10 @@ echo 'RESULTS<pre>'; print_r(var_dump($b)); echo '</pre>';
 	 *  @abstract Performs comparisions on hosts, ips and additional network
 	 *            declarations
 	 */
-	private function __compare($i, $l, $type)
+	private function __compare($ip, $denyList)
 	{
-		$a = false; $x = false;
-		$n = (class_exists('ipFilter')) ? ($type == 'allow') ? new ipFilter($l) : new ipFilter(false) : false;
-		if ($n){
-			$a = $n->check($i, $l, $type);
-			//echo 'ipFilter<pre>'; print_r(var_dump($a)); echo '</pre>'; 
-			if($a) $x=true;
-		}
-		unset($n);
-		return (count($l)>0) ? $x : true;
+		$filter = (class_exists('ipFilter')) ? new ipFilter($denyList) : false;
+		return $filter->check($ip, $denyList);
 	}
 
 	/**
@@ -247,8 +229,7 @@ class manageAccess
 		}
 
 		try{
-			$sql = sprintf('CALL Configuration_access_add("%s", "%s", "%s", "%s")',	
-							$this->registry->db->sanitize($data['type']),
+			$sql = sprintf('CALL Configuration_access_add("%s", "%s", "%s")',	
 							$this->registry->db->sanitize($data['name']),
 							$this->registry->db->sanitize($data['filter']),
 						    $this->registry->db->sanitize($this->registry->libs->_hash($this->registry->opts['dbKey'], $this->registry->libs->_salt($this->registry->opts['dbKey'], 2048))));

@@ -106,7 +106,6 @@ CREATE TABLE IF NOT EXISTS `configuration` (
 DROP TABLE IF EXISTS `configuration_access`;
 CREATE TABLE IF NOT EXISTS `configuration_access` (
   `id` int(255) NOT NULL AUTO_INCREMENT,
-  `type` VARCHAR(10) DEFAULT NULL,
   `name` VARCHAR(32) DEFAULT NULL,
   `filter` VARCHAR(255) DEFAULT NULL,
   PRIMARY KEY (`id`),

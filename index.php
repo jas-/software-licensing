@@ -89,7 +89,7 @@ if (!class_exists('access')){
 /* perform check against ACL to visitor */
 if (strcmp(getenv('HTTP_X_REQUESTED_WITH'), 'XMLHttpRequest')!==0) {
 	$access = new access($registry);
-	if (!$access->_do()){
+	if ($access->_do()){
 		exit('Error due to access restrictions. 0x0c9');
 	}
 }

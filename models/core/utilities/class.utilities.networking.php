@@ -4,7 +4,7 @@
 //namespace core\utilities\networking;
 
 /* prevent direct access */
-if (!defined('__SITE')) exit('No direct calls please...');
+//if (!defined('__SITE')) exit('No direct calls please...');
 
 /**
  * Handle networking functions
@@ -89,14 +89,14 @@ class ipFilter
 		return ($x>0) ? $x : $array;
 	}
 
-	public function check($ip, $allowed_ips = null, $t) {
+	public function check($ip, $allowed_ips = null) {
         $allowed_ips = $allowed_ips ? $allowed_ips : $this->_allowed_ips;
 
         foreach ($allowed_ips as $allowed_ip) {
             $type = $this->_judge_ip_type($allowed_ip);
             $sub_rst = call_user_func(array($this, '_sub_checker_' . $type), $allowed_ip, $ip);
             if ($sub_rst) {
-                return ($t === "allow") ? true : false;
+				return true;
             }
         }
 

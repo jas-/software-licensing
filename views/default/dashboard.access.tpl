@@ -47,11 +47,6 @@
     <select id="acl" name="acl" placeholder="ACL-name" style="width: 30%">
      {$acl}
     </select><span class="required">*</span><br /><br /><hr /><br />
-   <label for="type">ACL type: </label>
-    <select id="type" name="type" placeholder="allow/deny" style="width: 30%">
-     <option value="allow">Allow</option>
-     <option value="deny">Deny</option>
-    </select><span class="required">*</span><br />
    <label for="name">ACL Name: </label>
     <input type="text" id="name" name="name" value="" placeholder="MyHostACL" required="required" /><span class="required">*</span><br />
    <label for="filter">Address(s): </label>
