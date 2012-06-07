@@ -88,8 +88,7 @@ if (!class_exists('access')){
 
 /* perform check against ACL to visitor */
 if (strcmp(getenv('HTTP_X_REQUESTED_WITH'), 'XMLHttpRequest')!==0) {
-	$access = new access($registry);
-	if ($access->_do()){
+	if (access::init($registry)->_do()){
 		exit('Error due to access restrictions. 0x0c9');
 	}
 }
@@ -107,8 +106,7 @@ if (!class_exists('applications')) {
 }
 
 if (!empty($_SERVER['HTTP_ORIGIN'])) {
-	$apps = new applications($registry);
-	$apps->_do($_SERVER['HTTP_ORIGIN']);
+	applications::init($registry)->_do($_SERVER['HTTP_ORIGIN']);
 }
 
 /* load the router via the registry */

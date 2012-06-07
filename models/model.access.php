@@ -76,11 +76,11 @@ class access {
 	 *! @function _get
 	 *  @abstract Retrieves currently configured list of allowed/denied hosts
 	 */
-	private function _get($t)
+	private function _get()
 	{
 		$list = 0;
 		try{
-			$list = $this->registry->libs->__flatten($this->registry->db->query($this->__query($t), true));
+			$list = $this->registry->libs->__flatten($this->registry->db->query($this->__query(), true));
 		} catch(PDOException $e){
 			// error handling
 		}
@@ -100,7 +100,7 @@ class access {
 	 *! @function __query
 	 *  @abstract Generates SQL query to access list of allowed/denied hosts
 	 */
-	private function __query($type)
+	private function __query()
 	{
 		return sprintf('CALL Configuration_access_get("%s")',
 						$this->registry->db->sanitize($this->registry->libs->_hash($this->registry->opts['dbKey'], $this->registry->libs->_salt($this->registry->opts['dbKey'], 2048))));
