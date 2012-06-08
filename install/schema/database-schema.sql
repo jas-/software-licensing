@@ -88,6 +88,7 @@ CREATE TABLE IF NOT EXISTS `configuration` (
   `private` tinyint(1) NOT NULL,
   `email` varchar(45) NOT NULL,
   `timeout` int(10) NOT NULL,
+  `flogin` int(10) NOT NULL,
   `privateKey` longtext NOT NULL,
   `publicKey` longtext NOT NULL,
   `sKey` longtext NOT NULL,

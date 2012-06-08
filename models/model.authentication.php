@@ -267,7 +267,6 @@ class authentication
 			} else {
 				$_SESSION[$this->registry->libs->_getRealIPv4()]['count']++;
 			}
-
 			$this->__nuke();
 		}
 
