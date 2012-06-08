@@ -76,7 +76,7 @@ class remoteView
 	private function _main()
 	{
 		$proto = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443) ? 'https://' : 'http://';
-		$this->registry->tpl->assign('templates', $this->registry->tpl->strTemplateDir, null, null, null);
+		$this->registry->tpl->assign('templates', $proto.$_SERVER['HTTP_HOST'].'/'.$this->registry->tpl->strTemplateDir, null, null, null);
 		$this->registry->tpl->assign('server', $proto.$_SERVER['HTTP_HOST'], null, null, null);
 		$this->registry->tpl->assign('token', $_SESSION[$this->registry->libs->_getRealIPv4()]['csrf'], null, null, null);
 		$this->registry->tpl->display('remote.tpl', true, null, $this->registry->libs->_getRealIPv4());

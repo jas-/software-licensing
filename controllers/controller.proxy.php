@@ -44,6 +44,7 @@ class proxyController
 
 		$this->__vACL();
 
+		/* this should do an additional check against the allowed apps prior to changing the CSRF token */
 		$csrf = (preg_match('/'.$_SERVER['SERVER_NAME'].'/', $_SERVER['HTTP_ORIGIN'])) ? $_SESSION[$this->registry->libs->_getRealIPv4()]['csrf'] : getenv('HTTP_X_ALT_REFERER');
 
 		$post = (!empty($_POST)) ? $this->registry->libs->_serialize($_POST) : $csrf;
