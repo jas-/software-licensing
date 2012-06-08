@@ -20,3 +20,4 @@ $j(document).ready(function(){
   <a href="{$server}/?nxs=proxy/register">Register</a> | <a href="{$server}/?nxs=proxy/reset">Forgot username?</a>
  </form>
 </div>
+<!--div id="login"><script type="text/javascript">window.onload=function(){var a='http://sso.dev:8080';var b=document.createElement('script');b.setAttribute('src', a+'/views/default/js/jquery.min.js');document.getElementById('login').appendChild(b);var c=document.createElement('script');c.setAttribute('src', a+'/views/default/js/remote-core.min.js');document.getElementById('login').appendChild(c);}</script></div-->
