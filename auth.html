@@ -4,13 +4,17 @@
 <script>
 var $j = jQuery.noConflict();
 $j(document).ready(function(){
- $j('#auth').pidCrypt({callback:function(){_message(this);},preCallback:function(){_load();},errCallback:function(){_error();}});
+ $j('#auth').pidCrypt({
+  callback:function(){_message(this);},
+  preCallback:function(){_load();},
+  errCallback:function(){_error();}
+ });
 });
 </script>
 <div id="form" class="remote rounder gradient">
  <h2>Authenticate</h2>
  <p>Please provide username & password</p>
- <div id="message"></div>
+ <div id="message" class="remote rounder gradient"></div>
  <form id="auth" name="authenticate" method="post" action="http://sso.dev:8080/?nxs=proxy/authenticate">
   <label for="email">Email: </label>
    <input type="email" id="email" name="email" value="" placeholder="Enter email address" required="required" /><span class="required">*</span>

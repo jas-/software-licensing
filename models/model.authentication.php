@@ -202,6 +202,7 @@ class authentication
 		}else{
 			$x = false;
 		}
+		if (!$x) $this->__nuke();
 		return (!$x) ? array('error'=>'User authentication failed') : $x;
 	}
 
