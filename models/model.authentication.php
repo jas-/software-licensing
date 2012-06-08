@@ -204,8 +204,8 @@ class authentication
 		}
 
 		if (!$x) {
-			if ($this->__countLogins($_SESSION[$this->registry->libs->_getRealIPv4()]['count'])) {
-				// put machine on block list
+			if ($this->__countLogins($_SESSION[$this->registry->libs->_getRealIPv4()]['count'], $this->registry->opts->flogin)) {
+				$this->__addBlock($this->registry->libs->_getRealIPv4());
 			} else {
 				$_SESSION[$this->registry->libs->_getRealIPv4()]['count']++;
 			}
@@ -262,8 +262,8 @@ class authentication
 
 		if (!$x) {
 
-			if ($this->__countLogins($_SESSION[$this->registry->libs->_getRealIPv4()]['count'])) {
-				// put machine on block list
+			if ($this->__countLogins($_SESSION[$this->registry->libs->_getRealIPv4()]['count'], $this->registry->opts->flogin)) {
+				$this->__addBlock($this->registry->libs->_getRealIPv4());
 			} else {
 				$_SESSION[$this->registry->libs->_getRealIPv4()]['count']++;
 			}
@@ -509,6 +509,24 @@ class authentication
 	private function __countLogins($current, $allowed)
 	{
 		return ($current > $allowed) ? true : false;
+	}
+
+	/**
+	 *! @function _addBlock
+	 *  @function Creates new entry on block list ACL
+	 */
+	private function __addBlock($ip)
+	{
+		try{
+			$sql = sprintf('CALL Configuration_access_add("%s", "%s", "%s")',	
+							$this->registry->db->sanitize($ip),
+							$this->registry->db->sanitize($ip),
+						    $this->registry->db->sanitize($this->registry->libs->_hash($this->registry->opts['dbKey'], $this->registry->libs->_salt($this->registry->opts['dbKey'], 2048))));
+			$r = $this->registry->db->query($sql);
+		} catch(PDOException $e){
+			// error handling
+		}
+		return ($r>0) ? true : false;
 	}
 
 	/**
