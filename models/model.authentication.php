@@ -202,7 +202,17 @@ class authentication
 		}else{
 			$x = false;
 		}
-		if (!$x) $this->__nuke();
+
+		if (!$x) {
+			if ($this->__countLogins($_SESSION[$this->registry->libs->_getRealIPv4()]['count'])) {
+				// put machine on block list
+			} else {
+				$_SESSION[$this->registry->libs->_getRealIPv4()]['count']++;
+			}
+
+			$this->__nuke();
+		}
+
 		return (!$x) ? array('error'=>'User authentication failed') : $x;
 	}
 
@@ -251,6 +261,13 @@ class authentication
 		$x = $this->__register($a);
 
 		if (!$x) {
+
+			if ($this->__countLogins($_SESSION[$this->registry->libs->_getRealIPv4()]['count'])) {
+				// put machine on block list
+			} else {
+				$_SESSION[$this->registry->libs->_getRealIPv4()]['count']++;
+			}
+
 			$this->__nuke();
 		}
 
@@ -484,6 +501,15 @@ class authentication
 	private function __timeout($a, $v)
 	{
 		return ($a < (time() - $v));
+	}
+
+	/**
+	 *! @function __countLogins
+	 *  @abstract Performs calculation of current count of logins
+	 */
+	private function __countLogins($current, $allowed)
+	{
+		return ($current > $allowed) ? true : false;
 	}
 
 	/**
