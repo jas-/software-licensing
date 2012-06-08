@@ -194,9 +194,9 @@ a:hover{
  width:70%;
 }
 
-.info, .success, .warning, .error, .validation{
+.info, .success, .warning, .error, .validation, .spinner{
  font-size:0.8em;
- border: 1px solid;
+ border: 1px solid #000;
  margin: 10px 10px 10px 10px;
  padding:10px 10px 10px 50px;
  background-repeat: no-repeat;
@@ -224,5 +224,11 @@ a:hover{
  color: #D8000C;
  background-color: #FFBABA;
  background-image: url('../images/error.png');
+ background-size: 20px 20px;
+}
+.spinner {
+ color: #000;
+ background-color: #fff;
+ background-image: url('../images/loader.gif');
  background-size: 20px 20px;
 }
