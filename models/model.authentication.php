@@ -129,7 +129,12 @@ class authentication
 				$obj['signature'] = $this->registry->keyring->ssl->sign($_SESSION[$this->registry->libs->_getRealIPv4()]['token'], $_SESSION[$this->registry->libs->_getRealIPv4()]['privateKey'], $_SESSION[$this->registry->libs->_getRealIPv4()]['password']);
 				$x = $this->__register($obj);
 
-				$x = (($x)&&(is_array($keyring))) ? array('success'=>'User was successfully authenticated', 'token'=>sha1($_SESSION[$this->registry->libs->_getRealIPv4()]['token']), 'keyring'=>$keyring) : array('error'=>'An error occured when associating token with user');
+				if ($x){
+					$proto = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443) ? 'https://' : 'http://';
+					$url = (!empty($_SERVER['HTTP_ORIGIN'])) ? $_SERVER['HTTP_REFERER'] : $proto.$_SERVER['HTTP_HOST'].'/';
+				}
+
+				$x = (($x)&&(is_array($keyring))) ? array('success'=>'User was successfully authenticated', 'token'=>sha1($_SESSION[$this->registry->libs->_getRealIPv4()]['token']), 'keyring'=>$keyring, 'url'=>$url) : array('error'=>'An error occured when associating token with user');
 			}
 		}
 		return $x;
@@ -270,7 +275,12 @@ class authentication
 			$this->__nuke();
 		}
 
-		return ($x) ? array('success'=>'Re-authentication succeeded', 'token'=>$token) : array('error'=>'Re-authenticaiton failed');
+		if ($x){
+			$proto = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443) ? 'https://' : 'http://';
+			$url = (!empty($_SERVER['HTTP_ORIGIN'])) ? $_SERVER['HTTP_REFERER'] : $proto.$_SERVER['HTTP_HOST'].'/';
+		}
+
+		return ($x) ? array('success'=>'Re-authentication succeeded', 'token'=>$token, 'url'=>$url) : array('error'=>'Re-authenticaiton failed');
 	}
 
 	/**
@@ -385,7 +395,6 @@ class authentication
 	{
 		$token = sprintf("%s:%s:%s:%s:%s:%s:%d",
 						$obj[0], $obj[1], $obj[2], $obj[3], $obj[4], $obj[5], time());
-
 		$_SESSION[$this->registry->libs->_getRealIPv4()]['token'] = $token;
 
 		return sha1($token);
