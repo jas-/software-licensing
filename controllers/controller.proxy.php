@@ -97,7 +97,7 @@ class proxyController
 	 */
 	private function __vCheckSum($header, $array)
 	{
-		$string = (gettype($array)=='string') ? md5($array) : md5(md5($this->registry->libs->_serialize($array)));
+		$string = (gettype($array)=='string') ? md5($array) : md5($this->registry->libs->_serialize($array));
 		return (strcmp(base64_decode($header), $string)!==0) ? false : true;
 	}
 

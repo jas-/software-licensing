@@ -4,7 +4,12 @@
 <script>
 var $j = jQuery.noConflict();
 $j(document).ready(function(){
- $j('#auth').pidCrypt({appID:'{$token}'});
+ $j('#auth').pidCrypt({
+  appID:'{$token}',
+  callback:function(){_message(this);_redirect(this);},
+  preCallback:function(){_load();},
+  errCallback:function(){_error();}
+ });
 });
 </script>
 <div id="form" class="remote rounder gradient">
