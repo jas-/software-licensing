@@ -75,10 +75,18 @@ class remoteView
 	 */
 	private function _main()
 	{
+		$vm = '';
+		if (!empty($_SERVER['HTTP_ORIGIN'])) {
+			if (preg_match('/\:\d+$/', $_SERVER['HTTP_ORIGIN'])) {
+				$vm = preg_split('/:/', $_SERVER['HTTP_ORIGIN']);
+				$vm = ':'.$vm[2];
+			}
+		}
+
 		$proto = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443) ? 'https://' : 'http://';
-		$path = $proto.$_SERVER['HTTP_HOST'].'/';
+		$path = $proto.$_SERVER['HTTP_HOST'].$vm.'/';
 		$this->registry->tpl->assign('templates', $path.'/'.$this->registry->tpl->strTemplateDir, null, null, null);
-		$this->registry->tpl->assign('server', $proto.$_SERVER['HTTP_HOST'], null, null, null);
+		$this->registry->tpl->assign('server', $proto.$_SERVER['HTTP_HOST'].$vm, null, null, null);
 		$this->registry->tpl->assign('token', $_SESSION[$this->registry->libs->_getRealIPv4()]['csrf'], null, null, null);
 		$this->registry->tpl->display('remote.tpl', true, null, $this->registry->libs->_getRealIPv4());
 	}

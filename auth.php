@@ -1,5 +1,24 @@
 <?php
-unset($_SESSION);
+/**
+ * @var $sso string SSO server
+ */
+$sso = 'http://sso.dev/?nxs=proxy/remote';
+
+/**
+ * @var $uid string Unique CSRF token
+ */
+$uid = uuid();
+
+/**
+ * @array $opt Array of header options
+ */
+$proto = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443) ? 'https://' : 'http://';
+$opt = array('Origin: '.$proto.$_SERVER['HTTP_HOST'],
+			 'X-Requested-With: XMLHttpRequest',
+			 'X-Alt-Referer: '.$uid,
+			 'Content-MD5: '.base64_encode(md5($uid)));
+
+session_start();
 if (!empty($_GET['a'])){
  $_SESSION['token']=$_GET['a'];
  header('Location: '.$_SERVER['HTTP_REFERER']);
@@ -7,30 +26,39 @@ if (!empty($_GET['a'])){
 if (!empty($_SESSION['token'])){
  $m='<div class="success">Re-authentication successful</div>';
 }
+session_regenerate_id(true);
+
+_do($sso, $uid, $opt);
+
+/**
+ * @function _do
+ * @abstract Perform page request
+ * @var $sso string SSO server argument
+ * @var $uid string UUID for CSRF validation
+ * @var $opt array Array of header options for page request
+ */
+function _do($sso, $uid, $opt)
+{
+	$h=curl_init();
+	curl_setopt($h, CURLOPT_URL, $sso);
+	curl_setopt($h, CURLOPT_HEADER, false);
+	curl_setopt($h, CURLOPT_USERAGENT, $_SERVER['HTTP_USER_AGENT']);
+	curl_setopt($h, CURLOPT_REFERER, $sso);
+	curl_setopt($h, CURLOPT_HTTPHEADER, $opt);
+	$r=curl_exec($h);
+	curl_close($h);
+}
+
+/**
+ * @function _uuid
+ * @abstract Generates a random GUID
+ */
+function uuid()
+{
+	return sprintf('%04x%04x-%04x-%04x-%04x-%04x%04x%04x', mt_rand(0, 0xffff),
+					mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0x0fff) | 0x4000,
+					mt_rand(0, 0x3fff) | 0x8000, mt_rand(0, 0xffff),
+					mt_rand(0, 0xffff), mt_rand(0, 0xffff));
+}
+
 ?>
-<link rel="stylesheet" type="text/css" href="http://sso.dev:8080/views/default/css/styles.css" media="screen,projection" />
-<script src="http://sso.dev:8080/views/default/js/jquery.min.js" type="text/javascript"></script>
-<script src="http://sso.dev:8080/views/default/js/core.min.js"></script>
-<script>
-var $j = jQuery.noConflict();
-$j(document).ready(function(){
- $j('#auth').pidCrypt({
-  callback:function(){_message(this);_redirect(this);},
-  preCallback:function(){_load();},
-  errCallback:function(){_error();}
- });
-});
-</script>
-<div id="form" class="remote rounder gradient">
- <h2>Authenticate</h2>
- <p>Please provide username & password</p>
- <div id="message" class="rounder gradient"><?php echo $m; ?></div>
- <form id="auth" name="authenticate" method="post" action="http://sso.dev:8080/?nxs=proxy/authenticate">
-  <label for="email">Email: </label>
-   <input type="email" id="email" name="email" value="" placeholder="Enter email address" required="required" /><span class="required">*</span>
-  <label for="password">Password: </label>
-   <input type="password" id="password" name="password" value="" placeholder="Enter passphrase" required="required" /><span class="required">*</span>
-  <input type="submit" value="Authenticate" id="submit-button" />
-  <a href="http://sso.dev:8080/?nxs=proxy/register">Register</a> | <a href="http://sso.dev:8080/?nxs=proxy/reset">Forgot username?</a>
- </form>
-</div>
