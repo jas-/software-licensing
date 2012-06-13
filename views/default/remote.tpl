@@ -15,7 +15,7 @@ $j(document).ready(function(){
 <div id="form" class="remote rounder gradient">
  <h2>Authenticate</h2>
  <p>Please provide username & password</p>
- <div id="message"></div>
+ <div id="message">{$message}</div>
  <form id="auth" name="authenticate" method="post" action="{$server}/?nxs=proxy/authenticate">
   <label for="email">Email: </label>
    <input type="email" id="email" name="email" value="" placeholder="Enter email address" required="required" /><span class="required">*</span>

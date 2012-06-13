@@ -1,9 +1,5 @@
 DELIMITER //
 
-DROP PROCEDURE IF EXISTS Configuration_access_add_allow//
-
-DROP PROCEDURE IF EXISTS Configuration_access_add_deny//
-
 DROP PROCEDURE IF EXISTS Configuration_access_add//
 CREATE DEFINER='licensing'@'localhost' PROCEDURE Configuration_access_add(IN `name` VARCHAR(32), IN `filter` VARCHAR(255), `skey` LONGTEXT)
  DETERMINISTIC

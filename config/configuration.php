@@ -15,7 +15,7 @@ $settings['opts']['title']    = 'Marriott Library - Software Licensing';
 $settings['opts']['timeout']  = 3600;
 $settings['opts']['template'] = 'views/default';
 $settings['opts']['caching']  = 'views/cache';
-$settings['opts']['flogin']   = 15;
+$settings['opts']['flogin']   = 99999999999999999999999;
 
 /* Session specific settings */
 $settings['sessions']['timeout'] = $settings['opts']['timeout'];

@@ -91,9 +91,16 @@ class libraries {
 	 */
 	function _getRealIPv4()
 	{
-		return (getenv('HTTP_CLIENT_IP') && $this->_ip(getenv('HTTP_CLIENT_IP'))) ?
+		if ((getenv('HTTP_CLIENT_IP')) && ($this->_ip(getenv('HTTP_CLIENT_IP')))) return getenv('HTTP_CLIENT_IP');
+		if ((getenv('HTTP_X_FORWARDED_FOR')) && ($this->_forwarded(getenv('HTTP_X_FORWARDED_FOR')))) return $this->_forwarded(getenv('HTTP_X_FORWARDED_FOR'));
+		if ((getenv('HTTP_X_FORWARDED_HOST')) && ($this->_ip(getenv('HTTP_X_FORWARDED_HOST')))) return getenv('HTTP_X_FORWARDED_HOST');
+		if ((getenv('HTTP_X_FORWARDED_SERVER')) && ($this->_ip(getenv('HTTP_X_FORWARDED_SERVER')))) return getenv('HTTP_X_FORWARDED_SERVER');
+		if ((getenv('HTTP_X_CLUSTER_CLIENT_IP')) && ($this->_ip(getenv('HTTP_X_CLUSTER_CLIENT_IP')))) return getenv('HTTP_X_CLUSTER_CLIENT_IP');
+		return getenv('REMOTE_ADDR');
+/*
+ 		return (getenv('HTTP_CLIENT_IP') && $this->_ip(getenv('HTTP_CLIENT_IP'))) ?
 					getenv('HTTP_CLIENT_IP') :
-					(getenv('HTTP_X_FORWARDED_FOR') && $this->_forwarded(getenv('HTTP_X_FORWARDED_FOR'))) ?
+					(getenv('HTTP_X_FORWARDED_FOR')	 && $this->_forwarded(getenv('HTTP_X_FORWARDED_FOR'))) ?
 						$this->_forwarded(getenv('HTTP_X_FORWARDED_FOR')) :
 						(getenv('HTTP_X_FORWARDED') && $this->_ip(getenv('HTTP_X_FORWARDED'))) ?
 							getenv('HTTP_X_FORWARDED') :
@@ -104,14 +111,16 @@ class libraries {
 									(getenv('HTTP_X_CLUSTER_CLIENT_IP') && $this->_ip(getenv('HTTP_X_CLIUSTER_CLIENT_IP'))) ?
 										getenv('HTTP_X_CLUSTER_CLIENT_IP') :
 										getenv('REMOTE_ADDR');
+*/
 	}
 
 	/**
 	 * @function _ip
 	 * @abstract Attempts to determine if IP is non-routeable
 	 */
-	function _ip($ip)
+	function _ip($ip, $allow=true)
 	{
+		if ($allow) return true;
 		if (!empty($ip) && ip2long($ip)!=-1 && ip2long($ip)!=false){
 			$nr = array(array('0.0.0.0','2.255.255.255'),
 						array('10.0.0.0','10.255.255.255'),
