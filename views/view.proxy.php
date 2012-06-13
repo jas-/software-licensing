@@ -83,7 +83,6 @@ class proxyView
 				case 'authenticate':
 					$auth = authentication::instance($this->registry);
 					$token = (!empty($_GET['token'])) ? $_GET['token'] : (!empty($_SERVER['HTTP_AUTHORIZATION'])) ? $_SERVER['HTTP_AUTHORIZATION'] : (!empty($_SERVER['HTTP_X_TOKEN'])) ? $_SERVER['HTTP_X_TOKEN'] : false;
-					print_r(apache_request_headers());
 					$d = ((!empty($_GET['callback']))&&(count($_GET)>0)) ? $_GET : $_POST;
 					$x = (!empty($token)) ? $auth->__reauth($_SESSION[$this->registry->libs->_getRealIPv4()]['token'], $token) : $auth->__do($this->registry->val->__do($d));
 					break;
