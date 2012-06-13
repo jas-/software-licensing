@@ -105,7 +105,7 @@ class authentication
 		} else {
 			$obj = $this->__decrypt($creds);
 			if (array_key_exists('error', $obj)) {
-				if ($this->__countLogins($_SESSION[$this->registry->libs->_getRealIPv4()]['count'], $this->registry->opts->flogin)) {
+				if ($this->__countLogins($_SESSION[$this->registry->libs->_getRealIPv4()]['count'], $this->registry->opts['flogin'])) {
 					$this->__addBlock($this->registry->libs->_getRealIPv4());
 				} else {
 					$_SESSION[$this->registry->libs->_getRealIPv4()]['count']++;
@@ -129,7 +129,7 @@ class authentication
 
 				$token = $this->__genToken($obj);
 				if (!$token) {
-					if ($this->__countLogins($_SESSION[$this->registry->libs->_getRealIPv4()]['count'], $this->registry->opts->flogin)) {
+					if ($this->__countLogins($_SESSION[$this->registry->libs->_getRealIPv4()]['count'], $this->registry->opts['flogin'])) {
 						$this->__addBlock($this->registry->libs->_getRealIPv4());
 					} else {
 						$_SESSION[$this->registry->libs->_getRealIPv4()]['count']++;
@@ -221,7 +221,7 @@ class authentication
 		}
 
 		if (!$x) {
-			if ($this->__countLogins($_SESSION[$this->registry->libs->_getRealIPv4()]['count'], $this->registry->opts->flogin)) {
+			if ($this->__countLogins($_SESSION[$this->registry->libs->_getRealIPv4()]['count'], $this->registry->opts['flogin'])) {
 				$this->__addBlock($this->registry->libs->_getRealIPv4());
 			} else {
 				$_SESSION[$this->registry->libs->_getRealIPv4()]['count']++;
@@ -242,8 +242,8 @@ class authentication
 		$this->pass = $_SESSION[$this->registry->libs->_getRealIPv4()]['password'];
 
 		if (!empty($hash)) {
-			if (strcmp($hash, $token)!==0) {
-				if ($this->__countLogins($_SESSION[$this->registry->libs->_getRealIPv4()]['count'], $this->registry->opts->flogin)) {
+			if (strcmp($hash, sha1($token))!==0) {
+				if ($this->__countLogins($_SESSION[$this->registry->libs->_getRealIPv4()]['count'], $this->registry->opts['flogin'])) {
 					$this->__addBlock($this->registry->libs->_getRealIPv4());
 				} else {
 					$_SESSION[$this->registry->libs->_getRealIPv4()]['count']++;
@@ -256,7 +256,7 @@ class authentication
 		$a = $this->__decode($token);
 
 		if (!$this->__hijack($a)){
-			if ($this->__countLogins($_SESSION[$this->registry->libs->_getRealIPv4()]['count'], $this->registry->opts->flogin)) {
+			if ($this->__countLogins($_SESSION[$this->registry->libs->_getRealIPv4()]['count'], $this->registry->opts['flogin'])) {
 				$this->__addBlock($this->registry->libs->_getRealIPv4());
 			} else {
 				$_SESSION[$this->registry->libs->_getRealIPv4()]['count']++;
@@ -266,7 +266,7 @@ class authentication
 		}
 
 		if ($this->__timeout($a[6], $this->registry->opts['timeout'])){
-			if ($this->__countLogins($_SESSION[$this->registry->libs->_getRealIPv4()]['count'], $this->registry->opts->flogin)) {
+			if ($this->__countLogins($_SESSION[$this->registry->libs->_getRealIPv4()]['count'], $this->registry->opts['flogin'])) {
 				$this->__addBlock($this->registry->libs->_getRealIPv4());
 			} else {
 				$_SESSION[$this->registry->libs->_getRealIPv4()]['count']++;
@@ -278,7 +278,7 @@ class authentication
 		$s = $this->__getSignature($a[0]);
 
 		if (empty($s['signature'])){
-			if ($this->__countLogins($_SESSION[$this->registry->libs->_getRealIPv4()]['count'], $this->registry->opts->flogin)) {
+			if ($this->__countLogins($_SESSION[$this->registry->libs->_getRealIPv4()]['count'], $this->registry->opts['flogin'])) {
 				$this->__addBlock($this->registry->libs->_getRealIPv4());
 			} else {
 				$_SESSION[$this->registry->libs->_getRealIPv4()]['count']++;
@@ -288,7 +288,7 @@ class authentication
 		}
 
 		if (!$this->__checkSignature($_SESSION[$this->registry->libs->_getRealIPv4()]['token'], $s['signature'])){
-			if ($this->__countLogins($_SESSION[$this->registry->libs->_getRealIPv4()]['count'], $this->registry->opts->flogin)) {
+			if ($this->__countLogins($_SESSION[$this->registry->libs->_getRealIPv4()]['count'], $this->registry->opts['flogin'])) {
 				$this->__addBlock($this->registry->libs->_getRealIPv4());
 			} else {
 				$_SESSION[$this->registry->libs->_getRealIPv4()]['count']++;
@@ -304,7 +304,7 @@ class authentication
 
 		if (!$x) {
 
-			if ($this->__countLogins($_SESSION[$this->registry->libs->_getRealIPv4()]['count'], $this->registry->opts->flogin)) {
+			if ($this->__countLogins($_SESSION[$this->registry->libs->_getRealIPv4()]['count'], $this->registry->opts['flogin'])) {
 				$this->__addBlock($this->registry->libs->_getRealIPv4());
 			} else {
 				$_SESSION[$this->registry->libs->_getRealIPv4()]['count']++;
@@ -552,7 +552,7 @@ class authentication
 	 *! @function __countLogins
 	 *  @abstract Performs calculation of current count of logins
 	 */
-	private function __countLogins($current, $allowed)
+	private function __countLogins($current=0, $allowed)
 	{
 		return ($current > $allowed) ? true : false;
 	}
