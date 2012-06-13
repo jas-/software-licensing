@@ -88,7 +88,7 @@ class remoteView
 
 		if (!empty($_SERVER['HTTP_X_TOKEN'])) {
 			$this->registry->keyring = new keyring($this->registry, $this->registry->val->__do($_POST));
-			authentication::instance($this->registry)->__reauth($_SESSION[$this->registry->libs->_getRealIPv4()]['token'], $_SERVER['HTTP_X_TOKEN']);
+			print_r(authentication::instance($this->registry)->__reauth($_SESSION[$this->registry->libs->_getRealIPv4()]['token'], $_SERVER['HTTP_X_TOKEN']));
 		}
 
 		$this->registry->tpl->assign('templates', $path.'/'.$this->registry->tpl->strTemplateDir, null, null, null);

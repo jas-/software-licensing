@@ -105,11 +105,6 @@ class authentication
 		} else {
 			$obj = $this->__decrypt($creds);
 			if (array_key_exists('error', $obj)) {
-				if ($this->__countLogins($_SESSION[$this->registry->libs->_getRealIPv4()]['count'], $this->registry->opts['flogin'])) {
-					$this->__addBlock($this->registry->libs->_getRealIPv4());
-				} else {
-					$_SESSION[$this->registry->libs->_getRealIPv4()]['count']++;
-				}
 				$this->__nuke();
 				return $obj;
 			}
@@ -129,11 +124,6 @@ class authentication
 
 				$token = $this->__genToken($obj);
 				if (!$token) {
-					if ($this->__countLogins($_SESSION[$this->registry->libs->_getRealIPv4()]['count'], $this->registry->opts['flogin'])) {
-						$this->__addBlock($this->registry->libs->_getRealIPv4());
-					} else {
-						$_SESSION[$this->registry->libs->_getRealIPv4()]['count']++;
-					}
 					$this->__nuke();
 					return array('error'=>'Authenticated token generation failed, cannot continue');
 				}
@@ -240,14 +230,9 @@ class authentication
 	public function __reauth($token, $hash=false)
 	{
 		$this->pass = $_SESSION[$this->registry->libs->_getRealIPv4()]['password'];
-
+print_r(func_get_args());
 		if (!empty($hash)) {
 			if (strcmp($hash, sha1($token))!==0) {
-				if ($this->__countLogins($_SESSION[$this->registry->libs->_getRealIPv4()]['count'], $this->registry->opts['flogin'])) {
-					$this->__addBlock($this->registry->libs->_getRealIPv4());
-				} else {
-					$_SESSION[$this->registry->libs->_getRealIPv4()]['count']++;
-				}
 				$this->__nuke();
 				return array('error'=>'Authentication provided incorrect, destroying token');
 			}
@@ -256,21 +241,11 @@ class authentication
 		$a = $this->__decode($token);
 
 		if (!$this->__hijack($a)){
-			if ($this->__countLogins($_SESSION[$this->registry->libs->_getRealIPv4()]['count'], $this->registry->opts['flogin'])) {
-				$this->__addBlock($this->registry->libs->_getRealIPv4());
-			} else {
-				$_SESSION[$this->registry->libs->_getRealIPv4()]['count']++;
-			}
 			$this->__nuke();
 			return array('error'=>'Session hijack attempt detected, destroying token');
 		}
 
 		if ($this->__timeout($a[6], $this->registry->opts['timeout'])){
-			if ($this->__countLogins($_SESSION[$this->registry->libs->_getRealIPv4()]['count'], $this->registry->opts['flogin'])) {
-				$this->__addBlock($this->registry->libs->_getRealIPv4());
-			} else {
-				$_SESSION[$this->registry->libs->_getRealIPv4()]['count']++;
-			}
 			$this->__nuke();
 			return array('error'=>'The authenticated session has timed out, please re-authenticate');
 		}
@@ -278,21 +253,11 @@ class authentication
 		$s = $this->__getSignature($a[0]);
 
 		if (empty($s['signature'])){
-			if ($this->__countLogins($_SESSION[$this->registry->libs->_getRealIPv4()]['count'], $this->registry->opts['flogin'])) {
-				$this->__addBlock($this->registry->libs->_getRealIPv4());
-			} else {
-				$_SESSION[$this->registry->libs->_getRealIPv4()]['count']++;
-			}
 			$this->__nuke();
 			return array('error'=>'Could not obtain signature associated with authentication, destroying token');
 		}
 
 		if (!$this->__checkSignature($_SESSION[$this->registry->libs->_getRealIPv4()]['token'], $s['signature'])){
-			if ($this->__countLogins($_SESSION[$this->registry->libs->_getRealIPv4()]['count'], $this->registry->opts['flogin'])) {
-				$this->__addBlock($this->registry->libs->_getRealIPv4());
-			} else {
-				$_SESSION[$this->registry->libs->_getRealIPv4()]['count']++;
-			}
 			$this->__nuke();
 			return array('error'=>'Cryptographic verification of authentication token signature failed, destroying token');
 		}
@@ -303,12 +268,6 @@ class authentication
 		$x = $this->__register($a);
 
 		if (!$x) {
-
-			if ($this->__countLogins($_SESSION[$this->registry->libs->_getRealIPv4()]['count'], $this->registry->opts['flogin'])) {
-				$this->__addBlock($this->registry->libs->_getRealIPv4());
-			} else {
-				$_SESSION[$this->registry->libs->_getRealIPv4()]['count']++;
-			}
 			$this->__nuke();
 		}
 
@@ -582,6 +541,12 @@ class authentication
 	 */
 	private function __nuke()
 	{
+		if ($this->__countLogins($_SESSION[$this->registry->libs->_getRealIPv4()]['count'], $this->registry->opts['flogin'])) {
+			$this->__addBlock($this->registry->libs->_getRealIPv4());
+		} else {
+			$_SESSION[$this->registry->libs->_getRealIPv4()]['count']++;
+		}
+
 		$x = $this->__decode($_SESSION[$this->registry->libs->_getRealIPv4()]['token']);
 		$this->__register($x);
 		unset($_SESSION[$this->registry->libs->_getRealIPv4()]['token']);
