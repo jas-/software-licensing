@@ -86,10 +86,6 @@ class remoteView
 		$proto = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443) ? 'https://' : 'http://';
 		$path = $proto.$_SERVER['HTTP_HOST'].$vm.'/';
 
-		if (!empty($_SERVER['HTTP_X_TOKEN'])) {
-			/* perform re-authentication */
-		}
-
 		$this->registry->tpl->assign('templates', $path.'/'.$this->registry->tpl->strTemplateDir, null, null, null);
 		$this->registry->tpl->assign('server', $proto.$_SERVER['HTTP_HOST'].$vm, null, null, null);
 		$this->registry->tpl->assign('token', $_SESSION[$this->registry->libs->_getRealIPv4()]['csrf'], null, null, null);

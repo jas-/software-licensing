@@ -73,7 +73,7 @@ class applications {
 			header('Access-Control-Max-Age: 1728000');
 			header('Access-Control-Allow-Origin: '.$url);
 			header('Access-Control-Allow-Methods: POST');
-			header('Access-Control-Allow-Headers: Content-MD5, X-Alt-Referer, X-Requested-With');
+			header('Access-Control-Allow-Headers: Content-MD5, X-Alt-Referer, X-Requested-With, X-Token');
 			header('Access-Control-Allow-Credentials', true);
 			header("Content-Type: application/json");
 		}
