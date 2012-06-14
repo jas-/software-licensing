@@ -233,7 +233,7 @@ class authentication
 
 		if (empty($token)){
 			$this->__nuke();
-			return;
+			return false;
 		}
 
 		if ((!empty($$token))&&(!empty($hash))) {
