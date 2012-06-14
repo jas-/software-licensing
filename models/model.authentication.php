@@ -251,7 +251,7 @@ class authentication
 		}
 
 		if ($this->__timeout($a[6], $this->registry->opts['timeout'])){
-			$this->__nuke();
+			$this->__nuke(true);
 			return array('error'=>'The authenticated session has timed out, please re-authenticate');
 		}
 
@@ -545,12 +545,14 @@ class authentication
 	 *  @abstract Kills authentication token, removes digital signature of
 	 *            authenticated user & destroys user specific authentication data
 	 */
-	private function __nuke()
+	private function __nuke($x=false)
 	{
-		if ($this->__countLogins($_SESSION[$this->registry->libs->_getRealIPv4()]['count'], $this->registry->opts['flogin'])) {
-			$this->__addBlock($this->registry->libs->_getRealIPv4());
-		} else {
-			$_SESSION[$this->registry->libs->_getRealIPv4()]['count']++;
+		if ($x){
+			if ($this->__countLogins($_SESSION[$this->registry->libs->_getRealIPv4()]['count'], $this->registry->opts['flogin'])) {
+				$this->__addBlock($this->registry->libs->_getRealIPv4());
+			} else {
+				$_SESSION[$this->registry->libs->_getRealIPv4()]['count']++;
+			}
 		}
 
 		$x = $this->__decode($_SESSION[$this->registry->libs->_getRealIPv4()]['token']);
