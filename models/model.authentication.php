@@ -351,15 +351,6 @@ class authentication
 		if (is_array($a)){
 			$t = filter_var(urlencode($this->registry->keyring->ssl->aesDenc($a[5], $this->pass, $this->registry->libs->_16($this->registry->libs->_hash($this->pass, $this->registry->libs->_salt($this->registry->opts['dbKey'], 2048))))), FILTER_VALIDATE_REGEXP, array('options'=> array('regexp'=>'/^'.urlencode(getenv('HTTP_REFERER')).'/Di')));
 
-//echo '<pre>'; print_r($_SESSION); echo '</pre>';
-print_r($this->registry->keyring->ssl->aesDenc($a[3], $this->pass, $this->registry->libs->_16($this->registry->libs->_hash($this->pass, $this->registry->libs->_salt($this->registry->opts['dbKey'], 2048)))), sha1($this->registry->libs->_getRealIPv4()));
-print_r($this->registry->keyring->ssl->aesDenc($a[4], $this->pass, $this->registry->libs->_16($this->registry->libs->_hash($this->pass, $this->registry->libs->_salt($this->registry->opts['dbKey'], 2048)))), sha1($this->registry->libs->_getRealIPv4()));
-print_r($this->registry->keyring->ssl->aesDenc($a[5], $this->pass, $this->registry->libs->_16($this->registry->libs->_hash($this->pass, $this->registry->libs->_salt($this->registry->opts['dbKey'], 2048)))), sha1(getenv('HTTP_USER_AGENT')));
-
-//echo '<pre>'; print_r(var_dump(strcmp($this->registry->keyring->ssl->aesDenc($a[4], $this->pass, $this->registry->libs->_16($this->registry->libs->_hash($this->pass, $this->registry->libs->_salt($this->registry->opts['dbKey'], 2048)))), sha1(getenv('HTTP_USER_AGENT'))))); echo '</pre>';
-//echo '<pre>'; print_r(var_dump(strcmp($t, urlencode(getenv('HTTP_REFERER'))))); echo '</pre>';
-
-
 			$x = ((strcmp($this->registry->keyring->ssl->aesDenc($a[3], $this->pass, $this->registry->libs->_16($this->registry->libs->_hash($this->pass, $this->registry->libs->_salt($this->registry->opts['dbKey'], 2048)))), sha1($this->registry->libs->_getRealIPv4()))==0)&&
 				  (strcmp($this->registry->keyring->ssl->aesDenc($a[4], $this->pass, $this->registry->libs->_16($this->registry->libs->_hash($this->pass, $this->registry->libs->_salt($this->registry->opts['dbKey'], 2048)))), sha1(getenv('HTTP_USER_AGENT')))==0)&&
 				  (strcmp($t, urlencode(getenv('HTTP_REFERER'))==0)));
