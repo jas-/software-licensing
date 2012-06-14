@@ -26,11 +26,17 @@
   <p>Please configure the applications default behavior</p>
   <div id="message"></div>
   <form id="install" name="install" method="post" action="?nxs=installation">
-   <label for="name">Title: </label>
+   <label for="title">Title: </label>
     <input type="text" id="title" name="title" value="" placeholder="myTFH (My tin foil hat)" required="required" /><span class="required">*</span><br />
+   <label for="email">Email: </label>
+    <input type="text" id="email" name="email" value="" placeholder="default@mytfh.dev" required="required" /><span class="required">*</span><br />
+   <label for="timeout">Timeout: </label>
+    <input type="text" id="timeout" name="timeoute" value="" placeholder="3600 = 5 minutes" required="required" /><span class="required">*</span><br />
+   <label for="flogin">Login count: </label>
+    <input type="text" id="flogin" name="flogin" value="" placeholder="5 (failed = IP blacklisted)" required="required" /><span class="required">*</span><br />
    <label for="template">Template: </label>
-    <select name="template">
-     {$templates}
+    <select id="template" name="template" required="required" style="width: 30%">
+     {$tmpl}
     </select><span class="required">*</span><br/>
  </div>
  <br/>
@@ -57,13 +63,19 @@
    <br/><hr style="width: 95%"/><br/>
    <label for="level">Access level: </label>
     <select id="level" name="level" required="required" style="width: 30%">
+     <option id="" value="admin">admin</option>
      {$level}
     </select><span class="required">*</span><br />
    <label for="group">Group: </label>
     <select id="group" name="group" required="required" style="width: 30%">
+     <option id="" value="admin">admin</option>
      {$group}
     </select><span class="required">*</span><br />
-   <br/><hr style="width: 95%"/><br/>
+ </div>
+ <br/>
+ <div id="form" class="rounder gradient">
+  <h2>Certificate information</h2>
+  <p>Because this application implements a PKI solution the certificate details for this installation are required</p>
    <label for="organizationalName">Organization: </label>
     <input type="text" id="organizationalName" name="organizationalName" value="" placeholder="Surfs Up LLC" required="required" /><span class="required">*</span><br />
    <label for="organizationalUnitName">Department: </label>
@@ -74,7 +86,6 @@
     <input type="text" id="stateOrProvinceName" name="stateOrProvinceName" value="{$stateOrProvinceName}" placeholder="California" required="required" /><span class="required">*</span><br />
    <label for="countryName">Country: </label>
     <input type="text" id="countryName" name="countryName" value="{$countryName}" placeholder="United States" required="required" /><span class="required">*</span><br />
-
    <label></label>
     <input type="submit" value="Install" id="submit-button" />
   </form>

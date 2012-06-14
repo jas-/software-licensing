@@ -115,12 +115,14 @@ class installationView
 	{
 		$level = $this->registry->libs->_genOptionsList($this->registry->libs->__sql2Array('CALL Levels_GetList()', $this->registry->db), 'level');
 		$group = $this->registry->libs->_genOptionsList($this->registry->libs->__sql2Array('CALL Groups_GetList()', $this->registry->db), 'group');
+		$templates = $this->registry->libs->_genOptionsList($this->registry->libs->_templates('views'), 'template');
 
 		$this->registry->tpl->assign('localityName', $geo['localityName'], null, null, null);
 		$this->registry->tpl->assign('stateOrProvinceName', $geo['stateOrProvinceName'], null, null, null);
 		$this->registry->tpl->assign('countryName', $geo['countryName'], null, null, null);
 		$this->registry->tpl->assign('level', $level, null, null, null);
 		$this->registry->tpl->assign('group', $group, null, null, null);
+		$this->registry->tpl->assign('tmpl', $templates, null, null, null);
 		$this->registry->tpl->assign('main', $this->registry->tpl->assign(null, null, 'install.tpl', true, $this->registry->libs->_getRealIPv4()), null, null);
 	}
 

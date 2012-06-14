@@ -329,11 +329,16 @@ class libraries {
 	 */
 	public function _genOptionsList($array, $i)
 	{
-		$l = false;
+		$l = false;	$x=0;
 		if ((is_array($array)) && (count($array) > 0)) {
 			$l = '<option id="" value="">Make a selection...</option>';
 			foreach($array as $key => $value) {
-				$l .= (!empty($i)) ? '<option id="" value="'.$value[$i].'">'.$value[$i].'</option>' : '<option id="" value="'.$value.'">'.$value.'</option>';
+				if (!empty($value[$i])){
+					$l .= (!empty($i)) ? '<option id="" value="'.$value[$i].'">'.$value[$i].'</option>' : '<option id="" value="'.$value[$key].'">'.$value[$key].'</option>';
+				} else {
+					$l .= '<option id="" value="'.$value[$x].'">'.$value[$x].'</option>';
+				}
+				$x++;
 			}
 		}
 		return $l;
@@ -351,6 +356,30 @@ class libraries {
 			// error handler
 		}
         return (($r) && (is_array($r))) ? $r : false;
+	}
+
+	/**
+	 * @function _templates
+	 * @abstract Generates select list of available templates
+	 */
+	public function _templates($folder)
+	{
+		if (is_dir($folder)) {
+			$x=0;
+			if (($handle = opendir($folder))!==false) {
+				while (($dir = readdir($handle))!==false) {
+					if (($dir!=='.')&&($dir!=='..')&&($dir!=='admin')&&($dir!=='cache')) {
+						if (is_dir($folder.'/'.$dir)){
+							$dirs[$x][] = preg_replace('/..\//', '', $folder).'/'.$dir;
+						}
+					}
+					$x++;
+				}
+			} else {
+				return false;
+			}
+		}
+		return (count($dirs)!==0) ? $dirs : false;
 	}
 
 	public function __clone() {
