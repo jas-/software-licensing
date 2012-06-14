@@ -198,6 +198,25 @@ p{
  width:70%;
 }
 
+#float {
+ position: absolute;
+ top: 15;
+ width:350px;
+}
+
+#float.fixed {
+ position: fixed;
+ width:350px;
+ top: 15;
+}
+
+#floatWrapper { /* required to avoid jumping */
+ /*left: 550px;*/
+ position: absolute;
+ /*margin-left: 35px;*/
+ width:350px;
+}
+
 .info, .success, .warning, .error, .validation, .spinner{
  font-size:0.8em;
  border: 1px solid #000;

@@ -19,6 +19,11 @@
    <li>Register all user configuration options within database</li>
    <li>Make modifications to default configuration file</li>
   </ol>
+ </div>
+ <br/>
+ <div id="form" class="rounder gradient">
+  <h2>Application defaults</h2>
+  <p>Please configure the applications default behavior</p>
   <div id="message"></div>
   <form id="install" name="install" method="post" action="?nxs=installation">
    <label for="name">Title: </label>
@@ -26,7 +31,50 @@
    <label for="template">Template: </label>
     <select name="template">
      {$templates}
-    </select>
+    </select><span class="required">*</span><br/>
+ </div>
+ <br/>
+ <div id="form" class="rounder gradient">
+  <h2>MySQL credentials</h2>
+  <p>Because the installation creates a new database & imports stored procedures root access is required</p>
+   <label for="email">Username: </label>
+    <input type="text" id="email" name="email" value="" placeholder="johndoe@example.com" required="required" /><span class="required">*</span><br />
+   <label for="password">Password: </label>
+    <input type="password" id="password" name="password" value="" placeholder="********" required="required" /><span class="required">*</span><br />
+   <label for="confirm">Confirm: </label>
+    <input type="password" id="confirm" name="confirm" value="" placeholder="********" required="required" /><span class="required">*</span><br />
+ </div>
+ <br/>
+ <div id="form" class="rounder gradient">
+  <h2>Administration account</h2>
+  <p>Create a default administration user account for access to the myTFH application</p>
+   <label for="email">Username: </label>
+    <input type="text" id="email" name="email" value="" placeholder="johndoe@example.com" required="required" /><span class="required">*</span><br />
+   <label for="password">Password: </label>
+    <input type="password" id="password" name="password" value="" placeholder="********" required="required" /><span class="required">*</span><br />
+   <label for="confirm">Confirm: </label>
+    <input type="password" id="confirm" name="confirm" value="" placeholder="********" required="required" /><span class="required">*</span><br />
+   <br/><hr style="width: 95%"/><br/>
+   <label for="level">Access level: </label>
+    <select id="level" name="level" required="required" style="width: 30%">
+     {$level}
+    </select><span class="required">*</span><br />
+   <label for="group">Group: </label>
+    <select id="group" name="group" required="required" style="width: 30%">
+     {$group}
+    </select><span class="required">*</span><br />
+   <br/><hr style="width: 95%"/><br/>
+   <label for="organizationalName">Organization: </label>
+    <input type="text" id="organizationalName" name="organizationalName" value="" placeholder="Surfs Up LLC" required="required" /><span class="required">*</span><br />
+   <label for="organizationalUnitName">Department: </label>
+    <input type="text" id="organizationalUnitName" name="organizationalUnitName" value="" placeholder="Department of Kowabunga" required="required" /><span class="required">*</span><br />
+   <label for="localityName">City: </label>
+    <input type="text" id="localityName" name="localityName" value="{$localityName}" placeholder="San Diego" required="required" /><span class="required">*</span><br />
+   <label for="stateOrProvinceName">State: </label>
+    <input type="text" id="stateOrProvinceName" name="stateOrProvinceName" value="{$stateOrProvinceName}" placeholder="California" required="required" /><span class="required">*</span><br />
+   <label for="countryName">Country: </label>
+    <input type="text" id="countryName" name="countryName" value="{$countryName}" placeholder="United States" required="required" /><span class="required">*</span><br />
+
    <label></label>
     <input type="submit" value="Install" id="submit-button" />
   </form>
