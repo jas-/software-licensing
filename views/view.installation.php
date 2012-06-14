@@ -77,9 +77,11 @@ class installationView
 	 */
 	private function _main()
 	{
-		$this->__main();
-		$this->_menu();
-		$this->_login();
+		$geo = $this->registry->libs->parsegeo($this->registry->libs->geolocation($this->registry->libs->_getRealIPv4()));
+
+		$this->__main($geo);
+		$this->_menu($geo);
+		$this->_location($geo);
 		$this->registry->tpl->display('index.tpl', true, null, $this->registry->libs->_getRealIPv4());
 	}
 
@@ -90,14 +92,10 @@ class installationView
 	 */
 	private function _header()
 	{
-		$this->registry->tpl->assign('title',
-				$this->registry->opts['title'], null, null, null);
-		$this->registry->tpl->assign('timeout',
-				$this->registry->opts['timeout'], null, null, null);
-		$this->registry->tpl->assign('templates',
-				$this->registry->tpl->strTemplateDir, null, null, null);
-		$this->registry->tpl->display('header.tpl', true, null,
-				$this->registry->libs->_getRealIPv4());
+		$this->registry->tpl->assign('title', $this->registry->opts['title'], null, null, null);
+		$this->registry->tpl->assign('timeout', $this->registry->opts['timeout'], null, null, null);
+		$this->registry->tpl->assign('templates', $this->registry->tpl->strTemplateDir, null, null, null);
+		$this->registry->tpl->display('header.tpl', true, null, $this->registry->libs->_getRealIPv4());
 	}
 
 	/**
@@ -106,53 +104,44 @@ class installationView
 	 */
 	private function _footer()
 	{
-		$this->registry->tpl->display('footer.tpl', true, null,
-				$this->registry->libs->_getRealIPv4());
+		$this->registry->tpl->display('footer.tpl', true, null, $this->registry->libs->_getRealIPv4());
 	}
 
 	/**
 	 *! @function __main
 	 *  @abstract Creates and loads nested main template (used for primary page content)
 	 */
-	private function __main()
+	private function __main($geo)
 	{
-		$this->registry->tpl->assign('main',
-				$this->registry->tpl->assign(null,
-					null,
-					'install.tpl',
-					true,
-					$this->registry->libs->_getRealIPv4()),
-				null, null);
+		$level = $this->registry->libs->_genOptionsList($this->registry->libs->__sql2Array('CALL Levels_GetList()', $this->registry->db), 'level');
+		$group = $this->registry->libs->_genOptionsList($this->registry->libs->__sql2Array('CALL Groups_GetList()', $this->registry->db), 'group');
+
+		$this->registry->tpl->assign('localityName', $geo['localityName'], null, null, null);
+		$this->registry->tpl->assign('stateOrProvinceName', $geo['stateOrProvinceName'], null, null, null);
+		$this->registry->tpl->assign('countryName', $geo['countryName'], null, null, null);
+		$this->registry->tpl->assign('level', $level, null, null, null);
+		$this->registry->tpl->assign('group', $group, null, null, null);
+		$this->registry->tpl->assign('main', $this->registry->tpl->assign(null, null, 'install.tpl', true, $this->registry->libs->_getRealIPv4()), null, null);
 	}
 
 	/**
-	 *! @function _login
-	 *  @abstract Loads the login template
+	 *! @function _location
+	 *  @abstract Loads the location template
 	 */
-	private function _login()
+	private function _location($geo)
 	{
-		$this->registry->tpl->assign('login',
-				$this->registry->tpl->assign(null,
-					null,
-					'login.tpl',
-					true,
-					$this->registry->libs->_getRealIPv4()),
-				null, null);
+		$this->registry->tpl->assign('latitude', $geo['latitude'], null, null, null);
+		$this->registry->tpl->assign('longitude', $geo['longitude'], null, null, null);
+		$this->registry->tpl->assign('login', $this->registry->tpl->assign(null, null, 'location.tpl', true, $this->registry->libs->_getRealIPv4()), null, null);
 	}
 
 	/**
 	 *! @function _menu
 	 *  @abstract Here a menu system is loaded
 	 */
-	private function _menu()
+	private function _menu($geo)
 	{
-		$this->registry->tpl->assign('menu',
-				$this->registry->tpl->assign(null,
-					null,
-					'menu.tpl',
-					true,
-					$this->registry->libs->_getRealIPv4()),
-				null, null);
+		$this->registry->tpl->assign('menu', $this->registry->tpl->assign(null, null, 'menu.tpl', true, $this->registry->libs->_getRealIPv4()), null, null);
 	}
 
 	/**
