@@ -77,7 +77,7 @@ class installationView
 	 */
 	private function _main()
 	{
-		$geo = $this->registry->libs->parsegeo($this->registry->libs->geolocation($this->registry->libs->_getRealIPv4()));
+		$geo = $this->registry->libs->parsegeo($this->registry->libs->geolocation($_SERVER['SERVER_ADDR']));
 
 		$this->__main($geo);
 		$this->_menu($geo);
