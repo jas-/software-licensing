@@ -52,7 +52,7 @@
  </div>
  <br/>
  <div id="form" class="rounder gradient">
-  <h2>Application to database settings</h2>
+  <h2>Application database settings</h2>
   <p>The application will use the settings provided here as the database access account</p>
    <label for="dbHost">Hostname: </label>
     <input type="text" id="dbHost" name="dbHost" value="" placeholder="localhost" required="required" /><span class="required">*</span><br />

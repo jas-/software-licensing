@@ -23,12 +23,29 @@ if (!defined('__SITE')) exit('No direct calls please...');
  * @version    0.1
  */
 
+/**
+ *! @class install
+ *  @abstract Handles preliminary installation
+ */
 class install {
+
+	/**
+	 * @var registry object
+	 * @abstract Global class handler
+	 */
+	private $registry;
+
+	/**
+	 * @var instance object
+	 * @abstract This class handler
+	 */
 	protected static $instance;
-	private function __construct()
-	{
-		return;
-	}
+
+	/**
+	 *! @function init
+	 *  @abstract Creates singleton for allow/deny class
+	 *  @param $args array Array of registry items
+	 */
 	public static function init()
 	{
 		if (!isset(self::$instance)) {
@@ -37,43 +54,33 @@ class install {
 		}
 		return self::$instance;
 	}
-	public function uuid() {
-		return sprintf('%04x%04x-%04x-%04x-%04x-%04x%04x%04x', mt_rand(0, 0xffff),
-				mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0x0fff) | 0x4000,
-				mt_rand(0, 0x3fff) | 0x8000, mt_rand(0, 0xffff),
-				mt_rand(0, 0xffff), mt_rand(0, 0xffff));
-	}
-	public function geolocation($ip)
+
+	/**
+	 *! @function __construct
+	 *  @abstract Class initialization and ip to access/deny processing
+	 *  @param $args array Array of registry items
+	 */
+	public function __construct($registry)
 	{
-		$opts = array('http'=>array('method'=>'GET','header'=>'Accept-language: en\r\n'));
-		$context = stream_context_create($opts);
-		$ex = unserialize(file_get_contents('http://www.geoplugin.net/php.gp?ip='.$ip, false, $context));
-		return $ex;
+		$this->registry = $registry;
 	}
-	public function parsegeo($data, $ip, $config)
+
+	/**
+	 *! @function parsegeo
+	 *  @abstract Retrieves specific location data from GeoIP lookup
+	 */
+	private function parsegeo($data, $ip, $config)
 	{
 		$settings['organizationName'] = $ip;
 		$settings['organizationalUnitName'] = $ip;
 		$settings['emailAddress'] = $ip;
-		$settings['localityName'] = (!empty($data['geoplugin_city'])) ?
-			$data['geoplugin_city'] :
-			$config['dn']['localityName'];
-		$settings['stateOrProvinceName'] = (!empty($data['geoplugin_region'])) ?
-			$data['geoplugin_region'] :
-			$config['dn']['stateOrProvinceName'];
-		$settings['countryName'] = (!empty($data['geoplugin_countryCode'])) ?
-			$data['geoplugin_countryCode'] :
-			$config['dn']['CountryName'];
-		$settings['commonName'] = ((!empty($data['geoplugin_latitude']))&&
-				(!empty($data['geoplugin_longitude']))) ?
-			$data['geoplugin_latitude'].
-			'::'.$data['geoplugin_longitude'] : $ip;
+		$settings['localityName'] = (!empty($data['geoplugin_city'])) ?	$data['geoplugin_city'] : $config['dn']['localityName'];
+		$settings['stateOrProvinceName'] = (!empty($data['geoplugin_region'])) ? $data['geoplugin_region'] : $config['dn']['stateOrProvinceName'];
+		$settings['countryName'] = (!empty($data['geoplugin_countryCode'])) ? $data['geoplugin_countryCode'] : $config['dn']['CountryName'];
+		$settings['commonName'] = ((!empty($data['geoplugin_latitude']))&&(!empty($data['geoplugin_longitude']))) ? $data['geoplugin_latitude'].'::'.$data['geoplugin_longitude'] : $ip;
 		return $settings;
 	}
-	public function _16($string)
-	{
-		return substr($string, round(strlen($string)/3, 0, PHP_ROUND_HALF_UP), 16);
-	}
+
 	public function setDN($ssl, $handles)
 	{
 		if (empty($ssl)) {
@@ -168,34 +175,7 @@ class install {
 			return false;
 		}
 	}
-	public function templates($folder)
-	{
-		if (is_dir($folder)) {
-			if (($handle = opendir($folder))!==false) {
-				while (($dir = readdir($handle))!==false) {
-					if (($dir!=='.')&&($dir!=='..')) {
-						$dirs[] = preg_replace('/..\//', '', $folder).'/'.$dir;
-					}
-				}
-			} else {
-				return false;
-			}
-		}
-		return (count($dirs)!==0) ? $dirs : false;
-	}
-	public function genselect($array, $name)
-	{
-		if ($array!==false) {
-			$m = '<select name="templates" style="width: 61%">';
-			foreach($array as $key => $value) {
-				if (!empty($value)) {
-					$m .= '<option value="'.$value.'">'.$value.'</option>';
-				}
-			}
-			$m .= '</select>';
-		}
-		return (!empty($m)) ? $m : false;
-	}
+
 	public function __do($dbs, $filter, $variables, $errors, $language)
 	{
 		$variables['error'] = $errors[$language]['\x0iB'];
@@ -265,6 +245,7 @@ class install {
 			return $variables;
 		}
 	}
+
 	public function _createdb($db, $errors)
 	{
 		$a = sprintf('CREATE DATABASE %s', $db->sanitize($_POST['dbname']));
@@ -275,6 +256,7 @@ class install {
 		}
 		return (isset($error)) ? $error : true;
 	}
+
 	public function _createdbuser($db, $errors)
 	{
 		$error = true;
@@ -288,6 +270,7 @@ class install {
 		}
 		return (isset($error)) ? $error : true;
 	}
+
 	public function _usedb($db, $errors)
 	{
 		$c = sprintf('USE %s', $db->sanitize($_POST['dbname']));
@@ -298,6 +281,7 @@ class install {
 		}
 		return (isset($error)) ? $error : true;
 	}
+
 	public function _setupdb($db, $errors)
 	{
 		if (file_exists('sql/database-schema.sql')) {
@@ -312,6 +296,7 @@ class install {
 		}
 		return (isset($error)) ? $error : true;
 	}
+
 	public function _setupdbuser($db, $errors)
 	{
 		$e = sprintf('GRANT SELECT, INSERT, UPDATE, DELETE, REFERENCES, INDEX,
@@ -325,6 +310,7 @@ class install {
 		}
 		return (isset($error)) ? $error : true;
 	}
+
 	public function _importsp($db)
 	{
 		if (file_exists('sql/prepared-statements.sql')) {
@@ -336,6 +322,7 @@ class install {
 		}
 		return true;
 	}
+
 	public function _getsslcnf($db, $errors)
 	{
 		try {
@@ -345,6 +332,7 @@ class install {
 		}
 		return ((is_array($cnf))&&(count($cnf)>=6)) ? $cnf : $error;
 	}
+
 	public function _getssldn($db, $errors)
 	{
 		try {
@@ -354,86 +342,7 @@ class install {
 		}
 		return ((is_array($dn))&&(count($dn)>=7)) ? $dn : $error;
 	}
-	public function _set($array)
-	{
-		$array['ruser'] = (!empty($array['ruser'])) ? $array['ruser'] : '';
-		$array['ruserErr'] = '*';
-		$array['rpassword'] = (!empty($array['rpassword'])) ? $array['rpassword'] : '';
-		$array['rpasswordErr'] = '*';
-		$array['dbname'] = (!empty($array['dbname'])) ? $array['dbname'] : '';
-		$array['dbnameErr'] = '*';
-		$array['server'] = (!empty($array['server'])) ? $array['server'] : '';
-		$array['serverErr'] = '*';
-		$array['uname'] = (!empty($array['uname'])) ? $array['uname'] : '';
-		$array['unameErr'] = '*';
-		$array['upassword'] = (!empty($array['upassword'])) ? $array['upassword'] : '';
-		$array['upasswordErr'] = '*';
-		$array['ptitle'] = (!empty($array['ptitle'])) ? $array['title'] : '';
-		$array['ptitleErr'] = '*';
-		$array['timeout'] = (!empty($array['timeout'])) ? $array['timeout'] : '';
-		$array['timeoutErr'] = '*';
-		$array['email'] = (!empty($array['email'])) ? $array['email'] : '';
-		$array['emailErr'] = '*';
-		$array['password'] = (!empty($array['password'])) ? $array['password'] : '';
-		$array['passwordErr'] = '*';
-		return $array;
-	}
-	public function _isempty($array, $errors, $lang, $e, $t)
-	{
-		$err['ruser'] = (empty($array['ruser'])) ? 'Root username: '.$errors[$lang]['\x0v5'] : false;
-		$err['ruserErr'] = (empty($array['ruser'])) ? $e->_imglink('help.php', 'required', $t.'/images/icons/icon-warning.png') : '';
-		$err['rpassword'] = (empty($array['rpassword'])) ? 'Root password: '.$errors[$lang]['\x0v5'] : false;
-		$err['rpasswordErr'] = (empty($array['rpassword'])) ? $e->_imglink('help.php', 'required', $t.'/images/icons/icon-warning.png') : '';
-		$err['dbname'] = (empty($array['dbname'])) ? 'Database name: '.$errors[$lang]['\x0v5'] : false;
-		$err['dbnameErr'] = (empty($array['dbname'])) ? $e->_imglink('help.php', 'required', $t.'/images/icons/icon-warning.png') : '';
-		$err['server'] = (empty($array['server'])) ? 'Server address: '.$errors[$lang]['\x0v5'] : false;
-		$err['serverErr'] = (empty($array['server'])) ? $e->_imglink('help.php', 'required', $t.'/images/icons/icon-warning.png') : '';
-		$err['uname'] = (empty($array['uname'])) ? 'Username: '.$errors[$lang]['\x0v5'] : false;
-		$err['unameErr'] = (empty($array['uname'])) ? $e->_imglink('help.php', 'required', $t.'/images/icons/icon-warning.png') : '';
-		$err['upassword'] = (empty($array['upassword'])) ? 'Password: '.$errors[$lang]['\x0v5'] : false;
-		$err['upasswordErr'] = (empty($array['upassword'])) ? $e->_imglink('help.php', 'required', $t.'/images/icons/icon-warning.png') : '';
-		$err['ptitle'] = (empty($array['ptitle'])) ? 'Project title: '.$errors[$lang]['\x0v5'] : false;
-		$err['ptitleErr'] = (empty($array['ptitle'])) ? $e->_imglink('help.php', 'required', $t.'/images/icons/icon-warning.png') : '';
-		$err['timeout'] = (empty($array['timeout'])) ? 'Timeout: '.$errors[$lang]['\x0v5'] : false;
-		$err['timeoutErr'] = (empty($array['timeout'])) ? $e->_imglink('help.php', 'required', $t.'/images/icons/icon-warning.png') : '';
-		$err['email'] = (empty($array['email'])) ? 'Email: '.$errors[$lang]['\x0v5'] : false;
-		$err['emailErr'] = (empty($array['email'])) ? $e->_imglink('help.php', 'required', $t.'/images/icons/icon-warning.png') : '';
-		$err['password'] = (empty($array['password'])) ? 'Password: '.$errors[$lang]['\x0v5'] : false;
-		$err['passwordErr'] = (empty($array['password'])) ? $e->_imglink('help.php', 'required', $t.'/images/icons/icon-warning.png') : '';
-		return $err;
-	}
-	public function _valid($array, $filter, $errors, $lang)
-	{
-		if (count($array)>=10) {
-			$err['ruser'] = (!filter_var($array['ruser'], FILTER_VALIDATE_REGEXP, array('options'=>array('regexp'=>'/^[a-z0-9]{1,24}$/')))) ? 'Root username: '.$errors[$lang]['\x0v0'] : false;
-			$err['rpassword'] = (!filter_var($array['rpassword'], FILTER_VALIDATE_REGEXP, array('options'=>array('regexp'=>'/^[a-z0-9-_]{1,24}$/')))) ? 'Root password: '.$errors[$lang]['\x0v0'] : false;
-			$err['dbname'] = (!filter_var($array['dbname'], FILTER_VALIDATE_REGEXP, array('options'=>array('regexp'=>'/^[a-z0-9-_]{1,24}$/')))) ? 'Database name: '.$errors[$lang]['\x0v0'] : false;
-			$err['server'] = (!filter_var($array['server'], FILTER_VALIDATE_IP)) ? 'Server address: '.$errors[$lang]['\x0v2'] : false;
-			$err['uname'] = (!filter_var($array['uname'], FILTER_VALIDATE_REGEXP, array('options'=>array('regexp'=>'/^[a-z0-9-_]{1,24}$/')))) ? 'Username: '.$errors[$lang]['\x0v0'] : false;
-			$err['upassword'] = (!filter_var($array['upassword'], FILTER_VALIDATE_REGEXP, array('options'=>array('regexp'=>'/^[a-z0-9-_]{1,24}$/')))) ? 'Password: '.$errors[$lang]['\x0v0'] : false;
-			$err['ptitle'] = (!filter_var($array['ptitle'], FILTER_VALIDATE_REGEXP, array('options'=>array('regexp'=>'/^[a-z0-9-_]{1,24}$/')))) ? 'Project title: '.$errors[$lang]['\x0v0'] : false;
-			$err['timeout'] = (!filter_var($array['timeout'], FILTER_VALIDATE_INT)) ? 'Timeout: '.$errors[$lang]['\x0v1'] : false;
-			$err['email'] = (!filter_var($email, FILTER_VALIDATE_EMAIL)) ? 'Email: '.$errors[$lang]['\x0v3'] : false;
-			$err['password'] = (!filter_var($array['password'], FILTER_VALIDATE_REGEXP, array('options'=>array('regexp'=>'/^[a-z0-9-_]{1,24}$/')))) ? 'Password: '.$errors[$lang]['\x0v4'] : false;
-		}
-		return (isset($err)) ? $err : false;
-	}
-	public function _validate($array, $filter, $errors, $lang)
-	{
-		if (count($array)>=10) {
-			$err['ruser'] = ((empty($array['ruser']))&&($filter->type($array['ruser'], 'string')===false)) ? 'Root username: '.$errors[$lang]['\x0v0'] : false;
-			$err['rpassword'] = ((empty($array['rpassword']))&&($filter->type($array['rpassword'], 'string')===false)) ? 'Root password: '.$errors[$lang]['\x0v0'] : false;
-			$err['dbname'] = ((empty($array['dbname']))&&($filter->type($array['dbname'], 'string')===false)) ? 'Database name: '.$errors[$lang]['\x0v0'] : false;
-			$err['server'] = ((empty($array['server']))&&($filter->type($array['server'], array('string', 'integer'))===false)) ? 'Server address: '.$errors[$lang]['\x0v2'] : false;
-			$err['uname'] = ((empty($array['uname']))&&($filter->type($array['uname'], 'string')===false)) ? 'Username: '.$errors[$lang]['\x0v0'] : false;
-			$err['upassword'] = ((empty($array['upassword']))&&($filter->type($array['upassword'], 'string')===false)) ? 'Password: '.$errors[$lang]['\x0v0'] : false;
-			$err['ptitle'] = ((empty($array['ptitle']))&&($filter->type($array['title'], 'string')===false)) ? 'Project title: '.$errors[$lang]['\x0v0'] : false;
-			$err['timeout'] = ((empty($array['timeout']))&&($filter->type($array['timeout'], 'integer')===false)) ? 'Timeout: '.$errors[$lang]['\x0v1'] : false;
-			$err['email'] = ((empty($array['email']))&&($filter->type($array['email'], 'email')===false)) ? 'Email: '.$errors[$lang]['\x0v3'] : false;
-			$err['password'] = ((empty($array['password']))&&($filter->type($array['password'], 'password')===false)) ? 'Password: '.$errors[$lang]['\x0v4'] : false;
-		}
-		return (isset($err)) ? $err : false;
-	}
+
 	public function __clone() {
 		trigger_error('Cloning prohibited', E_USER_ERROR);
 	}
