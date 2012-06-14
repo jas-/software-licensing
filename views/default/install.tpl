@@ -43,12 +43,27 @@
  <div id="form" class="rounder gradient">
   <h2>MySQL credentials</h2>
   <p>Because the installation creates a new database & imports stored procedures root access is required</p>
-   <label for="email">Username: </label>
-    <input type="text" id="email" name="email" value="" placeholder="johndoe@example.com" required="required" /><span class="required">*</span><br />
+   <label for="root">Root: </label>
+    <input type="text" id="root" name="root" value="" placeholder="root" required="required" /><span class="required">*</span><br />
    <label for="password">Password: </label>
     <input type="password" id="password" name="password" value="" placeholder="********" required="required" /><span class="required">*</span><br />
    <label for="confirm">Confirm: </label>
     <input type="password" id="confirm" name="confirm" value="" placeholder="********" required="required" /><span class="required">*</span><br />
+ </div>
+ <br/>
+ <div id="form" class="rounder gradient">
+  <h2>Application to database settings</h2>
+  <p>The application will use the settings provided here as the database access account</p>
+   <label for="dbHost">Hostname: </label>
+    <input type="text" id="dbHost" name="dbHost" value="" placeholder="localhost" required="required" /><span class="required">*</span><br />
+   <label for="dbName">Database: </label>
+    <input type="text" id="dbName" name="dbName" value="" placeholder="myTFH" required="required" /><span class="required">*</span><br />
+   <label for="dbUser">Username: </label>
+    <input type="text" id="dbUser" name="dbUser" value="" placeholder="myTFHAppUser" required="required" /><span class="required">*</span><br />
+   <label for="dbPass">Password: </label>
+    <input type="password" id="dbPass" name="dbPass" value="" placeholder="********" required="required" /><span class="required">*</span><br />
+   <label for="confirm">Confirm: </label>
+    <input type="password" id="cdbPass" name="cdbPass" value="" placeholder="********" required="required" /><span class="required">*</span><br />
  </div>
  <br/>
  <div id="form" class="rounder gradient">
@@ -60,7 +75,6 @@
     <input type="password" id="password" name="password" value="" placeholder="********" required="required" /><span class="required">*</span><br />
    <label for="confirm">Confirm: </label>
     <input type="password" id="confirm" name="confirm" value="" placeholder="********" required="required" /><span class="required">*</span><br />
-   <br/><hr style="width: 95%"/><br/>
    <label for="level">Access level: </label>
     <select id="level" name="level" required="required" style="width: 30%">
      <option id="" value="admin">admin</option>

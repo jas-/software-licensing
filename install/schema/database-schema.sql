@@ -1,14 +1,14 @@
 -- Create the database & drop if it already exists
-DROP DATABASE IF EXISTS `licensing`;
-CREATE DATABASE `licensing`;
+DROP DATABASE IF EXISTS `[dbName]`;
+CREATE DATABASE `[dbName]`;
 
 -- Create a default user and assign limited permissions
-CREATE USER "licensing"@"localhost" IDENTIFIED BY "d3v3l0pm3n+";
-GRANT SELECT, INSERT, UPDATE, DELETE, REFERENCES, INDEX, CREATE TEMPORARY TABLES, LOCK TABLES, EXECUTE ON `licensing`.* TO "licensing"@"localhost";
+CREATE USER "[dbUser]"@"[dbHost]" IDENTIFIED BY "[dbPassword]";
+GRANT SELECT, INSERT, UPDATE, DELETE, REFERENCES, INDEX, CREATE TEMPORARY TABLES, LOCK TABLES, EXECUTE ON `[dbName]`.* TO "[dbUser]"@"[dbHost]";
 FLUSH PRIVILEGES;
 
 -- Switch to newly created db context
-USE `licensing`;
+USE `[dbName]`;
 
 -- Set FK checks to 0 during table creation
 SET foreign_key_checks = 0;
@@ -82,6 +82,7 @@ CREATE TABLE IF NOT EXISTS `authentication` (
 DROP TABLE IF EXISTS `configuration`;
 CREATE TABLE IF NOT EXISTS `configuration` (
   `id` int(255) NOT NULL AUTO_INCREMENT,
+  `version` varchar(15) NOT NULL,
   `title` varchar(128) NOT NULL,
   `templates` varchar(255) NOT NULL,
   `cache` varchar(255) NOT NULL,
@@ -101,6 +102,8 @@ CREATE TABLE IF NOT EXISTS `configuration` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `email` (`email`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci AUTO_INCREMENT=0;
+
+INSERT INTO `configuration` (`version`) VALUES ("0.1");
 
 -- Create a table for client acess control list
 --  Primary key: id
