@@ -11,7 +11,6 @@ include __SITE.'/config/configuration.php';
 
 /* verify settings, or call the installer */
 if (!is_array($settings)){
-	header('Location: installer.php');
 	exit('Necessary configuration settings missing.');
 }
 

@@ -7,18 +7,6 @@
    administered single sign on services for any application that wishes to
    implement it.
   </p>
-  <p>
-   Because this is the first time running myTFH we need to perform the following
-   actions.
-  </p>
-  <ol style="font-size:0.9em;font-style:italic">
-   <li>Import the latest database schema</li>
-   <li>Create the necessary stored procedures</li>
-   <li>Generate a unique application wide salt</li>
-   <li>Generate a default of application wide RSA keys</li>
-   <li>Register all user configuration options within database</li>
-   <li>Make modifications to default configuration file</li>
-  </ol>
  </div>
  <br/>
  <div id="form" class="rounder gradient">
