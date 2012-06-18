@@ -179,7 +179,7 @@ class manageApplications
 	{
 		$list = 0;
 		try{
-			$sql = sprintf('CALL Configuration_access_get_list("%s")',
+			$sql = sprintf('CALL Configuration_applications_get("%s")',
 							$this->registry->db->sanitize($this->registry->libs->_hash($this->registry->opts['dbKey'], $this->registry->libs->_salt($this->registry->opts['dbKey'], 2048))));
 			$list = $this->registry->db->query($sql);
 		} catch(PDOException $e){
@@ -199,18 +199,22 @@ class manageApplications
 			return $r;
 		}
 
+		$data['ip'] = $this->__verify($data['url']);
+
+		if (!$data['ip']) array('error'=>'Could not obtain DNS entry for associated URL');
+
 		try{
-			$sql = sprintf('CALL Configuration_access_add("%s", "%s", "%s", "%s")',	
-							$this->registry->db->sanitize($data['type']),
-							$this->registry->db->sanitize($data['name']),
-							$this->registry->db->sanitize($data['filter']),
+			$sql = sprintf('CALL Configuration_applications_add("%s", "%s", "%s", "%s")',	
+							$this->registry->db->sanitize($data['application']),
+							$this->registry->db->sanitize($data['url']),
+							$this->registry->db->sanitize($data['ip']),
 						    $this->registry->db->sanitize($this->registry->libs->_hash($this->registry->opts['dbKey'], $this->registry->libs->_salt($this->registry->opts['dbKey'], 2048))));
 			$r = $this->registry->db->query($sql);
 		} catch(PDOException $e){
 			// error handling
 		}
 
-		return ($r > 0) ? array('success'=>'Successfully added new ACL') : array('error'=>'An error occured adding new ACL');
+		return ($r > 0) ? array('success'=>'Successfully added new application') : array('error'=>'An error occured adding new application');
 	}
 
 	/**
@@ -228,5 +232,21 @@ class manageApplications
 		return $x;
 	}
 
+	/**
+	 *! @function __verify
+	 *  @abstract Verify URL provided and return IP if valid
+	 */
+	private function __verify($url)
+	{
+		$n = new networking;
+		$x = $n->hostname2iparray(preg_replace('/http(s?):\/\//', '', $url));
+		if (count($x)===0) return false;
+		if (count($x)>1){
+			$x = $this->registry->libs->JSONencode($x);
+		} else {
+			$x = $x[0];
+		}
+		return $x;
+	}
 }
 ?>
