@@ -97,6 +97,35 @@ class applications {
 		return $list;
 	}
 
+	/**
+	 *! @function _verify
+	 *  @abstract Performs lookup on currently supplied hostname2ip array
+	 */
+	private function _verify($url, $obj)
+	{
+		$obj = $this->_split($obj);
+		$n = new networking;
+		$url = $n->hostname2iparray($url);
+		if (is_array($url)) {
+			foreach($url as $key => $value) {
+				if ((in_array($value, $obj))||($value===$obj)) return true;
+			}
+		}
+		return false;
+	}
+
+	/**
+	 *! @function _split
+	 *  @abstract Splits JSON encoded object of valid IP's
+	 */
+	private function _split($obj)
+	{
+		if (preg_match('/\{\}/', $obj)) {
+			return json_decode($obj);
+		}
+		return $obj;
+	}
+
 	public function __destruct()
 	{
 		return;
