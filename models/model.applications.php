@@ -110,8 +110,8 @@ class applications {
 			foreach($url as $key => $value) {
 				if ((in_array($value, $obj))||($value===$obj)) return true;
 			}
-		} else {
-			// wtf
+		} elseif($url===$obj) {
+			return true;
 		}
 		return false;
 	}
