@@ -88,7 +88,7 @@ class remoteView
 
 		if (!empty($_SERVER['HTTP_X_TOKEN'])) {
 			$this->registry->keyring = new keyring($this->registry, $this->registry->val->__do($_POST));
-			$x=authentication::instance($this->registry)->__reauth($_SESSION[getenv('HTTP_CLIENT_IP')]['token'], $_SERVER['HTTP_X_TOKEN']);
+			$x = authentication::instance($this->registry)->__reauth($_SESSION[getenv('HTTP_CLIENT_IP')]['token'], $_SERVER['HTTP_X_TOKEN']);
 		}
 
 		$x = $this->_message($x);

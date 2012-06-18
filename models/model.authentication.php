@@ -81,7 +81,7 @@ class authentication
 			(!empty($_SESSION[$this->registry->libs->_getRealIPv4()]['publicKey']))&&
 			(!empty($_SESSION[$this->registry->libs->_getRealIPv4()]['password']))){
 			return true;
-		}else{
+		} else {
 			return false;
 		}
 	}

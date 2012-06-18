@@ -85,9 +85,9 @@ class install {
 
 		// create hash for global database aes encryption
 
-		// create default set of keys for application
+		// save hash and prepare for database content
 
-		
+		// create default set of keys for application
 	}
 
 	/**
@@ -104,6 +104,38 @@ class install {
 		$settings['countryName'] = (!empty($data['geoplugin_countryCode'])) ? $data['geoplugin_countryCode'] : $config['dn']['CountryName'];
 		$settings['commonName'] = ((!empty($data['geoplugin_latitude']))&&(!empty($data['geoplugin_longitude']))) ? $data['geoplugin_latitude'].'::'.$data['geoplugin_longitude'] : $ip;
 		return $settings;
+	}
+
+	/**
+	 *! @function __installer
+	 *  @abstract Temporary installer function
+	 */
+	private function __installer()
+	{
+		$this->ssl->genRand();
+		$privateKey = $this->ssl->genPriv($this->registry->opts['dbKey']);
+		$publicKey = $this->ssl->genPub();
+		try{
+			$sql = sprintf('CALL Configuration_def_add("%s", "%s", "%s", "%d", "%s","%d", "%s", "%s", "%s", "%s","%s", "%s", "%s", "%s", "%s", "%s")',
+							$this->registry->db->sanitize($this->registry->opts['title']),
+							$this->registry->db->sanitize($this->registry->opts['template']),
+							$this->registry->db->sanitize($this->registry->opts['caching']),
+							$this->registry->db->sanitize($this->config['encrypt_key']),
+							$this->registry->db->sanitize($this->dn['emailAddress']),
+							$this->registry->db->sanitize($this->registry->opts['timeout']),
+							$this->registry->db->sanitize($privateKey),
+							$this->registry->db->sanitize($publicKey),
+							$this->registry->db->sanitize($this->registry->opts['dbKey']),
+							$this->registry->db->sanitize($this->dn['countryName']),
+							$this->registry->db->sanitize($this->dn['stateOrProvinceName']),
+							$this->registry->db->sanitize($this->dn['localityName']),
+							$this->registry->db->sanitize($this->dn['organizationName']),
+							$this->registry->db->sanitize($this->dn['organizationalUnitName']),
+							$this->registry->db->sanitize($this->dn['commonName']),
+							$this->registry->db->sanitize($this->registry->libs->_hash($this->registry->opts['dbKey'], $this->registry->libs->_salt($this->registry->opts['dbKey'], 2048))));
+		} catch(Exception $e){
+			// error handling
+		}
 	}
 
 	public function __clone() {

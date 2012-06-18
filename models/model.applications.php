@@ -103,15 +103,19 @@ class applications {
 	 */
 	private function _verify($url, $obj)
 	{
-		$obj = $this->_split($obj);
-		$n = new networking;
-		$url = $n->hostname2iparray($url);
-		if (is_array($url)) {
-			foreach($url as $key => $value) {
-				if ((in_array($value, $obj))||($value===$obj)) return true;
+		if (!empty($obj)) {
+			$obj = $this->_split($obj);
+			if ($obj) {
+				$n = new networking;
+				$url = $n->hostname2iparray($url);
+				if (is_array($url)) {
+					foreach($url as $key => $value) {
+						if ((in_array($value, $obj))||($value===$obj)) return true;
+					}
+				} elseif($url===$obj) {
+					return true;
+				}
 			}
-		} elseif($url===$obj) {
-			return true;
 		}
 		return false;
 	}
