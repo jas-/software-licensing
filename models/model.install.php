@@ -93,7 +93,6 @@ class install {
 	public function _main($args)
 	{
 		$post = $this->registry->val->__do($args);
-		//echo '<pre>'; print_r($post); echo '</pre>';
 		
 		foreach($this->files as $value) {
 			if (file_exists($value)) {
@@ -102,8 +101,7 @@ class install {
 				$contents = str_replace('[dbPassword]', $post['dbPass'], $contents);
 				$contents = str_replace('[dbHost]', $post['dbHost'], $contents);
 				$contents = str_replace('[dbName]', $post['dbName'], $contents);
-				echo $value.'<br/>';
-				echo '<pre>'; print_r($contents); echo '</pre>';
+				file_put_contents($value, $contents);
 			}
 		}
 		
