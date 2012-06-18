@@ -69,7 +69,7 @@ class applications {
 	 */
 	public function _do($url)
 	{
-		if (in_array($url, $this->_get($url))) {
+		if ($this->_verify($url, $this->_get($url))) {
 			header('Access-Control-Max-Age: 1728000');
 			header('Access-Control-Allow-Origin: '.$url);
 			header('Access-Control-Allow-Methods: POST');
@@ -110,6 +110,8 @@ class applications {
 			foreach($url as $key => $value) {
 				if ((in_array($value, $obj))||($value===$obj)) return true;
 			}
+		} else {
+			// wtf
 		}
 		return false;
 	}
@@ -230,7 +232,7 @@ class manageApplications
 
 		$data['ip'] = $this->__verify($data['url']);
 
-		if (!$data['ip']) array('error'=>'Could not obtain DNS entry for associated URL');
+		if (!$data['ip']) return array('error'=>'Could not obtain DNS entry for associated URL');
 
 		try{
 			$sql = sprintf('CALL Configuration_applications_add("%s", "%s", "%s", "%s")',	
@@ -268,7 +270,7 @@ class manageApplications
 	private function __verify($url)
 	{
 		$n = new networking;
-		$x = $n->hostname2iparray(preg_replace('/http(s?):\/\//', '', $url));
+		$x = $n->hostname2iparray(preg_replace('/http:\/\/|https:\/\//', '', $url));
 		if (count($x)===0) return false;
 		if (count($x)>1){
 			$x = $this->registry->libs->JSONencode($x);
