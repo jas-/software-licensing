@@ -42,15 +42,36 @@ class install {
 	protected static $instance;
 
 	/**
+	 * @var files array
+	 * @abstract Array of installation files
+	 */
+	private $path = __SITE;
+
+	/**
+	 * @var files array
+	 * @abstract Array of installation files
+	 */
+	private $files = array('install/schema/database-schema.sql',
+						   'install/stored-procedures/sp_authenction.sql',
+						   'install/stored-procedures/sp_configuration.sql',
+						   'install/stored-procedures/sp_configuration_access.sql',
+						   'install/stored-procedures/sp_configuration_applications.sql',
+						   'install/stored-procedures/sp_configuration_cnf.sql',
+						   'install/stored-procedures/sp_configuration_keys.sql',
+						   'install/stored-procedures/sp_logs.sql',
+						   'install/stored-procedures/sp_permissions.sql',
+						   'install/stored-procedures/sp_users.sql');
+
+	/**
 	 *! @function init
 	 *  @abstract Creates singleton for allow/deny class
 	 *  @param $args array Array of registry items
 	 */
-	public static function init()
+	public static function init($args)
 	{
 		if (!isset(self::$instance)) {
 			$c = __CLASS__;
-			self::$instance = new self();
+			self::$instance = new self($args);
 		}
 		return self::$instance;
 	}
@@ -71,10 +92,21 @@ class install {
 	 */
 	public function _main($args)
 	{
-		// examine post data
+		$post = $this->registry->val->__do($args);
+		//echo '<pre>'; print_r($post); echo '</pre>';
 		
-		// make modifications to all database files based on user supplied input
-
+		foreach($this->files as $value) {
+			if (file_exists($value)) {
+				$contents = file_get_contents($value);
+				$contents = str_replace('[dbUser]', $post['dbUser'], $contents);
+				$contents = str_replace('[dbPassword]', $post['dbPass'], $contents);
+				$contents = str_replace('[dbHost]', $post['dbHost'], $contents);
+				$contents = str_replace('[dbName]', $post['dbName'], $contents);
+				echo $value.'<br/>';
+				echo '<pre>'; print_r($contents); echo '</pre>';
+			}
+		}
+		
 		// connect to database as root user
 		
 		// import database schema
@@ -144,7 +176,7 @@ class install {
 	public function __wakeup() {
 		trigger_error('Deserialization of singleton prohibited ...', E_USER_ERROR);
 	}
-	private function __destruct()
+	public function __destruct()
 	{
 		unset(self::$instance);
 		return true;

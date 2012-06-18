@@ -13,7 +13,7 @@
   <h2>Application defaults</h2>
   <p>Please configure the applications default behavior</p>
   <div id="message"></div>
-  <form id="install" name="install" method="post" action="?nxs=installation">
+  <form id="install" name="install" method="post" action="installation">
    <label for="title">Title: </label>
     <input type="text" id="title" name="title" value="" placeholder="myTFH (My tin foil hat)" required="required" /><span class="required">*</span><br />
    <label for="email">Email: </label>

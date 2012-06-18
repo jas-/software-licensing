@@ -40,6 +40,12 @@ class installationController
 	public function __construct($registry)
 	{
 		$this->registry = $registry;
+		$this->_do($_POST);
+	}
+
+	private function _do($args)
+	{
+		install::init($this->registry)->_main($args);
 	}
 
 	/**
