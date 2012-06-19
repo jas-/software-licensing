@@ -51,13 +51,17 @@ if (!class_exists($eng)){
 $registry->db = new $eng($settings['db']);
 
 /* prepare the secret key */
-$settings['sessions']['db-key'] = $registry->libs->_hash($settings['sessions']['db-key'], $registry->libs->_salt($settings['sessions']['db-key'], 2048));
+if (!class_exists('hashes')) {
+	exit('Error loading required hashing libraries, unable to proceed. 0x0c7');
+}
+$settings['sessions']['db-key'] = hashes::init($registry)->_do($setting['sessions']['db-key'])
+//$settings['sessions']['db-key'] = $registry->libs->_hash($settings['sessions']['db-key'], $registry->libs->_salt($settings['sessions']['db-key'], 2048));
 
 /* query for application settings */
 
 /* load and start up session support */
 if (!class_exists('dbSession')){
-	exit('Error loading database session support, unable to proceed. 0x0c6');
+	exit('Error loading database session support, unable to proceed. 0x0c8');
 }
 
 /* create new instance of sessions? */
@@ -77,13 +81,13 @@ $registry->opts = $settings['opts'];
 
 /* start logging access */
 if (!class_exists('logging')){
-	exit('Error initializing logging class, unable to proceed. 0x0c7');
+	exit('Error initializing logging class, unable to proceed. 0x0c9');
 }
 new logging($registry);
 
 /* load up access filtering */
 if (!class_exists('access')){
-	exit('Error initializing access class, unable to proceed. 0x0c8');
+	exit('Error initializing access class, unable to proceed. 0x0c10');
 }
 
 /* perform check against ACL to visitor */
@@ -101,7 +105,7 @@ header('X-XSS-Protecton: 1;mode=deny');
 
 /* initialize the allowed applications class */
 if (!class_exists('applications')) {
-	exit('Error initializing applications class, unable to proceed. 0x0c10');
+	exit('Error initializing applications class, unable to proceed. 0x0c11');
 }
 
 /* perform comparision of whitelist & set necessary CORS headers if allowed */

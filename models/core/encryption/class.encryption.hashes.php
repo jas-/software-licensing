@@ -63,10 +63,19 @@ class hashes
 	}
 
 	/**
+	 * @function _do
+	 * @abstract Public interface for hashing
+	 */
+	public function _do($str, $salt=false, $iter=3000, $len=256)
+	{
+		return (!empty($salt)) ? bin2hex($this->_pbkdf2($this->_hash($str, $this->_hash($salt)), $this->_hash($salt), $iter, $len)) : bin2hex($this->_pbkdf2($this->_hash($str, $this->_hash($str)), $this->_hash($str), $iter, $len));
+	}
+
+	/**
 	 * @function _salt
 	 * @abstract Generate a random salt value of specified length based on input
 	 */
-	public function _salt($string, $len=null)
+	private function _salt($string, $len=null)
 	{
 		return (!empty($len)) ? hash('sha512', str_pad($string, (strlen($string) + $len), substr(hash('sha512', $string), @round((float)strlen($string)/3, 0, PHP_ROUND_HALF_UP), ($len - strlen($string))), STR_PAD_BOTH)) : hash('sha512', substr($string, @round((float)strlen($string)/3, 0, PHP_ROUND_HALF_UP), 16));
 	}
@@ -75,7 +84,7 @@ class hashes
 	 * @function _hash
 	 * @abstract Mimic bcrypt hasing functionality
 	 */
-	public function _hash($string, $salt=null)
+	private function _hash($string, $salt=null)
 	{
 		return (CRYPT_BLOWFISH===1) ? (!empty($salt)) ? crypt($string, "\$2a\$07\$".substr($salt, 0, CRYPT_SALT_LENGTH)) : crypt($string, $this->_salt("\$2a\$07\$".substr($string, 0, CRYPT_SALT_LENGTH))) : false;
 	}
@@ -84,7 +93,7 @@ class hashes
 	 * @function _pbkdf2
 	 * @abstract Creates hash using abstract pbkdf2
 	 */
-	public function _pbkdf2($p, $s, $c, $kl, $a='sha512')
+	private function _pbkdf2($p, $s, $c, $kl, $a='sha512')
 	{
 		$h = false;
 		if (!function_exists('hash_pbkdf2')) {
