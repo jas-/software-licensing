@@ -282,30 +282,6 @@ class libraries {
 	}
 
 	/**
-	 * @function _salt
-	 * @abstract Generate a random salt value of specified length based on input
-	 */
-	public function _salt($string, $len=null)
-	{
-		return (!empty($len)) ?
-			hash('sha512', str_pad($string, (strlen($string) + $len), substr(hash('sha512', $string), @round((float)strlen($string)/3, 0, PHP_ROUND_HALF_UP), ($len - strlen($string))), STR_PAD_BOTH)) :
-			hash('sha512', substr($string, @round((float)strlen($string)/3, 0, PHP_ROUND_HALF_UP), 16));
-	}
-
-	/**
-	 * @function _hash
-	 * @abstract Mimic bcrypt hasing functionality
-	 */
-	public function _hash($string, $salt=null)
-	{
-		return (CRYPT_BLOWFISH===1) ?
-			(!empty($salt)) ?
-				crypt($string, "\$2a\$07\$".substr($salt, 0, CRYPT_SALT_LENGTH)) :
-				crypt($string, $this->_salt("\$2a\$07\$".substr($string, 0, CRYPT_SALT_LENGTH))) :
-					false;
-	}
-
-	/**
 	 * @function _serialize
 	 * @abstract Perform serialization of sent POST data. This is required for the
 	 *           jQuery.AJAX plug-in checksum verification as the current PHP
