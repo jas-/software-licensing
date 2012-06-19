@@ -201,8 +201,8 @@ class keyring
 	public function __public($a=false)
 	{
 		return ((!empty($_SESSION[$this->registry->libs->_getRealIPv4()]['email']))&&(!empty($_SESSION[$this->registry->libs->_getRealIPv4()]['publicKey']))) ?
-			array('email'=>$_SESSION[$this->registry->libs->_getRealIPv4()]['email'], 'key'=>$_SESSION[$this->registry->libs->_getRealIPv4()]['publicKey']) :
-			array('error'=>'No keyring information could be located');
+				array('email'=>$_SESSION[$this->registry->libs->_getRealIPv4()]['email'], 'key'=>$_SESSION[$this->registry->libs->_getRealIPv4()]['publicKey']) :
+				array('error'=>'No keyring information could be located');
 	}
 
 	/**

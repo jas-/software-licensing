@@ -101,7 +101,11 @@ class install {
 				$contents = str_replace('[dbPassword]', $post['dbPass'], $contents);
 				$contents = str_replace('[dbHost]', $post['dbHost'], $contents);
 				$contents = str_replace('[dbName]', $post['dbName'], $contents);
-				file_put_contents($value, $contents);
+				if (preg_match('/schema\//', $value)){
+					file_put_contents(str_replace('schema/', 'tmp/', $value), $contents);
+				} else {
+					file_put_contents(str_replace('stored-procedures/', 'tmp/', $value), $contents);
+				}
 			}
 		}
 		
@@ -162,22 +166,10 @@ class install {
 							$this->registry->db->sanitize($this->dn['organizationName']),
 							$this->registry->db->sanitize($this->dn['organizationalUnitName']),
 							$this->registry->db->sanitize($this->dn['commonName']),
-							$this->registry->db->sanitize($this->registry->libs->_hash($this->registry->opts['dbKey'], $this->registry->libs->_salt($this->registry->opts['dbKey'], 2048))));
+							$this->registry->db->sanitize(hashes::init($this->registry)->_do($this->registry->opts['dbKey'])));
 		} catch(Exception $e){
 			// error handling
 		}
-	}
-
-	public function __clone() {
-		trigger_error('Cloning prohibited', E_USER_ERROR);
-	}
-	public function __wakeup() {
-		trigger_error('Deserialization of singleton prohibited ...', E_USER_ERROR);
-	}
-	public function __destruct()
-	{
-		unset(self::$instance);
-		return true;
 	}
 }
 
