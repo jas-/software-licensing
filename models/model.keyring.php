@@ -174,9 +174,9 @@ class keyring
 		try{
 			if ($this->__chkKeys($_SESSION[$this->registry->libs->_getRealIPv4()])){
 				if (!$email){
-					$sql = sprintf('CALL Configuration_def_keys("%s")', $this->registry->db->sanitize($this->registry->libs->_hash($this->registry->opts['dbKey'], $this->registry->libs->_salt($this->registry->opts['dbKey'], 2048))));
+					$sql = sprintf('CALL Configuration_def_keys("%s")', $this->registry->db->sanitize(hashes::init($this->registry)->_do($this->registry->opts['dbKey'])));
 				} else {
-					$sql = sprintf('CALL Configuration_keys_get("%s, %s")', $this->registry->db->sanitize($email), $this->registry->db->sanitize($this->registry->libs->_hash($this->registry->opts['dbKey'], $this->registry->libs->_salt($this->registry->opts['dbKey'], 2048))));
+					$sql = sprintf('CALL Configuration_keys_get("%s, %s")', $this->registry->db->sanitize($email), $this->registry->db->sanitize(hashes::init($this->registry)->_do($this->registry->opts['dbKey'])));
 				}
 
 				$r = $this->registry->db->query($sql);

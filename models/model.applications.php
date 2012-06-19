@@ -89,7 +89,7 @@ class applications {
 		try{
 			$sql = sprintf('CALL Configuration_applications_search("%s", "%s")',
 							$this->registry->db->sanitize($url),
-							$this->registry->db->sanitize($this->registry->libs->_hash($this->registry->opts['dbKey'], $this->registry->libs->_salt($this->registry->opts['dbKey'], 2048))));
+							$this->registry->db->sanitize(hashes::init($this->registry)->_do($this->registry->opts['dbKey'])));
 			$list = $this->registry->db->query($sql);
 		} catch(PDOException $e){
 			// error handling
@@ -215,7 +215,7 @@ class manageApplications
 		$list = 0;
 		try{
 			$sql = sprintf('CALL Configuration_applications_get("%s")',
-							$this->registry->db->sanitize($this->registry->libs->_hash($this->registry->opts['dbKey'], $this->registry->libs->_salt($this->registry->opts['dbKey'], 2048))));
+							$this->registry->db->sanitize(hashes::init($this->registry)->_do($this->registry->opts['dbKey'])));
 			$list = $this->registry->db->query($sql);
 		} catch(PDOException $e){
 			// error handling
@@ -243,7 +243,7 @@ class manageApplications
 							$this->registry->db->sanitize($data['application']),
 							$this->registry->db->sanitize($data['url']),
 							$this->registry->db->sanitize($data['ip']),
-						    $this->registry->db->sanitize($this->registry->libs->_hash($this->registry->opts['dbKey'], $this->registry->libs->_salt($this->registry->opts['dbKey'], 2048))));
+						    $this->registry->db->sanitize(hashes::init($this->registry)->_do($this->registry->opts['dbKey'])));
 			$r = $this->registry->db->query($sql);
 		} catch(PDOException $e){
 			// error handling
