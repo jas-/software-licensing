@@ -93,18 +93,32 @@ class install {
 	public function _main($args)
 	{
 		$post = $this->registry->val->__do($args);
-		
-		foreach($this->files as $value) {
-			if (file_exists($value)) {
-				$contents = file_get_contents($value);
+
+		if (!empty($post['install'])) {
+
+			/* fixup our configuration file */
+			if (file_exists('config/configuration.php.example')) {
+				$contents = file_get_contents('config/configuration.php.example');
 				$contents = str_replace('[dbUser]', $post['dbUser'], $contents);
 				$contents = str_replace('[dbPassword]', $post['dbPass'], $contents);
 				$contents = str_replace('[dbHost]', $post['dbHost'], $contents);
 				$contents = str_replace('[dbName]', $post['dbName'], $contents);
-				if (preg_match('/schema\//', $value)){
-					file_put_contents(str_replace('schema/', 'tmp/', $value), $contents);
-				} else {
-					file_put_contents(str_replace('stored-procedures/', 'tmp/', $value), $contents);
+				$contents = str_replace('', $post[''], $contents);
+			}
+
+			/* fixup our sql files */
+			foreach($this->files as $value) {
+				if (file_exists($value)) {
+					$contents = file_get_contents($value);
+					$contents = str_replace('[dbUser]', $post['dbUser'], $contents);
+					$contents = str_replace('[dbPassword]', $post['dbPass'], $contents);
+					$contents = str_replace('[dbHost]', $post['dbHost'], $contents);
+					$contents = str_replace('[dbName]', $post['dbName'], $contents);
+					if (preg_match('/schema\//', $value)){
+						file_put_contents(str_replace('schema/', 'tmp/', $value), $contents);
+					} else {
+						file_put_contents(str_replace('stored-procedures/', 'tmp/', $value), $contents);
+					}
 				}
 			}
 		}
@@ -147,7 +161,7 @@ class install {
 	private function __installer()
 	{
 		$this->ssl->genRand();
-		$privateKey = $this->ssl->genPriv($this->registry->opts['dbKey']);
+		$privateKey = $this->ssl->genPriv(hashes::init($this->registry)->_do($this->registry->opts['dbKey']));
 		$publicKey = $this->ssl->genPub();
 		try{
 			$sql = sprintf('CALL Configuration_def_add("%s", "%s", "%s", "%d", "%s","%d", "%s", "%s", "%s", "%s","%s", "%s", "%s", "%s", "%s", "%s")',

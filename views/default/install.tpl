@@ -89,7 +89,7 @@
    <label for="countryName">Country: </label>
     <input type="text" id="countryName" name="countryName" value="{$countryName}" placeholder="United States" required="required" /><span class="required">*</span><br />
    <label></label>
-    <input type="submit" value="Install" id="submit-button" />
+    <input type="submit" name="install" value="Install" id="submit-button" />
   </form>
  </div>
 </div>

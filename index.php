@@ -4,19 +4,14 @@
 define('__SITE', realpath(dirname(__FILE__)));
 
 /* first load the application config */
-if (!file_exists(__SITE.'/config/configuration.php')){
- exit('Necessary configuration missing, unable to proceed.');
+if (!file_exists(__SITE.'/config/configuration.php.example')){
+	header('Location: install/');
 }
-include __SITE.'/config/configuration.php';
-
-/* verify settings, or call the installer */
-if (!is_array($settings)){
-	exit('Necessary configuration settings missing.');
-}
+include __SITE.'/config/configuration.php.example';
 
 /* verify settings exist */
 if ((empty($settings['db']['hostname']))&&(empty($settings['db']['username']))&&(empty($settings['db']['password']))&&(empty($settings['db']['database']))){
-	exit('Necessary configuration options missing.');
+	header('Location: install/');
 }
 
 /* execute autoload */

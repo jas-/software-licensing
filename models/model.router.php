@@ -81,7 +81,7 @@ class router
 		$route = (empty($_GET['nxs'])) ? '' : $_GET['nxs'];
 
 		if (empty($route)){
-			$route = 'index';
+			$route = ($this->_tPath()) ? 'install' : 'index';
 		} else {
 			$parts = explode('/', $route);
 			$this->controller = $parts[0];
@@ -91,13 +91,18 @@ class router
 		}
 
 		if (empty($this->controller)){
-			$this->controller = 'index';
+			$this->controller = ($this->_tPath()) ? 'install' : 'index';
 		}
 
 		if (empty($this->action)){
 			$this->action = 'index';
 		}
 		$this->file = $this->path.'/controller.'.$this->controller.'.php';
+	}
+
+	private function _tPath()
+	{
+		return (preg_match('/\/install\/index\.php/', $_SERVER['PHP_SELF']));
 	}
 }
 
