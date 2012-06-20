@@ -5,17 +5,17 @@ if (!defined('__SITE')) exit('No direct calls please...');
 
 /* Database configuration settings */
 $settings['db']['engine']     = 'mysql';
-$settings['db']['hostname']   = '';
-$settings['db']['username']   = '';
-$settings['db']['password']   = '';
-$settings['db']['database']   = '';
+$settings['db']['hostname']   = '[dbHost]';
+$settings['db']['username']   = '[dbUser]';
+$settings['db']['password']   = '[dbPass]';
+$settings['db']['database']   = '[dbName]';
 
 /* Application specific settings */
-$settings['opts']['title']    = '';
-$settings['opts']['timeout']  = '';
-$settings['opts']['template'] = '';
+$settings['opts']['title']    = '[title]';
+$settings['opts']['timeout']  = '[timeout]';
+$settings['opts']['template'] = '[template]';
 $settings['opts']['caching']  = 'views/cache';
-$settings['opts']['flogin']   = '';
+$settings['opts']['flogin']   = '[flogin]';
 
 /* Session specific settings */
 $settings['sessions']['timeout'] = $settings['opts']['timeout'];

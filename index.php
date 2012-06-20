@@ -5,13 +5,16 @@ define('__SITE', realpath(dirname(__FILE__)));
 
 /* first load the application config */
 if (!file_exists(__SITE.'/config/configuration.php.example')){
-	header('Location: install/');
+	header('Location: installer.php');
 }
 include __SITE.'/config/configuration.php.example';
 
 /* verify settings exist */
-if ((empty($settings['db']['hostname']))&&(empty($settings['db']['username']))&&(empty($settings['db']['password']))&&(empty($settings['db']['database']))){
-	header('Location: install/');
+if (((empty($settings['db']['hostname']))||($settings['db']['hostname']=='[dbHost]'))&&
+	((empty($settings['db']['username']))||($settings['db']['username']=='[dbUser]'))&&
+	((empty($settings['db']['password']))||($settings['db']['password']=='[dbPass]'))&&
+	((empty($settings['db']['database']))||($settings['db']['database']=='[dbName]'))){
+	header('Location: installer.php');
 }
 
 /* execute autoload */

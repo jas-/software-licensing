@@ -47,8 +47,8 @@ class installView
 	{
 		$this->registry = $registry;
 		$this->registry->tpl = new templates();
-		$this->registry->tpl->strTemplateDir = '../views/default';
-		$this->registry->tpl->strCacheDir = '../views/cache';
+		$this->registry->tpl->strTemplateDir = 'views/default';
+		$this->registry->tpl->strCacheDir = 'views/cache';
 		$this->registry->tpl->boolCache=true;
 		$this->registry->tpl->intTimeout=2629744;
 		$this->_header();
@@ -115,7 +115,7 @@ class installView
 	{
 		//$level = $this->registry->libs->_genOptionsList($this->registry->libs->__sql2Array('CALL Levels_GetList()', $this->registry->db), 'level');
 		//$group = $this->registry->libs->_genOptionsList($this->registry->libs->__sql2Array('CALL Groups_GetList()', $this->registry->db), 'group');
-		$templates = $this->registry->libs->_genOptionsList($this->registry->libs->_templates('views'), 'template');
+		$templates = $this->registry->libs->_genOptionsList($this->registry->libs->_templates('../views'), 'template');
 
 		$this->registry->tpl->assign('localityName', $geo['localityName'], null, null, null);
 		$this->registry->tpl->assign('stateOrProvinceName', $geo['stateOrProvinceName'], null, null, null);

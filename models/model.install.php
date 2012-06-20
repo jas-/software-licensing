@@ -97,13 +97,14 @@ class install {
 		if (!empty($post['install'])) {
 
 			/* fixup our configuration file */
-			if (file_exists('config/configuration.php.example')) {
+			if (file_exists('../config/configuration.php.example')) {
 				$contents = file_get_contents('config/configuration.php.example');
 				$contents = str_replace('[dbUser]', $post['dbUser'], $contents);
 				$contents = str_replace('[dbPassword]', $post['dbPass'], $contents);
 				$contents = str_replace('[dbHost]', $post['dbHost'], $contents);
 				$contents = str_replace('[dbName]', $post['dbName'], $contents);
-				$contents = str_replace('', $post[''], $contents);
+				echo $contents;
+				//$contents = str_replace('', $post[''], $contents);
 			}
 
 			/* fixup our sql files */
