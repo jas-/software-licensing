@@ -96,18 +96,25 @@ class install {
 
 		if (!empty($post['install'])) {
 
-			/* fixup our configuration file */
-			if (file_exists('../config/configuration.php.example')) {
+			/* add form validation measures */
+
+			/* fixup our configuration file
+			if (file_exists('config/configuration.php.example')) {
 				$contents = file_get_contents('config/configuration.php.example');
 				$contents = str_replace('[dbUser]', $post['dbUser'], $contents);
-				$contents = str_replace('[dbPassword]', $post['dbPass'], $contents);
+				$contents = str_replace('[dbPass]', $post['dbPass'], $contents);
 				$contents = str_replace('[dbHost]', $post['dbHost'], $contents);
 				$contents = str_replace('[dbName]', $post['dbName'], $contents);
-				echo $contents;
-				//$contents = str_replace('', $post[''], $contents);
-			}
+				$contents = str_replace('[title]', $post['title'], $contents);
+				$contents = str_replace('[timeout]', $post['timeout'], $contents);
+				$contents = str_replace('[flogin]', $post['flogin'], $contents);
+				$contents = str_replace('[template]', $post['template'], $contents);
+				$contents = str_replace('[start]', '<?php', $contents);
+				$contents = str_replace('[stop]', '?>', $contents);
+				file_put_contents('config/configuration.php', $contents);
+			} */
 
-			/* fixup our sql files */
+			/* fixup our sql files
 			foreach($this->files as $value) {
 				if (file_exists($value)) {
 					$contents = file_get_contents($value);
@@ -121,14 +128,15 @@ class install {
 						file_put_contents(str_replace('stored-procedures/', 'tmp/', $value), $contents);
 					}
 				}
-			}
-		}
+			} */
 		
-		// connect to database as root user
+			$this->registry->db = new mysqlDBconn(array('username'=>$post['root'],
+														'hostname'=>'localhost',
+														'password'=>'p@ssw0rd'));
+
+			$this->_dbCreate();
 		
-		// import database schema
-		
-		// import all stored procedures
+			// import all stored procedures
 
 		// create default configuration settings
 
@@ -137,6 +145,24 @@ class install {
 		// save hash and prepare for database content
 
 		// create default set of keys for application
+		}
+	}
+
+	/**
+	 *! @function _dbCreate
+	 *  @abstract Create the database, user & permissions
+	 */
+	private function _dbCreate($f)
+	{
+		if (file_exists('install/tmp/database-schema.sql')) {
+			$d = implode("\n", file('install/tmp/database-schema.sql'));
+			try {
+				$this->registry->db->query($d);
+			} catch(PDOException $e) {
+				// error handling
+			}
+		}
+		return;
 	}
 
 	/**

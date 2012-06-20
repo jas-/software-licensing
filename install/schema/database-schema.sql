@@ -125,7 +125,7 @@ CREATE TABLE IF NOT EXISTS `configuration_applications` (
   `resource` varchar(128) NOT NULL,
   `application` VARCHAR(255) NOT NULL,
   `url` VARCHAR(255) NOT NULL,
-  `ip` LONGTEXT, NOT NULL,
+  `ip` longtext NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `resource` (`resource`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci AUTO_INCREMENT=0;

@@ -13,13 +13,13 @@
   <h2>Application defaults</h2>
   <p>Please configure the applications default behavior</p>
   <div id="message"></div>
-  <form id="install" name="install" method="post" action="installation">
+  <form id="install" name="install" method="post" action="install.php">
    <label for="title">Title: </label>
     <input type="text" id="title" name="title" value="" placeholder="myTFH (My tin foil hat)" required="required" /><span class="required">*</span><br />
    <label for="email">Email: </label>
     <input type="text" id="email" name="email" value="" placeholder="default@mytfh.dev" required="required" /><span class="required">*</span><br />
    <label for="timeout">Timeout: </label>
-    <input type="text" id="timeout" name="timeoute" value="" placeholder="3600 = 5 minutes" required="required" /><span class="required">*</span><br />
+    <input type="text" id="timeout" name="timeout" value="" placeholder="3600 = 5 minutes" required="required" /><span class="required">*</span><br />
    <label for="flogin">Login count: </label>
     <input type="text" id="flogin" name="flogin" value="" placeholder="5 (failed = IP blacklisted)" required="required" /><span class="required">*</span><br />
    <label for="template">Template: </label>

@@ -1,20 +1,20 @@
-[start]
+<?php
 /* prevent direct access */
 if (!defined('__SITE')) exit('No direct calls please...');
 
 /* Database configuration settings */
 $settings['db']['engine']     = 'mysql';
-$settings['db']['hostname']   = '[dbHost]';
-$settings['db']['username']   = '[dbUser]';
-$settings['db']['password']   = '[dbPass]';
-$settings['db']['database']   = '[dbName]';
+$settings['db']['hostname']   = 'dbHost';
+$settings['db']['username']   = 'dbUser';
+$settings['db']['password']   = 'password';
+$settings['db']['database']   = 'dbName';
 
 /* Application specific settings */
-$settings['opts']['title']    = '[title]';
-$settings['opts']['timeout']  = '[timeout]';
-$settings['opts']['template'] = '[template]';
+$settings['opts']['title']    = 'title';
+$settings['opts']['timeout']  = '';
+$settings['opts']['template'] = 'views/default';
 $settings['opts']['caching']  = 'views/cache';
-$settings['opts']['flogin']   = '[flogin]';
+$settings['opts']['flogin']   = 'flogin';
 
 /* Session specific settings */
 $settings['sessions']['timeout'] = $settings['opts']['timeout'];
@@ -36,4 +36,4 @@ $settings['sessions']['proto']   = true;
  * loose everything in the database. You have been warned.
  */
 $settings['sessions']['db-key']   = '';
-[stop]
+?>
