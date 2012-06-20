@@ -44,4 +44,5 @@ $registry->template = new template($registry);
 
 /* begin routing requests */
 $registry->router->loader();
+
 ?>

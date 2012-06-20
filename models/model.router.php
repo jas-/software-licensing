@@ -102,7 +102,7 @@ class router
 
 	private function _tPath()
 	{
-		return (preg_match('/\/install\/index\.php/', $_SERVER['PHP_SELF']));
+		return (preg_match('/\/install\.php/', $_SERVER['PHP_SELF']));
 	}
 }
 
