@@ -51,7 +51,7 @@ class install {
 	 * @var files array
 	 * @abstract Array of installation files
 	 */
-	private $files = array('install/schema/database-schema.sql',
+	private $files = array(//'install/schema/database-schema.sql',
 						   'install/stored-procedures/sp_authenction.sql',
 						   'install/stored-procedures/sp_configuration.sql',
 						   'install/stored-procedures/sp_configuration_access.sql',
@@ -98,7 +98,11 @@ class install {
 
 			/* add form validation measures */
 
-			/* fixup our configuration file
+			$this->registry->db = new mysqlDBconn(array('username'=>$post['root'],
+														'hostname'=>'localhost',
+														'password'=>'p@ssw0rd'));
+
+			/* fixup our configuration file */
 			if (file_exists('config/configuration.php.example')) {
 				$contents = file_get_contents('config/configuration.php.example');
 				$contents = str_replace('[dbUser]', $post['dbUser'], $contents);
@@ -111,10 +115,26 @@ class install {
 				$contents = str_replace('[template]', $post['template'], $contents);
 				$contents = str_replace('[start]', '<?php', $contents);
 				$contents = str_replace('[stop]', '?>', $contents);
-				file_put_contents('config/configuration.php', $contents);
-			} */
+				//file_put_contents('config/configuration.php', $contents);
+			}
 
-			/* fixup our sql files
+			/* first create the database & permissions */
+			if (file_exists('install/schema/database-schema.sql')){
+				$contents = file_get_contents('install/schema/database-schema.sql');
+				$contents = str_replace('[dbUser]', $post['dbUser'], $contents);
+				$contents = str_replace('[dbPassword]', $post['dbPass'], $contents);
+				$contents = str_replace('[dbHost]', $post['dbHost'], $contents);
+				$contents = str_replace('[dbName]', $post['dbName'], $contents);
+				//$this->_dbCreate($contents);
+			}
+
+			unset($this->registry->db);
+			$this->registry->db = new mysqlDBconn(array('username'=>$post['root'],
+														'hostname'=>'localhost',
+														'password'=>'p@ssw0rd',
+														'database'=>'dbName'));
+
+			/* fixup our sql files */
 			foreach($this->files as $value) {
 				if (file_exists($value)) {
 					$contents = file_get_contents($value);
@@ -122,20 +142,17 @@ class install {
 					$contents = str_replace('[dbPassword]', $post['dbPass'], $contents);
 					$contents = str_replace('[dbHost]', $post['dbHost'], $contents);
 					$contents = str_replace('[dbName]', $post['dbName'], $contents);
+					$this->_dbCreate(preg_replace('/\\n/', '', $contents));
+/*
 					if (preg_match('/schema\//', $value)){
 						file_put_contents(str_replace('schema/', 'tmp/', $value), $contents);
 					} else {
 						file_put_contents(str_replace('stored-procedures/', 'tmp/', $value), $contents);
 					}
+*/
 				}
-			} */
-		
-			$this->registry->db = new mysqlDBconn(array('username'=>$post['root'],
-														'hostname'=>'localhost',
-														'password'=>'p@ssw0rd'));
+			}
 
-			$this->_dbCreate();
-		
 			// import all stored procedures
 
 		// create default configuration settings
@@ -154,13 +171,11 @@ class install {
 	 */
 	private function _dbCreate($f)
 	{
-		if (file_exists('install/tmp/database-schema.sql')) {
-			$d = implode("\n", file('install/tmp/database-schema.sql'));
-			try {
-				$this->registry->db->query($d);
-			} catch(PDOException $e) {
-				// error handling
-			}
+		echo '<pre>'; print_r($f); echo '</pre>';
+		try {
+			$this->registry->db->query($f);
+		} catch(PDOException $e) {
+			// error handling
 		}
 		return;
 	}
