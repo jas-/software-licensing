@@ -60,9 +60,9 @@
    <label for="email">Username: </label>
     <input type="text" id="email" name="email" value="" placeholder="johndoe@example.com" required="required" /><span class="required">*</span><br />
    <label for="password">Password: </label>
-    <input type="password" id="password" name="password" value="" placeholder="********" required="required" /><span class="required">*</span><br />
+    <input type="password" id="password" name="admPass" value="" placeholder="********" required="required" /><span class="required">*</span><br />
    <label for="confirm">Confirm: </label>
-    <input type="password" id="confirm" name="confirm" value="" placeholder="********" required="required" /><span class="required">*</span><br />
+    <input type="password" id="confirm" name="admConfirm" value="" placeholder="********" required="required" /><span class="required">*</span><br />
    <label for="level">Access level: </label>
     <select id="level" name="level" required="required" style="width: 30%">
      <option id="" value="admin">admin</option>

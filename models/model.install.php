@@ -97,10 +97,9 @@ class install {
 		if (!empty($post['install'])) {
 
 			/* add form validation measures */
-
 			$this->registry->db = new mysqlDBconn(array('username'=>$post['root'],
-														'hostname'=>'localhost',
-														'password'=>'p@ssw0rd'));
+														'hostname'=>$post['dbHost'],
+														'password'=>$post['password']));
 
 			/* fixup our configuration file */
 			if (file_exists('config/configuration.php.example')) {
@@ -125,7 +124,7 @@ class install {
 				$contents = str_replace('[dbPassword]', $post['dbPass'], $contents);
 				$contents = str_replace('[dbHost]', $post['dbHost'], $contents);
 				$contents = str_replace('[dbName]', $post['dbName'], $contents);
-				//$this->_dbCreate($contents);
+				$this->_dbCreate($contents);
 			}
 
 			unset($this->registry->db);
@@ -154,13 +153,15 @@ class install {
 				}
 			}
 
-			// create default configuration settings
-
 			// create hash for global database aes encryption
 
 			// save hash and prepare for database content
 
 			// create default set of keys for application
+
+			// create default configuration settings
+
+			// create default user administrative account
 		}
 	}
 
@@ -170,7 +171,6 @@ class install {
 	 */
 	private function _dbCreate($f)
 	{
-		echo '<pre>'; print_r($f); echo '</pre>';
 		try {
 			$this->registry->db->query($f);
 		} catch(PDOException $e) {
