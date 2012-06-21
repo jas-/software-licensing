@@ -130,9 +130,9 @@ class install {
 
 			unset($this->registry->db);
 			$this->registry->db = new mysqlDBconn(array('username'=>$post['root'],
-														'hostname'=>'localhost',
-														'password'=>'p@ssw0rd',
-														'database'=>'dbName'));
+														'hostname'=>$post['dbHost'],
+														'password'=>$post['password'],
+														'database'=>$post['dbName']));
 
 			/* fixup our sql files */
 			foreach($this->files as $value) {
@@ -142,26 +142,25 @@ class install {
 					$contents = str_replace('[dbPassword]', $post['dbPass'], $contents);
 					$contents = str_replace('[dbHost]', $post['dbHost'], $contents);
 					$contents = str_replace('[dbName]', $post['dbName'], $contents);
-					$this->_dbCreate(preg_replace('/\\n/', '', $contents));
-/*
 					if (preg_match('/schema\//', $value)){
 						file_put_contents(str_replace('schema/', 'tmp/', $value), $contents);
 					} else {
 						file_put_contents(str_replace('stored-procedures/', 'tmp/', $value), $contents);
+						$cmd = sprintf('mysql -u %s --password=%s --database %s < %s',
+									   $post['root'], $post['password'], $post['dbName'],
+									   str_replace('stored-procedures/', 'tmp/', $value));
+						`$cmd`;
 					}
-*/
 				}
 			}
 
-			// import all stored procedures
+			// create default configuration settings
 
-		// create default configuration settings
+			// create hash for global database aes encryption
 
-		// create hash for global database aes encryption
+			// save hash and prepare for database content
 
-		// save hash and prepare for database content
-
-		// create default set of keys for application
+			// create default set of keys for application
 		}
 	}
 
