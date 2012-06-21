@@ -169,6 +169,9 @@ class keyring
 	 */
 	private function __keyring($email=false)
 	{
+		echo '<pre>'; print_r(var_dump($this->registry->opts['dbKey'])); echo '</pre>';
+		echo '<pre>'; print_r(var_dump(hashes::init($this->registry)->_do($this->registry->opts['dbKey']))); echo '</pre>';
+
 		$r = true;
 		$email = (!empty($_SESSION[$this->registry->libs->_getRealIPv4()]['email'])) ? $_SESSION[$this->registry->libs->_getRealIPv4()]['email'] : $email;
 		try{
@@ -178,7 +181,7 @@ class keyring
 				} else {
 					$sql = sprintf('CALL Configuration_keys_get("%s, %s")', $this->registry->db->sanitize($email), $this->registry->db->sanitize(hashes::init($this->registry)->_do($this->registry->opts['dbKey'])));
 				}
-
+				print_r(var_dump($sql));
 				$r = $this->registry->db->query($sql);
 
 				$r = ((!empty($r['publicKey']))&&(!empty($r['emailAddress']))&&(!empty($r['privateKey']))&&(!empty($r['pword']))) ? array('email'=>$r['emailAddress'], 'privateKey'=>$r['privateKey'], 'publicKey'=>$r['publicKey'],'password'=>$r['pword']) : false;

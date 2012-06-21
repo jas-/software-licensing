@@ -97,7 +97,7 @@ class install {
 		if (!empty($post['install'])) {
 
 			/* create random key */
-			$key = hashes::init($this->registry)->_rand(32, 16);
+			$k = hashes::init($this->registry)->_rand(32, 16);
 
 			/* add form validation measures */
 			$this->registry->db = new mysqlDBconn(array('username'=>$post['root'],
@@ -105,7 +105,7 @@ class install {
 														'password'=>$post['password']));
 
 			/* fixup our configuration file */
-			$this->_config('config/configuration.php.example', $post, $key);
+			$this->_config('config/configuration.php.example', $post, $k);
 
 			/* first create the database & permissions */
 			$this->_dbSchema('install/schema/database-schema.sql', $post);
@@ -121,7 +121,7 @@ class install {
 			$this->_dbSP($post);
 
 			/* prepare random key */
-			$key = hashes::init(false)->_do($key);
+			$key = hashes::init(false)->_do($k);
 
 			/* init seed & create default keypair */
 			openssl::instance(false)->genRand(128);
@@ -129,6 +129,7 @@ class install {
 			$p = openssl::instance(false)->genPub();
 
 			/* save the default configuration */
+			//echo '<pre>'; print_r($this->_defConf($post, $pk, $p, $key)); echo '</pre>';
 			$this->_crud($this->_defConf($post, $pk, $p, $key));
 
 			/* save our newly created administrative user */
