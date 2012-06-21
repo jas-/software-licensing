@@ -58,7 +58,7 @@
   <h2>Administration account</h2>
   <p>Create a default administration user account for access to the myTFH application</p>
    <label for="email">Username: </label>
-    <input type="text" id="email" name="email" value="" placeholder="johndoe@example.com" required="required" /><span class="required">*</span><br />
+    <input type="text" id="admUser" name="admUser" value="" placeholder="johndoe@example.com" required="required" /><span class="required">*</span><br />
    <label for="password">Password: </label>
     <input type="password" id="password" name="admPass" value="" placeholder="********" required="required" /><span class="required">*</span><br />
    <label for="confirm">Confirm: </label>

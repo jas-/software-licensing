@@ -163,7 +163,7 @@ class install {
 			$pk = openssl::instance(false)->genPriv($key);
 			$p = openssl::instance(false)->genPub();
 
-			// begin saving everything...
+			/* save the default configuration */
 			$sql = sprintf('CALL Configuration_def_add("%s", "%s", "%s", "%d", "%d", "%s", "%d", "%s", "%s", "%s", "%s", "%s", "%s", "%s", "%s", "%s")',
 							$post['title'], $post['template'], 'views/cache', $post['flogin'], 1, $post['email'],
 							$post['timeout'], $pk, $p, $key, $post['countryName'], $post['stateOrProvinceName'],
@@ -171,11 +171,23 @@ class install {
 							$_SERVER['SERVER_NAME']);
 			$this->_crud($sql);
 
-			// create default administrative user account
-			// Users_AddUpdate
+			/* save our newly created administrative user */
+			$h = hashes::init(false)->_do($post['admPass'], $key);
+			$sql = sprintf('CALL Users_AddUpdate("%s", "%s", "%s", "%s", "%s")',
+						   $post['admUser'], $h, $post['level'], $post['group'], $key);
+			$this->_crud($sql);
 
 			// create corresponding keyring for user
-			// Configuration_keys_add()
+			openssl::instance(false)->genRand(128);
+			$pk = openssl::instance(false)->genPriv($h);
+			$p = openssl::instance(false)->genPub();
+
+			$sql = sprintf('CALL Configuration_keys_add("%s", "%s", "%s", "%s", "%s", "%s", "%s", "%s", "%s", "%s")',
+						   $post['countryName'], $post['stateOrProvinceName'],
+						   $post['localityName'], $post['organizationalName'],
+						   $post['organizationalUnitName'], $post['admUser'],
+						   $post['admUser'], $pk, $p, $h);
+			$this->_crud($sql);
 		}
 	}
 
