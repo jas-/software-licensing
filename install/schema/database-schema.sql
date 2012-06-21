@@ -2,8 +2,12 @@
 DROP DATABASE IF EXISTS `[dbName]`;
 CREATE DATABASE `[dbName]`;
 
--- Create a default user and assign limited permissions
+-- Grant priviledge for account then drop it
+GRANT USAGE ON *.* TO "[dbUser]"@"[dbHost]";
 DROP USER "[dbUser]"@"[dbHost]";
+FLUSH PRIVILEGES;
+
+-- Create a default user and assign limited permissions
 CREATE USER "[dbUser]"@"[dbHost]" IDENTIFIED BY "[dbPassword]";
 GRANT SELECT, INSERT, UPDATE, DELETE, REFERENCES, INDEX, CREATE TEMPORARY TABLES, LOCK TABLES, EXECUTE ON `[dbName]`.* TO "[dbUser]"@"[dbHost]";
 FLUSH PRIVILEGES;

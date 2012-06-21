@@ -4,10 +4,10 @@
 define('__SITE', realpath(dirname(__FILE__)));
 
 /* first load the application config */
-if (!file_exists(__SITE.'/config/configuration.php.example')){
+if (!file_exists(__SITE.'/config/configuration.php')){
 	header('Location: install.php');
 }
-include __SITE.'/config/configuration.php.example';
+include __SITE.'/config/configuration.php';
 
 /* verify settings exist */
 if (((empty($settings['db']['hostname']))||($settings['db']['hostname']=='[dbHost]'))&&

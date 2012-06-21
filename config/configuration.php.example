@@ -35,5 +35,5 @@ $settings['sessions']['proto']   = true;
  * database contents. If you change this manually you will
  * loose everything in the database. You have been warned.
  */
-$settings['sessions']['db-key']   = '';
+$settings['sessions']['db-key']   = '[hash]';
 [stop]

@@ -72,6 +72,15 @@ class hashes
 	}
 
 	/**
+	 * @function _rand
+	 * @abstract Produce a random key
+	 */
+	public function _rand($n=fale, $i=false)
+	{
+		return $this->_do(openssl::instance(false)->genRand($n), openssl::instance(false)->genRand($i));
+	}
+
+	/**
 	 * @function _salt
 	 * @abstract Generate a random salt value of specified length based on input
 	 */

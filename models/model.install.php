@@ -96,6 +96,9 @@ class install {
 
 		if (!empty($post['install'])) {
 
+			/* create random key */
+			$key = hashes::init($this->registry)->_rand(32, 16);
+
 			/* add form validation measures */
 			$this->registry->db = new mysqlDBconn(array('username'=>$post['root'],
 														'hostname'=>$post['dbHost'],
@@ -112,9 +115,10 @@ class install {
 				$contents = str_replace('[timeout]', $post['timeout'], $contents);
 				$contents = str_replace('[flogin]', $post['flogin'], $contents);
 				$contents = str_replace('[template]', $post['template'], $contents);
+				$contents = str_replace('[hash]', $key, $contents);
 				$contents = str_replace('[start]', '<?php', $contents);
 				$contents = str_replace('[stop]', '?>', $contents);
-				//file_put_contents('config/configuration.php', $contents);
+				file_put_contents('config/configuration.php', $contents);
 			}
 
 			/* first create the database & permissions */
@@ -153,15 +157,22 @@ class install {
 				}
 			}
 
-			// create hash for global database aes encryption
+			$key = hashes::init(false)->_do($key);
 
-			// save hash and prepare for database content
+			openssl::instance(false)->genRand(128);
+			$pk = openssl::instance(false)->genPriv($key);
+			$p = openssl::instance(false)->genPub();
 
-			// create default set of keys for application
+			// begin saving everything...
 
-			// create default configuration settings
+			// create default configuration settings (application, keyring & DN attributes)
+			// Configuration_def_add()
 
-			// create default user administrative account
+			// create default administrative user account
+			// Users_AddUpdate
+
+			// create corresponding keyring for user
+			// Configuration_keys_add()
 		}
 	}
 
