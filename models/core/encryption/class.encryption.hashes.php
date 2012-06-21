@@ -77,7 +77,7 @@ class hashes
 	 */
 	private function _salt($string, $len=null)
 	{
-		return (!empty($len)) ? hash('sha512', str_pad($string, (strlen($string) + $len), substr(hash('sha512', $string), @round((float)strlen($string)/3, 0, PHP_ROUND_HALF_UP), ($len - strlen($string))), STR_PAD_BOTH)) : hash('sha512', substr($string, @round((float)strlen($string)/3, 0, PHP_ROUND_HALF_UP), 16));
+		return (!empty($len)) ? substr(hash('sha512', str_pad($string, (strlen($string) + $len), substr(hash('sha512', $string), @round((float)strlen($string)/3, 0, PHP_ROUND_HALF_UP), ($len - strlen($string))), STR_PAD_BOTH)), 0, $len) : substr(hash('sha512', substr($string, @round((float)strlen($string)/3, 0, PHP_ROUND_HALF_UP), 16)), 0, 16);
 	}
 
 	/**
