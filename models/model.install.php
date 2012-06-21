@@ -105,89 +105,43 @@ class install {
 														'password'=>$post['password']));
 
 			/* fixup our configuration file */
-			if (file_exists('config/configuration.php.example')) {
-				$contents = file_get_contents('config/configuration.php.example');
-				$contents = str_replace('[dbUser]', $post['dbUser'], $contents);
-				$contents = str_replace('[dbPass]', $post['dbPass'], $contents);
-				$contents = str_replace('[dbHost]', $post['dbHost'], $contents);
-				$contents = str_replace('[dbName]', $post['dbName'], $contents);
-				$contents = str_replace('[title]', $post['title'], $contents);
-				$contents = str_replace('[timeout]', $post['timeout'], $contents);
-				$contents = str_replace('[flogin]', $post['flogin'], $contents);
-				$contents = str_replace('[template]', $post['template'], $contents);
-				$contents = str_replace('[hash]', $key, $contents);
-				$contents = str_replace('[start]', '<?php', $contents);
-				$contents = str_replace('[stop]', '?>', $contents);
-				file_put_contents('config/configuration.php', $contents);
-			}
+			$this->_config('config/configuration.php.example', $post, $key);
 
 			/* first create the database & permissions */
-			if (file_exists('install/schema/database-schema.sql')){
-				$contents = file_get_contents('install/schema/database-schema.sql');
-				$contents = str_replace('[dbUser]', $post['dbUser'], $contents);
-				$contents = str_replace('[dbPassword]', $post['dbPass'], $contents);
-				$contents = str_replace('[dbHost]', $post['dbHost'], $contents);
-				$contents = str_replace('[dbName]', $post['dbName'], $contents);
-				$this->_crud($contents);
-			}
+			$this->_dbSchema('install/schema/database-schema.sql', $post);
 
+			/* unset db connection & reconnect using newly created database */
 			unset($this->registry->db);
 			$this->registry->db = new mysqlDBconn(array('username'=>$post['root'],
 														'hostname'=>$post['dbHost'],
 														'password'=>$post['password'],
 														'database'=>$post['dbName']));
 
-			/* fixup our sql files */
-			foreach($this->files as $value) {
-				if (file_exists($value)) {
-					$contents = file_get_contents($value);
-					$contents = str_replace('[dbUser]', $post['dbUser'], $contents);
-					$contents = str_replace('[dbPassword]', $post['dbPass'], $contents);
-					$contents = str_replace('[dbHost]', $post['dbHost'], $contents);
-					$contents = str_replace('[dbName]', $post['dbName'], $contents);
-					if (preg_match('/schema\//', $value)){
-						file_put_contents(str_replace('schema/', 'tmp/', $value), $contents);
-					} else {
-						file_put_contents(str_replace('stored-procedures/', 'tmp/', $value), $contents);
-						$cmd = sprintf('mysql -u %s --password=%s --database %s < %s',
-									   $post['root'], $post['password'], $post['dbName'],
-									   str_replace('stored-procedures/', 'tmp/', $value));
-						`$cmd`;
-					}
-				}
-			}
+			/* import stored procedures */
+			$this->_dbSP($post);
 
+			/* prepare random key */
 			$key = hashes::init(false)->_do($key);
 
+			/* init seed & create default keypair */
 			openssl::instance(false)->genRand(128);
 			$pk = openssl::instance(false)->genPriv($key);
 			$p = openssl::instance(false)->genPub();
 
 			/* save the default configuration */
-			$sql = sprintf('CALL Configuration_def_add("%s", "%s", "%s", "%d", "%d", "%s", "%d", "%s", "%s", "%s", "%s", "%s", "%s", "%s", "%s", "%s")',
-							$post['title'], $post['template'], 'views/cache', $post['flogin'], 1, $post['email'],
-							$post['timeout'], $pk, $p, $key, $post['countryName'], $post['stateOrProvinceName'],
-							$post['localityName'], $post['organizationalName'], $post['organizationalUnitName'],
-							$_SERVER['SERVER_NAME']);
-			$this->_crud($sql);
+			$this->_crud($this->_defConf($post, $pk, $p, $key));
 
 			/* save our newly created administrative user */
 			$h = hashes::init(false)->_do($post['admPass'], $key);
-			$sql = sprintf('CALL Users_AddUpdate("%s", "%s", "%s", "%s", "%s")',
-						   $post['admUser'], $h, $post['level'], $post['group'], $key);
-			$this->_crud($sql);
+			$this->_crud($this->_defUser($post, $h, $key));
 
-			// create corresponding keyring for user
+			/* create corresponding keyring for user */
 			openssl::instance(false)->genRand(128);
 			$pk = openssl::instance(false)->genPriv($h);
 			$p = openssl::instance(false)->genPub();
 
-			$sql = sprintf('CALL Configuration_keys_add("%s", "%s", "%s", "%s", "%s", "%s", "%s", "%s", "%s", "%s")',
-						   $post['countryName'], $post['stateOrProvinceName'],
-						   $post['localityName'], $post['organizationalName'],
-						   $post['organizationalUnitName'], $post['admUser'],
-						   $post['admUser'], $pk, $p, $h);
-			$this->_crud($sql);
+			/* save new keypair to keyring */
+			$this->_crud($this->_defKeyring($post, $pk, $p, $h));
 		}
 	}
 
@@ -203,6 +157,110 @@ class install {
 			// error handling
 		}
 		return;
+	}
+
+	/**
+	 *! @function _defConf
+	 *  @abstract Generate SQL statement for default configuration save
+	 */
+	private function _defConf($post, $pk, $p, $key)
+	{
+		return sprintf('CALL Configuration_def_add("%s", "%s", "%s", "%d", "%d", "%s", "%d", "%s", "%s", "%s", "%s", "%s", "%s", "%s", "%s", "%s")',
+						$post['title'], $post['template'], 'views/cache', $post['flogin'], 1, $post['email'],
+						$post['timeout'], $pk, $p, $key, $post['countryName'], $post['stateOrProvinceName'],
+						$post['localityName'], $post['organizationalName'], $post['organizationalUnitName'],
+						$_SERVER['SERVER_NAME']);
+	}
+
+	/**
+	 *! @function _defConf
+	 *  @abstract Generate SQL statement for default configuration save
+	 */
+	private function _defUser($post, $h, $key)
+	{
+		return sprintf('CALL Users_AddUpdate("%s", "%s", "%s", "%s", "%s")',
+					   $post['admUser'], $h, $post['level'], $post['group'], $key);
+
+	}
+
+	/**
+	 *! @function _defKeyring
+	 *  @abstract Save the users keyring information
+	 */
+	private function _defKeyring($post, $pk, $p, $h)
+	{
+		return sprintf('CALL Configuration_keys_add("%s", "%s", "%s", "%s", "%s", "%s", "%s", "%s", "%s", "%s")',
+					   $post['countryName'], $post['stateOrProvinceName'],
+					   $post['localityName'], $post['organizationalName'],
+					   $post['organizationalUnitName'], $post['admUser'],
+					   $post['admUser'], $pk, $p, $h);
+	}
+
+	/**
+	 *! @function _config
+	 *  @abstract Use existing configuration template and create new with
+	 *            user provided input
+	 */
+	private function _config($file, $post, $key)
+	{
+		if (file_exists($file)) {
+			$contents = file_get_contents($file);
+			$contents = str_replace('[dbUser]', $post['dbUser'], $contents);
+			$contents = str_replace('[dbPass]', $post['dbPass'], $contents);
+			$contents = str_replace('[dbHost]', $post['dbHost'], $contents);
+			$contents = str_replace('[dbName]', $post['dbName'], $contents);
+			$contents = str_replace('[title]', $post['title'], $contents);
+			$contents = str_replace('[timeout]', $post['timeout'], $contents);
+			$contents = str_replace('[flogin]', $post['flogin'], $contents);
+			$contents = str_replace('[template]', $post['template'], $contents);
+			$contents = str_replace('[hash]', $key, $contents);
+			$contents = str_replace('[start]', '<?php', $contents);
+			$contents = str_replace('[stop]', '?>', $contents);
+			file_put_contents('config/configuration.php', $contents);
+		}
+	}
+
+	/**
+	 *! @function _dbSchema
+	 *  @abstract Modify database schema template and perform import
+	 */
+	private function _dbSchema($file, $post)
+	{
+		if (file_exists($file)){
+			$contents = file_get_contents($file);
+			$contents = str_replace('[dbUser]', $post['dbUser'], $contents);
+			$contents = str_replace('[dbPassword]', $post['dbPass'], $contents);
+			$contents = str_replace('[dbHost]', $post['dbHost'], $contents);
+			$contents = str_replace('[dbName]', $post['dbName'], $contents);
+			$this->_crud($contents);
+		}
+	}
+
+	/**
+	 *! @function _dbSchema
+	 *  @abstract Perform replacements on all stored procedure templates
+	 *            and perform import
+	 */
+	private function _dbSP($post)
+	{
+		foreach($this->files as $value) {
+			if (file_exists($value)) {
+				$contents = file_get_contents($value);
+				$contents = str_replace('[dbUser]', $post['dbUser'], $contents);
+				$contents = str_replace('[dbPassword]', $post['dbPass'], $contents);
+				$contents = str_replace('[dbHost]', $post['dbHost'], $contents);
+				$contents = str_replace('[dbName]', $post['dbName'], $contents);
+				if (preg_match('/schema\//', $value)){
+					file_put_contents(str_replace('schema/', 'tmp/', $value), $contents);
+				} else {
+					file_put_contents(str_replace('stored-procedures/', 'tmp/', $value), $contents);
+					$cmd = sprintf('mysql -u %s --password=%s --database %s < %s',
+								   $post['root'], $post['password'], $post['dbName'],
+								   str_replace('stored-procedures/', 'tmp/', $value));
+					`$cmd`;
+				}
+			}
+		}
 	}
 
 	/**
