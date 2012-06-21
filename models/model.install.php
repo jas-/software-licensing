@@ -128,7 +128,7 @@ class install {
 				$contents = str_replace('[dbPassword]', $post['dbPass'], $contents);
 				$contents = str_replace('[dbHost]', $post['dbHost'], $contents);
 				$contents = str_replace('[dbName]', $post['dbName'], $contents);
-				$this->_dbCreate($contents);
+				$this->_crud($contents);
 			}
 
 			unset($this->registry->db);
@@ -164,9 +164,30 @@ class install {
 			$p = openssl::instance(false)->genPub();
 
 			// begin saving everything...
-
-			// create default configuration settings (application, keyring & DN attributes)
-			// Configuration_def_add()
+			/*
+			IN `title` VARCHAR(128),
+			IN `templates` VARCHAR(255),
+			IN `cache` VARCHAR(255),
+			IN `flogin` INT(10),
+			IN `private` INT(1),
+			IN `email` VARCHAR(64),
+			IN `timeout` INT(10),
+			IN `pvkey` LONGTEXT,
+			IN `pkey` LONGTEXT,
+			IN `skey` LONGTEXT,
+			IN `countryName` VARCHAR(64),
+			IN `stateOrProvinceName` VARCHAR(64),
+			IN `localityName` VARCHAR(64),
+			IN `organizationName` VARCHAR(64),
+			IN `organizationalUnitName` VARCHAR(64),
+			IN `commonName` VARCHAR(64)
+			*/
+			$sql = sprintf('CALL Configuration_def_add("%s", "%s", "%s", "%d", "%d", "%s", "%d", "%s", "%s", "%s", "%s", "%s", "%s", "%s", "%s", "%s")',
+							$post['title'], $post['template'], 'views/cache', $post['flogin'], 1, $post['email'],
+							$post['timeout'], $pk, $p, $key, $post['countryName'], $post['stateOrProvinceName'],
+							$post['localityName'], $post['organizationalName'], $post['organizationalUnitName'],
+							$_SERVER['SERVER_NAME']);
+echo $sql;			$this->_crud($sql);
 
 			// create default administrative user account
 			// Users_AddUpdate
@@ -180,7 +201,7 @@ class install {
 	 *! @function _dbCreate
 	 *  @abstract Create the database, user & permissions
 	 */
-	private function _dbCreate($f)
+	private function _crud($f)
 	{
 		try {
 			$this->registry->db->query($f);
