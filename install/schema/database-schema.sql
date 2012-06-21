@@ -3,6 +3,7 @@ DROP DATABASE IF EXISTS `[dbName]`;
 CREATE DATABASE `[dbName]`;
 
 -- Create a default user and assign limited permissions
+DROP USER "[dbUser]"@"[dbHost]";
 CREATE USER "[dbUser]"@"[dbHost]" IDENTIFIED BY "[dbPassword]";
 GRANT SELECT, INSERT, UPDATE, DELETE, REFERENCES, INDEX, CREATE TEMPORARY TABLES, LOCK TABLES, EXECUTE ON `[dbName]`.* TO "[dbUser]"@"[dbHost]";
 FLUSH PRIVILEGES;
