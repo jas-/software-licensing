@@ -190,7 +190,7 @@ class authentication
 			if ((!empty($creds['email']))&&(!empty($creds['password']))) {
 
 				/* prepare the password supplied */
-				$this->pass = hashes::init($this->registry)->_do($creds['password']);
+				$this->pass = hashes::init($this->registry)->_do($creds['password'], $creds['password']);
 
 				try{
 					$sql = sprintf('CALL Auth_CheckUser("%s", "%s", "%s")', $this->registry->db->sanitize($creds['email']), $this->registry->db->sanitize($this->pass), $this->registry->db->sanitize($this->pass));

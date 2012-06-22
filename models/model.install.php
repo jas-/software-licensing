@@ -52,7 +52,7 @@ class install {
 	 * @abstract Array of installation files
 	 */
 	private $files = array(//'install/schema/database-schema.sql',
-						   'install/stored-procedures/sp_authenction.sql',
+						   'install/stored-procedures/sp_authentication.sql',
 						   'install/stored-procedures/sp_configuration.sql',
 						   'install/stored-procedures/sp_configuration_access.sql',
 						   'install/stored-procedures/sp_configuration_applications.sql',
@@ -99,6 +99,9 @@ class install {
 			/* create random key */
 			$k = hashes::init($this->registry)->_rand(32, 16);
 
+			/* prepare random key */
+			$key = hashes::init(false)->_do($k);
+
 			/* add form validation measures */
 			$this->registry->db = new mysqlDBconn(array('username'=>$post['root'],
 														'hostname'=>$post['dbHost'],
@@ -120,21 +123,17 @@ class install {
 			/* import stored procedures */
 			$this->_dbSP($post);
 
-			/* prepare random key */
-			$key = hashes::init(false)->_do($k);
-
 			/* init seed & create default keypair */
 			openssl::instance(false)->genRand(128);
 			$pk = openssl::instance(false)->genPriv($key);
 			$p = openssl::instance(false)->genPub();
 
 			/* save the default configuration */
-			//echo '<pre>'; print_r($this->_defConf($post, $pk, $p, $key)); echo '</pre>';
 			$this->_crud($this->_defConf($post, $pk, $p, $key));
 
 			/* save our newly created administrative user */
-			$h = hashes::init(false)->_do($post['admPass'], $key);
-			$this->_crud($this->_defUser($post, $h, $key));
+			$h = hashes::init(false)->_do($post['admPass'], $post['admPass']);
+			$this->_crud($this->_defUser($post, $h));
 
 			/* create corresponding keyring for user */
 			openssl::instance(false)->genRand(128);
@@ -177,10 +176,10 @@ class install {
 	 *! @function _defConf
 	 *  @abstract Generate SQL statement for default configuration save
 	 */
-	private function _defUser($post, $h, $key)
+	private function _defUser($post, $h)
 	{
 		return sprintf('CALL Users_AddUpdate("%s", "%s", "%s", "%s", "%s")',
-					   $post['admUser'], $h, $post['level'], $post['group'], $key);
+					   $post['admUser'], $h, $post['level'], $post['group'], $h);
 
 	}
 

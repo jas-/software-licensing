@@ -39,7 +39,11 @@ class dashboardController
 	public function __construct($registry)
 	{
 		$this->registry = $registry;
-		$this->registry->auth = authentication::instance($this->registry);
+		if (class_exists('authentication')){
+			$this->registry->auth = authentication::instance($this->registry);
+		} else {
+			echo 1;
+		}
 	}
 
 	/**
@@ -49,7 +53,7 @@ class dashboardController
 	private function __auth($token)
 	{
 		$this->registry->keyring = new keyring($this->registry, $this->registry->val->__do($_POST));
-		$x = $this->registry->auth->__reauth($token);
+		//$x = $this->registry->auth->__reauth($token);
 		return (array_key_exists('success', $x)) ? true : false;
 	}
 

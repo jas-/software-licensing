@@ -54,7 +54,6 @@ $registry->db = new $eng($settings['db']);
 if (!class_exists('hashes')) {
 	exit('Error loading required hashing libraries, unable to proceed. 0x0c7');
 }
-//$settings['sessions']['db-key'] = hashes::init($registry)->_do($setting['sessions']['db-key']);
 
 /* load and start up session support */
 if (!class_exists('dbSession')){
