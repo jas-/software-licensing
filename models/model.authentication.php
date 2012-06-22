@@ -44,6 +44,12 @@ class authentication
 	private $pass;
 
 	/**
+	 * @var users salt
+	 * @abstract Place holder for unique salt
+	 */
+	private $salt;
+
+	/**
 	 *! @var instance object - class singleton object
 	 */
 	protected static $instance;
@@ -54,7 +60,7 @@ class authentication
 	 *  @param registry array - Global array of class objects
 	 */
 	private function __construct($registry)
-	{
+	{	
 		$this->registry = $registry;
 		if (!$this->__setup($registry)){
 			exit(array('Error'=>'Necessary keys are missing, cannot continue'));
@@ -190,7 +196,8 @@ class authentication
 			if ((!empty($creds['email']))&&(!empty($creds['password']))) {
 
 				/* prepare the password supplied */
-				$this->pass = hashes::init($this->registry)->_do($creds['password'], $creds['password']);
+				$this->pass = hashes::init($this->registry)->_do($creds['password'], hashes::init($this->registry)->_do($this->registry->opts['dbKey']));
+				$this->salt = $this->registry->libs->_16($this->pass);
 
 				try{
 					$sql = sprintf('CALL Auth_CheckUser("%s", "%s", "%s")', $this->registry->db->sanitize($creds['email']), $this->registry->db->sanitize($this->pass), $this->registry->db->sanitize($this->pass));
@@ -229,14 +236,15 @@ class authentication
 	 */
 	public function __reauth($token, $hash=false)
 	{
-		$this->pass = hashes::init($this->registry)->_do($creds['password']);
+		$this->pass = $_SESSION[$this->registry->libs->_getRealIPv4()]['password'];
+		$this->salt = $this->registry->libs->_16($this->pass);
 
 		if (empty($token)){
 			$this->__nuke();
 			return false;
 		}
 
-		if ((!empty($$token))&&(!empty($hash))) {
+		if ((!empty($token))&&(!empty($hash))) {
 			if (strcmp($hash, sha1($token))!==0) {
 				$this->__nuke();
 				return array('error'=>'Authentication provided incorrect, destroying token');
@@ -268,8 +276,8 @@ class authentication
 		}
 
 		$token = $this->__regenToken($a);
-		$a['signature'] = $this->registry->keyring->ssl->sign($_SESSION[$this->registry->libs->_getRealIPv4()]['token'], $_SESSION[$this->registry->libs->_getRealIPv4()]['privateKey'], $_SESSION[$this->registry->libs->_getRealIPv4()]['password']);
-		$a['email'] = $this->registry->keyring->ssl->aesDenc($a[0], $this->pass, $this->registry->libs->_16(hashes::init($this->registry)->_do($this->pass, $this->registry->opts['dbKey'])));
+		$a['signature'] = $this->registry->keyring->ssl->sign($_SESSION[$this->registry->libs->_getRealIPv4()]['token'], $_SESSION[$this->registry->libs->_getRealIPv4()]['privateKey'], $this->pass);
+		$a['email'] = $this->registry->keyring->ssl->aesDenc($a[0], $this->pass, $this->salt);
 		$x = $this->__register($a);
 
 		if (!$x) {
@@ -349,10 +357,11 @@ class authentication
 	private function __hijack($a)
 	{
 		if (is_array($a)){
-			$t = filter_var(urlencode($this->registry->keyring->ssl->aesDenc($a[5], $this->pass, $this->registry->libs->_16(hashes::init($this->registry)->_do($this->pass, $this->registry->opts['dbKey'])))), FILTER_VALIDATE_REGEXP, array('options'=> array('regexp'=>'/^'.urlencode(getenv('HTTP_REFERER')).'/Di')));
 
-			$x = ((strcmp($this->registry->keyring->ssl->aesDenc($a[3], $this->pass, $this->registry->libs->_16(hashes::init($this->registry)->_do($this->pass, $this->registry->opts['dbKey']))), sha1($this->registry->libs->_getRealIPv4()))==0)&&
-				  (strcmp($this->registry->keyring->ssl->aesDenc($a[4], $this->pass, $this->registry->libs->_16(hashes::init($this->registry)->_do($this->pass, $this->registry->opts['dbKey']))), sha1(getenv('HTTP_USER_AGENT')))==0)&&
+			$t = filter_var(urlencode($this->registry->keyring->ssl->aesDenc($a[5], $this->pass, $this->salt)), FILTER_VALIDATE_REGEXP, array('options'=> array('regexp'=>'/^'.urlencode(getenv('HTTP_REFERER')).'/Di')));
+
+			$x = ((strcmp($this->registry->keyring->ssl->aesDenc($a[3], $this->pass, $this->salt), sha1($this->registry->libs->_getRealIPv4()))==0)&&
+				  (strcmp($this->registry->keyring->ssl->aesDenc($a[4], $this->pass, $this->salt), sha1(getenv('HTTP_USER_AGENT')))==0)&&
 				  (strcmp($t, urlencode(getenv('HTTP_REFERER'))==0)));
 		} else {
 			$x = false;
@@ -374,12 +383,12 @@ class authentication
 			}
 
 			$token = sprintf("%s:%s:%s:%s:%s:%s:%d",
-							$this->registry->keyring->ssl->aesEnc($this->registry->val->__do($obj['email'], 'email'), $this->pass, $this->registry->libs->_16(hashes::init($this->registry)->_do($this->pass, $this->registry->opts['dbKey']))),
-							$this->registry->keyring->ssl->aesEnc($this->registry->val->__do($a['level'], 'string'), $this->pass, $this->registry->libs->_16(hashes::init($this->registry)->_do($this->pass, $this->registry->opts['dbKey']))),
-							$this->registry->keyring->ssl->aesEnc($this->registry->val->__do($a['grp'], 'string'), $this->pass, $this->registry->libs->_16(hashes::init($this->registry)->_do($this->pass, $this->registry->opts['dbKey']))),
-							$this->registry->keyring->ssl->aesEnc($this->registry->val->__do(sha1($this->registry->libs->_getRealIPv4()), 'string'), $this->pass, $this->registry->libs->_16(hashes::init($this->registry)->_do($this->pass, $this->registry->opts['dbKey']))),
-							$this->registry->keyring->ssl->aesEnc($this->registry->val->__do(sha1(getenv('HTTP_USER_AGENT')), 'string'), $this->pass, $this->registry->libs->_16(hashes::init($this->registry)->_do($this->pass, $this->registry->opts['dbKey']))),
-							$this->registry->keyring->ssl->aesEnc($this->registry->val->__do(getenv('HTTP_REFERER'), 'string'), $this->pass, $this->registry->libs->_16(hashes::init($this->registry)->_do($this->pass, $this->registry->opts['dbKey']))),
+							$this->registry->keyring->ssl->aesEnc($this->registry->val->__do($obj['email'], 'email'), $this->pass, $this->salt),
+							$this->registry->keyring->ssl->aesEnc($this->registry->val->__do($a['level'], 'string'), $this->pass, $this->salt),
+							$this->registry->keyring->ssl->aesEnc($this->registry->val->__do($a['grp'], 'string'), $this->pass, $this->salt),
+							$this->registry->keyring->ssl->aesEnc($this->registry->val->__do(sha1($this->registry->libs->_getRealIPv4()), 'string'), $this->pass, $this->salt),
+							$this->registry->keyring->ssl->aesEnc($this->registry->val->__do(sha1(getenv('HTTP_USER_AGENT')), 'string'), $this->pass, $this->salt),
+							$this->registry->keyring->ssl->aesEnc($this->registry->val->__do(getenv('HTTP_REFERER'), 'string'), $this->pass, $this->salt),
 							time());
 
 			$_SESSION[$this->registry->libs->_getRealIPv4()]['token'] = $token;
@@ -442,7 +451,7 @@ class authentication
 		$r = false;
 		if (!empty($email)) {
 			try {
-				$sql = sprintf('CALL Users_GetToken("%s", "%s")', $this->registry->db->sanitize($this->registry->keyring->ssl->aesDenc($email, $this->pass, $this->registry->libs->_16(hashes::init($this->registry)->_do($creds['password'])))), $this->pass);
+				$sql = sprintf('CALL Users_GetToken("%s", "%s")', $this->registry->db->sanitize($this->registry->keyring->ssl->aesDenc($email, $this->pass, $this->salt)), $this->pass);
 				$r = $this->registry->db->query($sql);
 			} catch(Exception $e) {
 				// error handler
@@ -475,7 +484,7 @@ class authentication
 	public function __user($token)
 	{
 		if ($l = $this->__decode($token) !== false) {
-			return $this->registry->keyring->ssl->aesDenc($l[0], $this->pass, $this->registry->libs->_16(hashes::init($this->registry)->_do($this->pass, $this->registry->opts['dbKey'])));
+			return $this->registry->keyring->ssl->aesDenc($l[0], $this->pass, $this->salt);
 		}
 		return false;
 	}
@@ -487,7 +496,7 @@ class authentication
 	public function __level($token)
 	{
 		if (($l = $this->__decode($token)) !== false) {
-			return $this->registry->keyring->ssl->aesDenc($l[1], $this->pass, $this->registry->libs->_16(hashes::init($this->registry)->_do($this->pass, $this->registry->opts['dbKey'])));
+			return $this->registry->keyring->ssl->aesDenc($l[1], $this->pass, $this->salt);
 		}
 		return false;
 	}
@@ -499,7 +508,7 @@ class authentication
 	public function __group($token)
 	{
 		if (($l = $this->__decode($token)) !== false) {
-			return $this->registry->keyring->ssl->aesDenc($l[2], $this->pass, $this->registry->libs->_16(hashes::init($this->registry)->_do($this->pass, $this->registry->opts['dbKey'])));
+			return $this->registry->keyring->ssl->aesDenc($l[2], $this->pass, $this->salt);
 		}
 		return false;
 	}

@@ -59,6 +59,7 @@ class install {
 						   'install/stored-procedures/sp_configuration_cnf.sql',
 						   'install/stored-procedures/sp_configuration_keys.sql',
 						   'install/stored-procedures/sp_logs.sql',
+						   'install/stored-procedures/sp_sessions.sql',
 						   'install/stored-procedures/sp_permissions.sql',
 						   'install/stored-procedures/sp_users.sql');
 
@@ -132,7 +133,8 @@ class install {
 			$this->_crud($this->_defConf($post, $pk, $p, $key));
 
 			/* save our newly created administrative user */
-			$h = hashes::init(false)->_do($post['admPass'], $post['admPass']);
+			$s = libraries::init()->_16(hashes::init(false)->_do($post['admPass'], $key));
+			$h = hashes::init(false)->_do($post['admPass'], $key);
 			$this->_crud($this->_defUser($post, $h));
 
 			/* create corresponding keyring for user */
