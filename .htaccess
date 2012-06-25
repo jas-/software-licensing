@@ -1,3 +1,12 @@
+ <IfModule mod_rewrite.c>
+  Options +FollowSymLinks
+  RewriteEngine on
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule ^(\w+)$ index.php?nxs=$1 [L]
+  RewriteRule ^(\w+)\/(\w+)$ index.php?nxs=$1/$2 [L]
+ </IfModule>
+
  <FilesMatch "^(\.htaccess)">
   Deny from all
  </FilesMatch>
